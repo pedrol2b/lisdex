@@ -27,6 +27,7 @@ _Last updated 2026-11-19._
 - 2026-11-20 Owner checked the Duration and Schedule popovers (layout OK). Logs confirm the restart-before-release on mode switches and the schedule end at 18:00 local. **Phase 3 closed** (expiry timing in `evidence/2026-11-20-phase-3/`).
 - 2026-11-20 Owner checked Settings / Start on Login / accents / variants: fine. **Phase 4 closed.** 60 s expiry ended within 0.2 s, assertions released. Core coverage 96 %.
 - 2026-11-20 **Phase 5 hardening**: Swift review (no HIGH) + energy/VoiceOver audit; fixes and accepted items in `evidence/2026-11-20-phase-5/`. 51 tests, coverage 96 %.
+- 2026-11-20 **Public.** Both repos public; `TAP_DEPLOY_KEY` set; release workflow re-run for v1.0.0 all green; `brew install pedrol2b/tap/lisdex` from the public tap built 1.0.0 in 12 s and `brew test` passed. **Phase 6 closed.**
 - 2026-11-20 **v1.0.0 release**: version 1.0.0, CHANGELOG, README screenshots (`make screenshots`, launch arg `-LisdexScreenshot`), banner removed, release pipeline (ADR 0018), repo descriptions/topics. Popover no longer focuses the first time field.
 - 2026-11-20 **Phase 6 prep**: repos created (private). Formula in `~/Developer/public/homebrew-tap` passes install/test/audit from a local tap; Start on Login repair after upgrades (ADR 0017). 61 tests. See `evidence/2026-11-20-phase-6/`.
 - 2026-11-20 Toggle sound (ADR 0016): user on/off plays a system sound (default Pop); Settings → General → Sound toggles it and picks Pop/Tink/Glass/Bottle/Purr/Morse. 56 tests.
@@ -44,14 +45,13 @@ _Last updated 2026-11-19._
 | **3. Duration + Schedule** ✅ | Duration chips + custom, wall-clock deadline, expiry; schedule model (days + window), `Scheduler` tick (30 s) + wake/clock-change observers; schedule card + editor. | Acceptance 3–4 pass incl. sleep/wake. |
 | **4. Settings & polish** ✅ | Settings window (General/Power/Appearance), icon variant switch, accent colors, Start on Login (`SMAppService`), notifications, battery threshold, About. Popover matches Low Cortisol style. | Acceptance 6–8; screenshots in evidence. |
 | **5. Hardening** 🔶 | Code review (swift-reviewer), concurrency audit, ≥ 80 % Core coverage, energy check (no busy timers), VoiceOver labels. | Review HIGHs fixed. |
-| **6. Publish v1.0** 🔶 | Public GitHub repo, README screenshots + remove "in development" banner, CONTRIBUTING, issue templates, optional `swift test` CI. Local ad-hoc builds (ADR 0005) + Homebrew tap formula building from source (ADR 0008). | A fresh clone builds with `make install`; `brew install pedrol2b/tap/lisdex` works on a clean Mac. |
+| **6. Publish v1.0** ✅ | Public GitHub repo, README screenshots + remove "in development" banner, CONTRIBUTING, issue templates, optional `swift test` CI. Local ad-hoc builds (ADR 0005) + Homebrew tap formula building from source (ADR 0008). | A fresh clone builds with `make install`; `brew install pedrol2b/tap/lisdex` works on a clean Mac. |
 | **7. v1.1** | Option-click quick menu, per-day schedule windows, "keep awake while app X runs", AppIntents/Shortcuts. | — |
 
 ## Next
 
 1. **Owner:** confirm the popover opens/closes and the toggle sound plays → Phase 5 ✅.
-2. First commit + push of both repos (private) — awaiting owner go-ahead.
-3. At release: tag `v1.0.0`, set the formula `sha256`, README screenshots, drop the banner, make both repos public (checklist in `evidence/2026-11-20-phase-6/`).
+2. Phase 7 (v1.1) candidates: Option-click quick menu, per-day schedule windows, "keep awake while app X runs", Shortcuts/AppIntents.
 
 ## Open questions
 
