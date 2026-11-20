@@ -27,7 +27,7 @@ private struct GeneralSettings: View {
       Section {
         Toggle(
           "Start on Login",
-          isOn: Binding(get: { model.loginItem != .off }, set: model.setStartOnLogin))
+          isOn: Bindable(model).startOnLoginSwitch)
         if model.loginItem == .needsApproval {
           LabeledContent("Waiting for your approval in Login Items.") {
             Button("Open System Settings…", action: LoginItem.openSystemSettings)
@@ -36,19 +36,18 @@ private struct GeneralSettings: View {
         }
         Toggle(
           "Activate Keep Awake when Lisdex launches",
-          isOn: Binding(get: { model.settings.activateOnLaunch }, set: model.setActivateOnLaunch))
+          isOn: Bindable(model).activateOnLaunchSetting)
         Toggle(
           "Notify when a timed session ends",
-          isOn: Binding(
-            get: { model.settings.notifyOnSessionEnd }, set: model.setNotifyOnSessionEnd))
+          isOn: Bindable(model).notifyOnSessionEndSetting)
       }
       Section("Sound") {
         Toggle(
           "Play a sound when Keep Awake is switched on or off",
-          isOn: Binding(get: { model.settings.playsToggleSound }, set: model.setPlaysToggleSound))
+          isOn: Bindable(model).playsToggleSoundSetting)
         Picker(
           "Sound",
-          selection: Binding(get: { model.settings.toggleSound }, set: model.setToggleSound)
+          selection: Bindable(model).toggleSoundSetting
         ) {
           ForEach(ToggleSound.allCases, id: \.self) { Text($0.title).tag($0) }
         }
@@ -77,24 +76,21 @@ private struct PowerSettings: View {
       Section {
         Toggle(
           "Keep the display awake",
-          isOn: Binding(get: { model.settings.keepDisplayAwake }, set: model.setKeepDisplayAwake))
+          isOn: Bindable(model).keepDisplayAwakeSetting)
         Toggle(
           "Allow display sleep on battery",
-          isOn: Binding(
-            get: { model.settings.allowDisplaySleepOnBattery },
-            set: model.setAllowDisplaySleepOnBattery)
+          isOn: Bindable(model).allowDisplaySleepOnBatterySetting
         )
         .disabled(!model.settings.keepDisplayAwake)
         Picker(
           "Stop below battery",
-          selection: Binding(
-            get: { model.settings.batteryStopThreshold }, set: model.setBatteryStopThreshold)
+          selection: Bindable(model).batteryStopThresholdSetting
         ) {
           ForEach(BatteryThreshold.allCases, id: \.self) { Text($0.title).tag($0) }
         }
       }
       Section("Keep-awake engine") {
-        Picker("Engine", selection: Binding(get: { model.settings.engine }, set: model.setEngine)) {
+        Picker("Engine", selection: Bindable(model).engineSetting) {
           ForEach(KeepAwakeEngine.allCases, id: \.self) { Text($0.title).tag($0) }
         }
         .pickerStyle(.radioGroup)

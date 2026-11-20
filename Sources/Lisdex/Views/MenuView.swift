@@ -23,7 +23,7 @@ struct MenuView: View {
       ToggleRow(
         title: "Keep Awake",
         detail: "Prevent your Mac from sleeping.",
-        isOn: Binding(get: { model.state.isOn }, set: model.switchOn)
+        isOn: Bindable(model).keepAwakeSwitch
       ) {
         TileGlyph(variant: model.settings.iconVariant, isOn: model.state.isOn)
       }
@@ -39,7 +39,7 @@ struct MenuView: View {
       ToggleRow(
         title: "Start on Login",
         detail: loginDetail,
-        isOn: Binding(get: { model.loginItem != .off }, set: model.setStartOnLogin)
+        isOn: Bindable(model).startOnLoginSwitch
       ) {
         Image(systemName: "arrow.up.forward.app").foregroundStyle(.secondary)
       }
