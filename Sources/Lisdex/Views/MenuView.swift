@@ -23,7 +23,7 @@ struct MenuView: View {
       ToggleRow(
         title: "Keep Awake",
         detail: "Prevent your Mac from sleeping.",
-        isOn: Binding(get: { model.state.isOn }, set: { model.setOn($0, feedback: true) })
+        isOn: Binding(get: { model.state.isOn }, set: model.switchOn)
       ) {
         TileGlyph(variant: model.settings.iconVariant, isOn: model.state.isOn)
       }

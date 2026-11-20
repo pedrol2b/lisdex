@@ -79,6 +79,10 @@ final class AppModel {
   /// switching on restarts the last chosen duration.
   func toggle() { setOn(!isOn, feedback: true) }
 
+  /// The popover's Keep Awake switch. A named method rather than a closure: Swift 6.3's IRGen
+  /// crashes on `{ model.setOn($0, feedback: true) }` as a `Binding` setter (CI, Xcode 26.6).
+  func switchOn(_ isOn: Bool) { setOn(isOn, feedback: true) }
+
   /// `feedback`: the user flipped the switch, so play the toggle sound once it took effect.
   /// Programmatic changes (expiry, battery cutoff, mode restarts) stay silent.
   func setOn(_ isOn: Bool, feedback: Bool = false) {

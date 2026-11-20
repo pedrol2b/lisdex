@@ -8,6 +8,7 @@ on:
       - '.github/labels.yml'
 
 permissions:
+  contents: read # checkout needs it while the repo is private
   issues: write
 
 jobs:
