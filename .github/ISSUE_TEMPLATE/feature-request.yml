@@ -1,0 +1,51 @@
+name: ✨ Feature Request
+description: Suggest a new feature or enhancement for Lisdex
+title: '✨ Feature Request: '
+labels: ["type: feature"]
+body:
+  - type: dropdown
+    attributes:
+      label: Area
+      description: Select the area that best fits your request.
+      multiple: true
+      options:
+        - Keep-awake behaviour (power, display, battery)
+        - Modes (duration, schedule)
+        - Menu bar & menu
+        - Settings
+        - Installation / Homebrew
+        - Accessibility / Localization
+        - Documentation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Feature Description
+      description: Provide a detailed description of the feature you are suggesting. Explain why it would be useful and how it should work.
+      placeholder: 'Describe the feature...'
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Use Case
+      description: Describe the use case for this feature. Explain how you or others would use it and what problem it would solve.
+      placeholder: 'Describe the use case...'
+    validations:
+      required: true
+  - type: checkboxes
+    attributes:
+      label: Scope
+      description: Lisdex aims to stay small and do one thing well. Check all that apply.
+      options:
+        - label: 'Fits in the existing menu without adding a new section'
+        - label: 'Requires new system permissions (e.g., Accessibility, notifications)'
+        - label: 'Breaking change for existing settings'
+        - label: 'Similar to a feature in Amphetamine or another app (link below)'
+  - type: input
+    attributes:
+      label: Additional Context
+      description: Provide any additional context, links or screenshots.
+      placeholder: 'Add any other context here...'
+    validations:
+      required: false

@@ -1,0 +1,13 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 💬 GitHub Discussions
+    url: https://github.com/pedrol2b/lisdex/discussions
+    about: Get help, ask questions, or share ideas when Lisdex works as expected.
+
+  - name: 🍺 Homebrew Documentation
+    url: https://docs.brew.sh/Taps
+    about: Problems with Homebrew itself (not the Lisdex formula) — taps, updates, Command Line Tools.
+
+  - name: 🔒 Report a security vulnerability
+    url: https://github.com/pedrol2b/lisdex/security/advisories/new
+    about: Please report security issues privately, not as a public issue.

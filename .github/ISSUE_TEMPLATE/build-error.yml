@@ -1,0 +1,60 @@
+name: 🔧 Build Error
+description: Report problems building or installing Lisdex from source or Homebrew
+title: '🔧 Build error: '
+labels: ["type: bug", "area: build"]
+body:
+  - type: dropdown
+    attributes:
+      label: Install Method
+      description: How did you try to build Lisdex?
+      options:
+        - Homebrew (brew install pedrol2b/tap/lisdex)
+        - From source (make install / make app)
+        - Xcode (opened Package.swift)
+    validations:
+      required: true
+  - type: checkboxes
+    attributes:
+      label: Requirements
+      description: Confirm the requirements from the README.
+      options:
+        - label: '✅ macOS 14 Sonoma or later'
+          required: true
+        - label: '✅ Xcode Command Line Tools installed (`xcode-select --install`)'
+          required: true
+        - label: '✅ I tried a clean build (`make clean` or `brew reinstall lisdex`)'
+          required: true
+  - type: textarea
+    attributes:
+      label: Toolchain
+      description: Paste the output of the commands below.
+      render: shell
+      value: |
+        $ sw_vers
+        $ swift --version
+        $ xcode-select -p
+        $ brew --version   # if using Homebrew
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Build Log
+      description: >
+        Paste the full error output. For Homebrew, use `brew install --verbose pedrol2b/tap/lisdex`
+        or the logs in `~/Library/Logs/Homebrew/lisdex/`.
+      render: shell
+      placeholder: 'Paste build output here...'
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Lisdex Version / Commit
+      placeholder: 'e.g., 1.0.0 or a1b2c3d'
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Additional Context
+      description: Managed (MDM) Mac? Custom Xcode location? Anything else unusual?
+    validations:
+      required: false

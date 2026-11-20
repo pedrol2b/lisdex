@@ -1,0 +1,83 @@
+name: 🐛 Bug Report
+description: File a bug report for Lisdex
+title: '🐛 Bug: '
+labels: ["type: bug"]
+body:
+  - type: dropdown
+    attributes:
+      label: Mode
+      description: Which keep-awake mode were you using?
+      multiple: true
+      options:
+        - Indefinitely
+        - For a Duration
+        - On a Schedule
+        - Not mode-related (menu, settings, icon…)
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: Keep-awake engine
+      description: Settings → Power → Keep-awake engine.
+      options:
+        - macOS power assertions (IOKit, default)
+        - caffeinate
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Detailed Bug Description
+      description: Provide a detailed explanation of the bug. Include the steps to reproduce it, your expected outcome, and the actual outcome.
+      placeholder: "Steps to reproduce the bug...\n\nExpected outcome...\n\nActual outcome..."
+    validations:
+      required: true
+  - type: checkboxes
+    attributes:
+      label: Checks
+      options:
+        - label: '✅ I am running the latest version of Lisdex'
+          required: true
+        - label: '✅ I searched existing issues and this is not a duplicate'
+          required: true
+  - type: textarea
+    attributes:
+      label: Power Assertions
+      description: >
+        If the Mac slept (or didn't) unexpectedly, paste the output of
+        `pmset -g assertions` taken while Keep Awake was on.
+      render: shell
+      placeholder: 'Paste pmset output here...'
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Relevant Log Output
+      description: >
+        Run `log show --last 15m --predicate 'subsystem == "io.github.pedrol2b.lisdex"'`
+        and paste the relevant lines. This will be formatted as code automatically.
+      render: shell
+      placeholder: 'Paste log output here...'
+    validations:
+      required: false
+  - type: input
+    attributes:
+      label: macOS Version and Mac
+      description: Include the macOS version and Mac model (Apple silicon or Intel).
+      placeholder: 'e.g., macOS 26.1, MacBook Air M2'
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Lisdex Version
+      description: Shown in About Lisdex.
+      placeholder: 'e.g., 1.0.0'
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: Install Method
+      options:
+        - Homebrew (pedrol2b/tap/lisdex)
+        - Built from source (make install)
+    validations:
+      required: true

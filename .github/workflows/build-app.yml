@@ -1,0 +1,50 @@
+name: Build App (macOS)
+
+on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - '.github/workflows/build-app.yml'
+      - 'Package.swift'
+      - 'Sources/**'
+      - 'Support/**'
+      - 'assets/**'
+      - 'scripts/**'
+      - 'Makefile'
+  push:
+    branches: [main, develop]
+    paths:
+      - '.github/workflows/build-app.yml'
+      - 'Package.swift'
+      - 'Sources/**'
+      - 'Support/**'
+      - 'assets/**'
+      - 'scripts/**'
+      - 'Makefile'
+  merge_group:
+    types: [checks_requested]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-app-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build Lisdex.app
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Build app bundle
+        run: make app
+
+      - name: Verify bundle
+        run: |
+          test -f build/Lisdex.app/Contents/Info.plist
+          test -f build/Lisdex.app/Contents/Resources/Lisdex.icns
+          /usr/libexec/PlistBuddy -c 'Print :LSUIElement' build/Lisdex.app/Contents/Info.plist | grep -q true
+          codesign --verify --verbose build/Lisdex.app

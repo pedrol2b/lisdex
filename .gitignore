@@ -1,0 +1,29 @@
+# macOS
+.DS_Store
+
+# SwiftPM / Xcode
+.build/
+build/
+.swiftpm/
+DerivedData/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+
+# Editors / IDEs
+.vscode/
+.idea/
+.fleet/
+.zed/
+*.swp
+*~
+
+# Local environment files
+.env
+.env*.local
+
+# Retired artwork (kept locally; the originals live in Figma, marked deprecated)
+assets/deprecated/
+
+# Python
+__pycache__/
+*.pyc

@@ -1,0 +1,256 @@
+# =============================================================================
+# Type
+# What kind of change, request, or problem is this?
+# =============================================================================
+
+- name: "type: bug"
+  description: "Something is not working as expected"
+  color: "D73A4A"
+
+- name: "type: feature"
+  description: "Introduces new functionality"
+  color: "1D76DB"
+
+- name: "type: enhancement"
+  description: "Improves existing functionality or behavior"
+  color: "A2EEEF"
+
+- name: "type: refactor"
+  description: "Restructures code without intentionally changing behavior"
+  color: "5319E7"
+
+- name: "type: maintenance"
+  description: "Routine maintenance, tooling, configuration, or internal project work"
+  color: "C2E0C6"
+
+- name: "type: documentation"
+  description: "Adds, updates, or corrects documentation"
+  color: "0075CA"
+
+- name: "type: test"
+  description: "Adds, updates, or fixes automated tests"
+  color: "BFDADC"
+
+- name: "type: cleanup"
+  description: "Removes unused code or improves project organization"
+  color: "C5DEF5"
+
+- name: "type: dependency"
+  description: "Adds, removes, or updates a project dependency"
+  color: "0366D6"
+
+- name: "type: breaking change"
+  description: "Introduces an incompatible change that may require migration"
+  color: "B60205"
+
+- name: "type: deprecation"
+  description: "Deprecates functionality, APIs, or implementation paths"
+  color: "8B0000"
+
+- name: "type: question"
+  description: "Requests clarification, guidance, or additional information"
+  color: "D876E3"
+
+
+# =============================================================================
+# Status
+# What is the current state of the issue or pull request?
+# =============================================================================
+
+- name: "status: blocked"
+  description: "Progress is blocked by a dependency, decision, or external factor"
+  color: "B60205"
+
+- name: "status: needs information"
+  description: "Additional information is required before work can continue"
+  color: "D93F0B"
+
+- name: "status: needs reproduction"
+  description: "Reproduction steps or a minimal reproducible example are required"
+  color: "D93F0B"
+
+- name: "status: ready"
+  description: "Ready to be worked on or reviewed"
+  color: "0E8A16"
+
+- name: "status: in progress"
+  description: "Work is currently in progress"
+  color: "FBCA04"
+
+- name: "status: needs review"
+  description: "Ready for code, product, design, or technical review"
+  color: "0052CC"
+
+- name: "status: changes requested"
+  description: "Changes are required before the work can be approved"
+  color: "D93F0B"
+
+- name: "status: duplicate"
+  description: "This issue or pull request duplicates existing work"
+  color: "CFD3D7"
+
+- name: "status: invalid"
+  description: "This issue or pull request is incomplete, incorrect, or not actionable"
+  color: "E4E669"
+
+- name: "status: stale"
+  description: "This issue or pull request has had no recent activity"
+  color: "EDEDED"
+
+- name: "status: wontfix"
+  description: "This issue is acknowledged but will not be addressed"
+  color: "FFFFFF"
+
+
+# =============================================================================
+# Priority
+# How urgently should this be handled?
+# =============================================================================
+
+- name: "priority: critical"
+  description: "Requires immediate attention due to severe user or business impact"
+  color: "B60205"
+
+- name: "priority: high"
+  description: "High-impact work that should be addressed soon"
+  color: "D93F0B"
+
+- name: "priority: medium"
+  description: "Normal-priority work"
+  color: "FBCA04"
+
+- name: "priority: low"
+  description: "Low-impact work that can be handled when capacity allows"
+  color: "0E8A16"
+
+
+# =============================================================================
+# Area
+# Which technical or product area is affected?
+# =============================================================================
+
+- name: "area: accessibility"
+  description: "Accessibility behavior, support, or compliance"
+  color: "D4C5F9"
+
+- name: "area: build"
+  description: "Build configuration, compilation, signing, packaging, or release builds"
+  color: "006B75"
+
+- name: "area: ci/cd"
+  description: "Continuous integration, delivery, automation, or deployment pipelines"
+  color: "0E8A16"
+
+- name: "area: localization"
+  description: "Translations, locale handling, formatting, or internationalization"
+  color: "C2E0C6"
+
+- name: "area: notifications"
+  description: "Push notifications, local notifications, or notification permissions"
+  color: "FBCA04"
+
+- name: "area: performance"
+  description: "Startup time, responsiveness, memory, battery, or resource usage"
+  color: "F9C513"
+
+- name: "area: permissions"
+  description: "System permissions, privacy prompts, or permission handling"
+  color: "D4C5F9"
+
+- name: "area: release"
+  description: "Versioning, publishing, store submission, rollout, or release management"
+  color: "0E8A16"
+
+- name: "area: security"
+  description: "Security vulnerabilities, hardening, data protection, or privacy concerns"
+  color: "B60205"
+
+- name: "area: testing"
+  description: "Test infrastructure, fixtures, mocks, coverage, or test reliability"
+  color: "BFDADC"
+
+- name: "area: ui/ux"
+  description: "User interface, interaction, layout, or user experience"
+  color: "E99695"
+
+- name: "area: power"
+  description: "Keeping the Mac awake: IOKit assertions, caffeinate engine, display and battery options"
+  color: "F4C85B"
+
+- name: "area: scheduling"
+  description: "Duration timers, schedules, sleep/wake and clock-change handling"
+  color: "FBCA04"
+
+- name: "area: menu bar"
+  description: "Status item, molecule icon, popover and click handling"
+  color: "202228"
+
+- name: "area: settings"
+  description: "Settings window, preferences persistence and start on login"
+  color: "BFD4F2"
+
+- name: "area: distribution"
+  description: "Building from source, Homebrew tap formula and installation"
+  color: "006B75"
+
+
+# =============================================================================
+# Quality and impact
+# What kind of impact or risk does the work have?
+# =============================================================================
+
+- name: "impact: crash"
+  description: "Causes or prevents an application crash"
+  color: "B60205"
+
+- name: "impact: regression"
+  description: "Previously working behavior has stopped working"
+  color: "D93F0B"
+
+- name: "impact: user-facing"
+  description: "Directly changes or affects the user experience"
+  color: "1D76DB"
+
+- name: "impact: internal"
+  description: "Primarily affects internal implementation or developer workflows"
+  color: "C5DEF5"
+
+
+# =============================================================================
+# Pull request
+# Labels primarily useful during pull request review.
+# =============================================================================
+
+- name: "pr: do not merge"
+  description: "Must not be merged until the blocking condition is resolved"
+  color: "B60205"
+
+- name: "pr: ready for review"
+  description: "The pull request is ready for review"
+  color: "0E8A16"
+
+- name: "pr: work in progress"
+  description: "The pull request is still under active development"
+  color: "FBCA04"
+
+- name: "pr: requires migration"
+  description: "Requires a data, configuration, API, or consumer migration"
+  color: "D93F0B"
+
+- name: "pr: requires release notes"
+  description: "Requires an entry in the changelog or release notes"
+  color: "0075CA"
+
+
+# =============================================================================
+# Contribution
+# Useful for public or open-source repositories.
+# =============================================================================
+
+- name: "contribution: good first issue"
+  description: "Suitable for first-time contributors"
+  color: "7057FF"
+
+- name: "contribution: help wanted"
+  description: "Additional assistance or community contributions are welcome"
+  color: "008672"
