@@ -19,6 +19,7 @@ Open-source macOS menu bar app (Swift 6, SwiftPM, AppKit + SwiftUI) that keeps t
 
 - Decision logic (session state, schedule evaluation, timers) goes in `Sources/LisdexCore` (Foundation only) **with tests**. `Sources/Lisdex` is I/O, power assertions, timing, UI.
 - Value types and new values over mutation; `@MainActor` for app-layer state; no `print` — use `Log` (`os.Logger`).
+- Must compile with **Swift 6.3 (Xcode 26)** as well as newer toolchains: CI and many users' Command Line Tools use it. Bind SwiftUI controls with `Bindable(model).property` (see `AppModel+Bindings.swift`), never `Binding(get:set: model.method)` — Swift 6.3 crashes in IRGen on that conversion.
 - Never leave a power assertion / `caffeinate` child alive after quit or crash (see ADR 0002).
 - Icon assets: edit SVG sources in `assets/`, regenerate exports — never hand-edit PNGs (ADR 0003).
 - No secrets in the repo or `.context/`.

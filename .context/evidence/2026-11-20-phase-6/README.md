@@ -39,3 +39,13 @@ state before it.
 No secrets, tokens or local paths. The only personal data is the contact email in
 `CODE_OF_CONDUCT.md`, which is intentional. `.context/sources/figma-identity.md` links the
 Figma file.
+
+## First CI run
+
+The first push failed on Unit Tests and Build App: Swift 6.3.3 (Xcode 26.6 on `macos-latest`)
+crashed in IRGen on the reabstraction thunk for `@MainActor` Bool setters passed to
+`Binding(get:set:)` (`@isolated(any) @Sendable`). Local Swift 6.4.2 compiled the same code fine.
+Reproduced locally with `DEVELOPER_DIR=/Applications/Xcode-26.6.0.app/...`, fixed with
+key-path bindings (`AppModel+Bindings.swift`), then verified on 6.3.3 (release build + 61 tests)
+and 6.4.2. Sync Labels needed `contents: read` while the repo is private. All workflows green
+on `main`.
