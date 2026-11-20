@@ -1,0 +1,137 @@
+name: Release
+
+# Push a tag like v1.2.3 (matching CFBundleShortVersionString) to:
+#   1. test and build the app,
+#   2. draft the GitHub release with the CHANGELOG section as notes,
+#   3. point the Homebrew formula in pedrol2b/homebrew-tap at the new tag (url + sha256).
+# The tap is written with a deploy key stored as the TAP_DEPLOY_KEY secret (ADR 0018).
+
+on:
+  push:
+    tags: ['v*.*.*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing tag to (re)release, e.g. v1.0.0
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+env:
+  TAG: ${{ inputs.tag || github.ref_name }}
+
+jobs:
+  verify:
+    name: Test and build
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          ref: ${{ env.TAG }}
+
+      - name: Tag matches the app version
+        run: |
+          version="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' Support/Info.plist)"
+          if [ "v$version" != "$TAG" ]; then
+            echo "::error::Tag $TAG does not match CFBundleShortVersionString $version"
+            exit 1
+          fi
+          grep -q "^## \[$version\]" CHANGELOG.md || { echo "::error::CHANGELOG.md has no [$version] section"; exit 1; }
+
+      - name: Unit tests
+        run: swift test
+
+      - name: Build app bundle
+        run: |
+          make app
+          codesign --verify --verbose build/Lisdex.app
+
+  release:
+    name: Draft GitHub release
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          ref: ${{ env.TAG }}
+
+      - name: Release notes from CHANGELOG
+        run: |
+          version="${TAG#v}"
+          awk -v v="$version" '
+            $0 ~ "^## \\[" v "\\]" { found = 1; next }
+            found && /^## \[/ { exit }
+            found && /^\[.*\]: / { exit }
+            found { print }
+          ' CHANGELOG.md > notes.md
+          cat >> notes.md <<'NOTES'
+
+          ## Install
+
+          ```sh
+          brew install pedrol2b/tap/lisdex
+          ln -sf "$(brew --prefix)/opt/lisdex/Lisdex.app" ~/Applications/Lisdex.app
+          open ~/Applications/Lisdex.app
+          ```
+
+          Lisdex is built from source on your Mac (needs the Xcode Command Line Tools), so there is
+          no app download here: see [why](https://github.com/pedrol2b/lisdex#why-build-from-source).
+          Update with `brew upgrade lisdex`.
+          NOTES
+          cat notes.md
+
+      - name: Create draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release edit "$TAG" --notes-file notes.md
+          else
+            gh release create "$TAG" --draft --verify-tag --title "Lisdex ${TAG#v}" --notes-file notes.md
+          fi
+
+  homebrew:
+    name: Update Homebrew formula
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checksum of the source tarball
+        id: tarball
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          url="https://github.com/${GITHUB_REPOSITORY}/archive/refs/tags/${TAG}.tar.gz"
+          # Authenticated so it also works while the repository is private.
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" "$url" -o source.tar.gz
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "sha256=$(sha256sum source.tar.gz | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          repository: pedrol2b/homebrew-tap
+          ssh-key: ${{ secrets.TAP_DEPLOY_KEY }}
+          path: tap
+
+      - name: Bump formula
+        working-directory: tap
+        env:
+          URL: ${{ steps.tarball.outputs.url }}
+          SHA: ${{ steps.tarball.outputs.sha256 }}
+        run: |
+          sed -i -E "s|^  url \".*\"|  url \"$URL\"|; s|^  sha256 \".*\"|  sha256 \"$SHA\"|" Formula/lisdex.rb
+          grep -q "url \"$URL\"" Formula/lisdex.rb && grep -q "sha256 \"$SHA\"" Formula/lisdex.rb
+          if git diff --quiet; then
+            echo "Formula already points at $TAG"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "lisdex ${TAG#v}"
+          git push

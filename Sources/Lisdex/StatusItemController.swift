@@ -70,6 +70,12 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
     }
   }
 
+  /// Opens the popover without a click (screenshot mode).
+  func showPopover() {
+    guard let button = statusItem.button, !popover.isShown else { return }
+    togglePopover(relativeTo: button)
+  }
+
   private func togglePopover(relativeTo button: NSStatusBarButton) {
     if popover.isShown {
       popover.performClose(nil)
@@ -78,7 +84,11 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
       popover.contentViewController = makeContent()
       NSApp.activate()
       popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
-      popover.contentViewController?.view.window?.makeKey()
+      let window = popover.contentViewController?.view.window
+      window?.makeKey()
+      // Don't start with a field focused: in Schedule mode the first time picker would
+      // otherwise open with its hour selected.
+      window?.makeFirstResponder(nil)
     }
   }
 

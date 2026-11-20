@@ -11,11 +11,11 @@
 
 <p align="center">
   <a href="https://github.com/sponsors/pedrol2b"><img src="https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=githubsponsors&logoColor=white" alt="Sponsor on GitHub"></a>
+  <a href="https://github.com/pedrol2b/lisdex/releases/latest"><img src="https://img.shields.io/github/v/release/pedrol2b/lisdex?color=F4C85B" alt="Latest release"></a>
+  <a href="https://github.com/pedrol2b/homebrew-tap"><img src="https://img.shields.io/badge/brew-pedrol2b%2Ftap%2Flisdex-FBB040?logo=homebrew&logoColor=white" alt="brew install pedrol2b/tap/lisdex"></a>
   <img src="https://img.shields.io/badge/macOS-14%2B-202228" alt="macOS 14+">
   <img src="https://img.shields.io/badge/license-MIT-F4C85B" alt="MIT license">
 </p>
-
-> **Status:** in development. The design is final and v1.0 is being built. The install commands below go live with the first release.
 
 ## Why does this exist?
 
@@ -36,7 +36,20 @@ Lisdex does one thing: stop your Mac from going to sleep. It's small enough to r
 | ◷ | **For a duration.** 15 min, 30 min, 1 h, 2 h or a custom time. |
 | ▦ | **On a schedule.** Choose days and hours, e.g. weekdays 09:00–18:00. |
 | 🖱 | **Left-click** opens the menu. **Right-click** toggles Keep Awake and keeps your selected mode. |
+| 🔔 | **A little pop** when you switch it on or off (like Amphetamine). Pick a different sound, or turn it off. |
 | ⚙︎ | Start on login, keep the display awake, a battery cutoff, accent colours and two icon variants. |
+
+## Screenshots
+
+<p align="center">
+  <img src="assets/screenshots/popover-inactive.png" width="31%" alt="Lisdex menu, inactive, mode Indefinitely">
+  <img src="assets/screenshots/popover-duration.png" width="31%" alt="Lisdex menu, active for a duration of 1 hour with progress">
+  <img src="assets/screenshots/popover-schedule.png" width="31%" alt="Lisdex menu, schedule mode Monday to Friday 9:00 to 18:00">
+</p>
+<p align="center">
+  <img src="assets/screenshots/settings-power.png" width="48%" alt="Settings, Power tab: display, battery cutoff and keep-awake engine">
+  <img src="assets/screenshots/settings-appearance.png" width="48%" alt="Settings, Appearance tab: pill or coffee mug menu bar icon and accent colours">
+</p>
 
 ### How it keeps your Mac awake
 
@@ -60,7 +73,7 @@ ln -sf "$(brew --prefix)/opt/lisdex/Lisdex.app" ~/Applications/Lisdex.app
 open ~/Applications/Lisdex.app
 ```
 
-Homebrew downloads the source, compiles it (takes about a minute) and installs `Lisdex.app`. The link puts it in `~/Applications` so Spotlight and Login Items can find it. Update with `brew upgrade lisdex`.
+Homebrew downloads the source from the [tap](https://github.com/pedrol2b/homebrew-tap), compiles it (takes about a minute) and installs `Lisdex.app`. The link puts it in `~/Applications` so Spotlight and Login Items can find it. Update with `brew upgrade lisdex`.
 
 ### Option 2 — Build it yourself
 

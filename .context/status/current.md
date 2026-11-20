@@ -27,6 +27,7 @@ _Last updated 2026-11-19._
 - 2026-11-20 Owner checked the Duration and Schedule popovers (layout OK). Logs confirm the restart-before-release on mode switches and the schedule end at 18:00 local. **Phase 3 closed** (expiry timing in `evidence/2026-11-20-phase-3/`).
 - 2026-11-20 Owner checked Settings / Start on Login / accents / variants: fine. **Phase 4 closed.** 60 s expiry ended within 0.2 s, assertions released. Core coverage 96 %.
 - 2026-11-20 **Phase 5 hardening**: Swift review (no HIGH) + energy/VoiceOver audit; fixes and accepted items in `evidence/2026-11-20-phase-5/`. 51 tests, coverage 96 %.
+- 2026-11-20 **v1.0.0 release**: version 1.0.0, CHANGELOG, README screenshots (`make screenshots`, launch arg `-LisdexScreenshot`), banner removed, release pipeline (ADR 0018), repo descriptions/topics. Popover no longer focuses the first time field.
 - 2026-11-20 **Phase 6 prep**: repos created (private). Formula in `~/Developer/public/homebrew-tap` passes install/test/audit from a local tap; Start on Login repair after upgrades (ADR 0017). 61 tests. See `evidence/2026-11-20-phase-6/`.
 - 2026-11-20 Toggle sound (ADR 0016): user on/off plays a system sound (default Pop); Settings → General → Sound toggles it and picks Pop/Tink/Glass/Bottle/Purr/Morse. 56 tests.
 - 2026-11-20 Pill + coffee-mug assets landed from Figma (node 10:254): SVGs in `assets/`, `make icons`, variants renamed `.pill`/`.mug` (old values fall back to the pill), molecule files in `assets/deprecated/molecule/`. 52 tests.

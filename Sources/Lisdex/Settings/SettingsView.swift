@@ -1,17 +1,33 @@
 import LisdexCore
 import SwiftUI
 
+enum SettingsTab: String {
+  case general, power, appearance
+}
+
 /// Settings → General · Power · Appearance (spec "Settings window").
 struct SettingsView: View {
   static let width: CGFloat = 480
 
   let model: AppModel
+  @State private var tab: SettingsTab
+
+  init(model: AppModel, tab: SettingsTab = .general) {
+    self.model = model
+    _tab = State(initialValue: tab)
+  }
 
   var body: some View {
-    TabView {
-      GeneralSettings(model: model).tabItem { Label("General", systemImage: "gearshape") }
-      PowerSettings(model: model).tabItem { Label("Power", systemImage: "bolt") }
-      AppearanceSettings(model: model).tabItem { Label("Appearance", systemImage: "paintpalette") }
+    TabView(selection: $tab) {
+      GeneralSettings(model: model)
+        .tabItem { Label("General", systemImage: "gearshape") }
+        .tag(SettingsTab.general)
+      PowerSettings(model: model)
+        .tabItem { Label("Power", systemImage: "bolt") }
+        .tag(SettingsTab.power)
+      AppearanceSettings(model: model)
+        .tabItem { Label("Appearance", systemImage: "paintpalette") }
+        .tag(SettingsTab.appearance)
     }
     .frame(width: Self.width)
     .fixedSize(horizontal: false, vertical: true)
