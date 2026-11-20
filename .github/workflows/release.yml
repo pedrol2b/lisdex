@@ -3,7 +3,8 @@ name: Release
 # Push a tag like v1.2.3 (matching CFBundleShortVersionString) to:
 #   1. test and build the app,
 #   2. draft the GitHub release with the CHANGELOG section as notes,
-#   3. point the Homebrew formula in pedrol2b/homebrew-tap at the new tag (url + sha256).
+#   3. point the Homebrew formula in pedrol2b/homebrew-tap at the new tag (url + sha256);
+#      needs the repository to be public.
 # The tap is written with a deploy key stored as the TAP_DEPLOY_KEY secret (ADR 0018).
 
 on:
@@ -104,12 +105,14 @@ jobs:
     steps:
       - name: Checksum of the source tarball
         id: tarball
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           url="https://github.com/${GITHUB_REPOSITORY}/archive/refs/tags/${TAG}.tar.gz"
-          # Authenticated so it also works while the repository is private.
-          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" "$url" -o source.tar.gz
+          # The exact URL Homebrew downloads. It must be public: github.com archive URLs
+          # don't accept the Actions token for private repositories.
+          if ! curl -fsSL "$url" -o source.tar.gz; then
+            echo "::error::Can't download $url. Is the repository public?"
+            exit 1
+          fi
           echo "url=$url" >> "$GITHUB_OUTPUT"
           echo "sha256=$(sha256sum source.tar.gz | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
 

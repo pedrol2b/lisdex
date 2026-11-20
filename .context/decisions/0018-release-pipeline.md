@@ -19,8 +19,8 @@ manually for an existing tag.
      (ADR 0005/0008).
    - A maintainer reviews the draft and publishes it.
 3. **homebrew:**
-   - Downloads `archive/refs/tags/vX.Y.Z.tar.gz`, authenticated so it also works while the
-     repo is private.
+   - Downloads `archive/refs/tags/vX.Y.Z.tar.gz`, the exact URL Homebrew uses. The repo
+     must be public: github.com archive URLs reject the Actions token for private repos.
    - Sets the formula's `url` and `sha256` in `pedrol2b/homebrew-tap` and pushes as
      `github-actions[bot]`.
 
@@ -33,3 +33,9 @@ access token. Setup: `.context/runbooks/release.md`.
 - A release is three steps: bump the version and CHANGELOG, tag, then publish the draft.
 - The formula is updated as soon as the tag passes verification, before the draft is
   published. The tag already exists, so `brew upgrade` works immediately.
+
+## v1.0.0 (2026-11-20)
+
+The repo was still private, so the formula job failed at the download (404). The checksum
+(`9e3a738c…`, identical on two downloads) was set by hand. The tarball was built with
+`brew install --build-from-source` from a local tap and passed `brew test`.
