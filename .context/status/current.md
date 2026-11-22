@@ -28,6 +28,7 @@ _Last updated 2026-11-19._
 - 2026-11-20 Owner checked Settings / Start on Login / accents / variants: fine. **Phase 4 closed.** 60 s expiry ended within 0.2 s, assertions released. Core coverage 96 %.
 - 2026-11-20 **Phase 5 hardening**: Swift review (no HIGH) + energy/VoiceOver audit; fixes and accepted items in `evidence/2026-11-20-phase-5/`. 51 tests, coverage 96 %.
 - 2026-11-20 Owner confirmed the toggle sound plays and the popover opens/closes normally. **Phase 5 closed.**
+- 2026-11-22 **v1.0.1**: menu bar icon dimmed while inactive (`appearsDisabled`), pill glyph enlarged to 18 × 12 pt on a 20 × 18 canvas (ADR 0015 amendment). Tagged; release workflow drafts the release and bumps the tap.
 - 2026-11-20 **Public.** Both repos public; `TAP_DEPLOY_KEY` set; release workflow re-run for v1.0.0 all green; `brew install pedrol2b/tap/lisdex` from the public tap built 1.0.0 in 12 s and `brew test` passed. **Phase 6 closed.**
 - 2026-11-20 **v1.0.0 release**: version 1.0.0, CHANGELOG, README screenshots (`make screenshots`, launch arg `-LisdexScreenshot`), banner removed, release pipeline (ADR 0018), repo descriptions/topics. Popover no longer focuses the first time field.
 - 2026-11-20 **Phase 6 prep**: repos created (private). Formula in `~/Developer/public/homebrew-tap` passes install/test/audit from a local tap; Start on Login repair after upgrades (ADR 0017). 61 tests. See `evidence/2026-11-20-phase-6/`.

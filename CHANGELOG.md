@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-11-22
+
+### Changed
+
+- The menu bar icon is dimmed while Keep Awake is off.
+- The menu bar pill icon is slightly larger (18 × 12 pt glyph, was 16 × 10).
+
 ## [1.0.0] - 2026-11-20
 
 ### Added
@@ -25,5 +32,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Open-source scaffolding: README, license, code of conduct, contributing guide, security
   policy, issue templates, labels and CI workflows (tests, format, build, release).
 
-[Unreleased]: https://github.com/pedrol2b/lisdex/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/pedrol2b/lisdex/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/pedrol2b/lisdex/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/pedrol2b/lisdex/releases/tag/v1.0.0
