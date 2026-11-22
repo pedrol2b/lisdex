@@ -108,6 +108,8 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
     guard icon != renderedIcon else { return }
     renderedIcon = icon
     statusItem.button?.image = MenuBarImages.image(for: icon)
+    // System-dimmed glyph while inactive, like other keep-awake menu bar apps.
+    statusItem.button?.appearsDisabled = !icon.isActive
     statusItem.button?.setAccessibilityLabel(icon.accessibilityLabel)
   }
 }
