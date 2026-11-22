@@ -42,3 +42,11 @@ so stored settings survive the rename.
   values decode to the pill (tested), other settings are kept.
 - The Keep Awake tile in the popover shows the selected glyph.
 - Molecule sources and exports moved to `assets/deprecated/molecule/` (no git history yet).
+
+## Amendment (2026-11-22)
+
+- The pill read small next to other menu bar glyphs. Its SVGs now use a **20 × 18 pt** canvas
+  (viewBox `0 0 20 18`) with an 18 × 12 pt glyph (was 16 × 10 in 18 × 18), same 1.5 pt stroke,
+  still pixel-aligned. Height stays 18 pt; width follows the artwork (`MenuBarImages`). The mug
+  is unchanged.
+- While Keep Awake is off the status item sets `appearsDisabled`, so the system dims the glyph.
