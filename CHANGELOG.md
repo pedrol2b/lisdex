@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   list starts empty.
 - Settings → Schedule: give each day its own hours, e.g. a short Friday. When the hours differ,
   the menu shows a summary and an Edit Hours… button. Schedules from 1.1 carry over.
+- `lisdex://` links (`on`, `on?minutes=90`, `on?until=stopped`, `off`, `toggle`) for Shortcuts
+  automations, e.g. when a Focus turns on.
+- Builds signed with a certificate (`CODESIGN_IDENTITY=… make app`) add Shortcuts actions (Turn
+  Keep Awake On/Off, Is Keep Awake On?) and a Focus filter that keeps the Mac awake while a
+  Focus is on.
 
 ### Fixed
 

@@ -36,6 +36,7 @@ Lisdex does one thing: stop your Mac from going to sleep. It's small enough to r
 | ◷ | **For a duration.** 15 min, 30 min, 1 h, 2 h or a custom time. |
 | ▦ | **On a schedule.** Choose days and hours, e.g. weekdays 09:00–18:00 with a short Friday. |
 | ⧉ | **While an app is open.** Pick apps like Xcode or VS Code; your Mac stays awake while one is open. |
+| ◐ | **Focus modes and Shortcuts.** Links like `lisdex://on` work from any Shortcuts automation; native actions and a Focus filter when you build with a signing certificate ([details](#shortcuts-and-focus)). |
 | 🖱 | **Left-click** opens the menu. **Right-click** toggles Keep Awake and keeps your selected mode. |
 | 🔔 | **A little pop** when you switch it on or off (like Amphetamine). Pick a different sound, or turn it off. |
 | ⚙︎ | Start on login, keep the display awake, a battery cutoff, accent colours and two icon variants. |
@@ -96,6 +97,26 @@ An app **compiled on your own Mac** is never quarantined, so Gatekeeper lets it 
 On a company-managed Mac, device-management policy may still block locally built apps. Please respect your organisation's rules.
 
 > 💛 **Want one-click installs?** Signed, notarized releases (and an official Homebrew cask) need an Apple Developer membership. If you'd like to help make that happen, by [sponsoring](https://github.com/sponsors/pedrol2b) or by contributing signing/notarization CI for a future maintainer account, contributions are very welcome. Open an issue to discuss.
+
+## Shortcuts and Focus
+
+**Links (every build).** Use Shortcuts' *Open URL* action, e.g. in an automation for when a Focus turns on or off:
+
+| Link | Does |
+| --- | --- |
+| `lisdex://on` | Turns Keep Awake on in the current mode |
+| `lisdex://on?minutes=90` | On for 90 minutes (1–1440) |
+| `lisdex://on?until=stopped` | On until you turn it off |
+| `lisdex://off` | Turns it off |
+| `lisdex://toggle` | Flips it |
+
+**Native actions and a Focus filter (builds signed with a certificate).** macOS only runs an app's Shortcuts actions when the app is signed with a team identity, so the default ad-hoc build leaves them out. A free Apple ID gives you an *Apple Development* certificate in Xcode → Settings → Accounts; then build with it:
+
+```sh
+CODESIGN_IDENTITY="Apple Development: Your Name (TEAMID)" make install
+```
+
+You then get *Turn Keep Awake On*, *Turn Keep Awake Off* and *Is Keep Awake On?* in Shortcuts, and in System Settings → Focus → (a Focus) → Focus Filters → Lisdex a **Keep Mac awake** switch: Lisdex turns on while that Focus is on and off when it ends. Turning it off yourself wins until the Focus starts again. Needs Xcode (not just the Command Line Tools).
 
 ## Uninstall
 

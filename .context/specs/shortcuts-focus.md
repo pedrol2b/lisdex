@@ -1,6 +1,6 @@
 # Shortcuts actions, Focus filter and lisdex:// links — Phase 8.3
 
-_Draft 2026-11-23 — awaiting owner approval._
+_Approved by owner 2026-11-23 (Approach 2)._
 
 ## Intent
 

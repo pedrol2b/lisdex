@@ -21,6 +21,8 @@ Managed Macs often block installing apps (the owner's company laptop blocks Amph
 | Option + either click (v1.1)  | Native menu "Keep Awake for…": 15 Minutes, 30 Minutes, 1 Hour, 2 Hours, Until I Stop, and Stop while on. A duration is remembered like a popover chip. |
 | Global shortcuts (v1.1)       | Settings → Shortcuts: Toggle, Start Indefinitely, Start for a Duration (length on its row), Stop. None by default (ADR 0019). |
 | Listed app opens (v1.2)       | Settings → Apps: when a listed app opens and Keep Awake is off, it turns on ("While Xcode is open."); when the last listed app quits it turns off, unless the user started it. Empty list by default (ADR 0020). |
+| `lisdex://` link (v1.2)       | `on` (current mode), `on?minutes=N` (1–1440), `on?until=stopped`, `off`, `toggle`; anything else ignored. A user action, like a shortcut (ADR 0022). |
+| Shortcuts / Focus (v1.2)      | Certificate-signed builds only: actions Turn Keep Awake On (minutes optional), Turn Keep Awake Off, Is Keep Awake On?; Focus filter "Keep Mac awake" holds while that Focus is on ("While a Focus is on.") (ADR 0022). |
 | `⌘,` in popover               | Settings window. `⌘Q` quits (releases the assertion first).                                 |
 
 The toggle click (right-click by default) in **For a Duration** mode restarts the last chosen duration. Right-click in **On a Schedule** mode toggles the master switch; when on, the schedule decides whether the Mac is actually held awake.
