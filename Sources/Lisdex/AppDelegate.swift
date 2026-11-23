@@ -1,4 +1,5 @@
 import AppKit
+import LisdexCore
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
@@ -10,6 +11,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
   func applicationDidFinishLaunching(_ notification: Notification) {
     let model = AppModel()
     self.model = model
+    IntentBridge.model = model
     let settingsWindow = SettingsWindowController(model: model)
     self.settingsWindow = settingsWindow
     self.statusItem = StatusItemController(model: model, openSettings: settingsWindow.show(tab:))
@@ -30,6 +32,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
       } else if let tab = SettingsTab(rawValue: target) {
         self?.settingsWindow?.show(tab: tab)
       }
+    }
+  }
+
+  /// `lisdex://` links (spec shortcuts-focus). A link only switches Keep Awake; anything Lisdex
+  /// doesn't understand is logged and ignored.
+  func application(_ application: NSApplication, open urls: [URL]) {
+    for url in urls {
+      guard let command = KeepAwakeCommand(url: url) else {
+        Log.app.notice("Ignored link \(url.absoluteString, privacy: .public)")
+        continue
+      }
+      model?.run(command)
     }
   }
 

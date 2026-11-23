@@ -193,8 +193,42 @@ final class AppModel {
   /// Switch to Indefinitely and turn on (shortcut, quick menu).
   func startIndefinitely() {
     setMode(.indefinitely)  // restarts the session if it was already on
-    // Off, or on because an app opened: start a session of the user's own.
-    if !isOn || session?.origin == .app { setOn(true, feedback: true) }
+    // Off, or on because an app or a Focus started it: start a session of the user's own.
+    if !isOn || !(session?.isUsers ?? false) { setOn(true, feedback: true) }
+  }
+
+  // MARK: Links and Shortcuts actions (spec shortcuts-focus)
+
+  /// A `lisdex://` link or a Shortcuts action: a user action, like a keyboard shortcut.
+  func run(_ command: KeepAwakeCommand) {
+    Log.app.notice("Command \(String(describing: command), privacy: .public)")
+    switch command {
+    case .turnOn(.currentMode):
+      if !isOn || !(session?.isUsers ?? false) { setOn(true, feedback: true) }
+    case .turnOn(.untilStopped): startIndefinitely()
+    case .turnOn(.minutes(let minutes)): startDuration(TimeInterval(minutes) * 60)
+    case .turnOff: setOn(false, feedback: true)
+    case .toggle: toggle()
+    }
+  }
+
+  /// Lisdex's Focus filter changed: a Focus with "Keep Mac awake" started (`true`) or the Focus
+  /// ended (`false`). Programmatic like the app trigger: no sound, no notification.
+  func focusChanged(keepsAwake: Bool) {
+    let action = FocusRules.decide(
+      keepsAwake: keepsAwake, session: session,
+      batteryCutoff: BatteryCutoff.shouldStop(settings: settings, power: powerSource))
+    switch action {
+    case .none:
+      return
+    case .startFocusSession:
+      Log.app.notice("A Focus started; Keep Awake on")
+      session = .startedByFocus(now: .now)
+    case .endSession:
+      Log.app.notice("The Focus ended; Keep Awake off")
+      session = nil
+    }
+    reconcile()
   }
 
   // MARK: App trigger (spec app-trigger)
