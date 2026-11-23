@@ -20,6 +20,13 @@ struct StatusItemClickTests {
     #expect(StatusItemClickBehavior.leftClickToggles.action(for: .secondary) == .openPopover)
   }
 
+  @Test(
+    "Option + either click opens the quick menu, whatever the setting",
+    arguments: StatusItemClickBehavior.allCases)
+  func optionClick(behavior: StatusItemClickBehavior) {
+    #expect(behavior.action(for: .option) == .quickMenu)
+  }
+
   @Test("titles match the Settings copy")
   func titles() {
     #expect(
@@ -31,10 +38,10 @@ struct StatusItemClickTests {
   func accessibilityHelp() {
     #expect(
       StatusItemClickBehavior.rightClickToggles.accessibilityHelp
-        == "Opens Lisdex. Right-click toggles Keep Awake.")
+        == "Opens Lisdex. Right-click toggles Keep Awake. Option-click for quick durations.")
     #expect(
       StatusItemClickBehavior.leftClickToggles.accessibilityHelp
-        == "Toggles Keep Awake. Right-click opens Lisdex.")
+        == "Toggles Keep Awake. Right-click opens Lisdex. Option-click for quick durations.")
   }
 
   @Test("older settings load with the default; unknown values fall back; the choice round-trips")

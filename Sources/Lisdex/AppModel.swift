@@ -166,12 +166,16 @@ final class AppModel {
     Log.app.notice("Shortcut \(action.rawValue, privacy: .public)")
     switch action {
     case .toggle: toggle()
-    case .startIndefinitely:
-      setMode(.indefinitely)  // restarts the session if it was already on
-      if !isOn { setOn(true, feedback: true) }
+    case .startIndefinitely: startIndefinitely()
     case .startDuration: startDuration(settings.shortcuts.durationSeconds)
     case .stop: setOn(false, feedback: true)
     }
+  }
+
+  /// Switch to Indefinitely and turn on (shortcut, quick menu).
+  func startIndefinitely() {
+    setMode(.indefinitely)  // restarts the session if it was already on
+    if !isOn { setOn(true, feedback: true) }
   }
 
   func setShortcut(_ combo: KeyCombo?, for action: ShortcutAction) {

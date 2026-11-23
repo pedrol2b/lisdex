@@ -4,13 +4,16 @@ import Observation
 import SwiftUI
 
 /// Owns the menu bar icon (pill or coffee mug).
-/// - Left-click: open/close the popover menu.
-/// - Right-click (or ⌃-click): toggle Keep Awake without opening the menu; the mode is kept.
+/// - The toggle click (right-click / ⌃-click by default, or left-click when swapped in
+///   Settings → General) toggles Keep Awake, keeping the mode; the other click opens the popover.
+/// - Option + either click: the quick durations menu.
 @MainActor
 final class StatusItemController: NSObject, NSPopoverDelegate {
   private let model: AppModel
   private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
   private let popover = NSPopover()
+  /// The items of the quick menu currently shown, indexed by `NSMenuItem.tag`.
+  private var quickMenuItems: [QuickMenu.Item] = []
   private let openSettings: () -> Void
   private var renderedIcon: MenuBarIcon?
 
@@ -59,13 +62,46 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
   }
 
   @objc private func handleClick(_ sender: NSStatusBarButton) {
-    let event = NSApp.currentEvent
-    let click: StatusItemClick =
-      event?.type == .rightMouseUp || event?.modifierFlags.contains(.control) == true
-      ? .secondary : .primary
-    switch model.settings.clickBehavior.action(for: click) {
+    switch model.settings.clickBehavior.action(for: Self.click(from: NSApp.currentEvent)) {
     case .toggle: model.toggle()
     case .openPopover: togglePopover(relativeTo: sender)
+    case .quickMenu: showQuickMenu(from: sender)
+    }
+  }
+
+  private static func click(from event: NSEvent?) -> StatusItemClick {
+    // The status item's click event may arrive without modifiers; also read the keys held now.
+    let flags = (event?.modifierFlags ?? []).union(NSEvent.modifierFlags)
+    if flags.contains(.option) { return .option }
+    return event?.type == .rightMouseUp || flags.contains(.control) ? .secondary : .primary
+  }
+
+  // MARK: Quick menu (Option-click)
+
+  private func showQuickMenu(from button: NSStatusBarButton) {
+    if popover.isShown { popover.performClose(nil) }
+    quickMenuItems = QuickMenu.items(isOn: model.isOn)
+    let menu = NSMenu(title: QuickMenu.title)
+    let header = NSMenuItem(title: QuickMenu.title, action: nil, keyEquivalent: "")
+    header.isEnabled = false
+    menu.addItem(header)
+    for (index, item) in quickMenuItems.enumerated() {
+      if index == 0 || item == .indefinitely || item == .stop { menu.addItem(.separator()) }
+      let menuItem = NSMenuItem(
+        title: item.title, action: #selector(quickMenuChose(_:)), keyEquivalent: "")
+      menuItem.target = self
+      menuItem.tag = index
+      menu.addItem(menuItem)
+    }
+    menu.popUp(positioning: nil, at: NSPoint(x: 0, y: button.bounds.height + 4), in: button)
+  }
+
+  @objc private func quickMenuChose(_ sender: NSMenuItem) {
+    guard quickMenuItems.indices.contains(sender.tag) else { return }
+    switch quickMenuItems[sender.tag] {
+    case .duration(let seconds): model.startDuration(seconds)
+    case .indefinitely: model.startIndefinitely()
+    case .stop: model.switchOn(false)
     }
   }
 

@@ -1,13 +1,16 @@
-/// Which mouse button clicked the status item. Control-click counts as `secondary`.
+/// Which mouse button clicked the status item. Control-click counts as `secondary`; any click
+/// with Option held is `option`.
 public enum StatusItemClick: Sendable {
   case primary
   case secondary
+  case option
 }
 
 /// What a status-item click does.
 public enum StatusItemAction: Equatable, Sendable {
   case toggle
   case openPopover
+  case quickMenu
 }
 
 /// Settings → General → Quick-Start a Session: which click toggles Keep Awake. The other
@@ -29,13 +32,16 @@ public enum StatusItemClickBehavior: String, Codable, CaseIterable, Sendable {
   /// VoiceOver help for the status item.
   public var accessibilityHelp: String {
     switch self {
-    case .rightClickToggles: "Opens Lisdex. Right-click toggles Keep Awake."
-    case .leftClickToggles: "Toggles Keep Awake. Right-click opens Lisdex."
+    case .rightClickToggles:
+      "Opens Lisdex. Right-click toggles Keep Awake. Option-click for quick durations."
+    case .leftClickToggles:
+      "Toggles Keep Awake. Right-click opens Lisdex. Option-click for quick durations."
     }
   }
 
   public func action(for click: StatusItemClick) -> StatusItemAction {
     switch (self, click) {
+    case (_, .option): .quickMenu
     case (.rightClickToggles, .secondary), (.leftClickToggles, .primary): .toggle
     case (.rightClickToggles, .primary), (.leftClickToggles, .secondary): .openPopover
     }
