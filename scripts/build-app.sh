@@ -17,8 +17,8 @@ mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BIN" "$APP/Contents/MacOS/Lisdex"
 cp "$ROOT/Support/Info.plist" "$APP/Contents/Info.plist"
 cp "$ROOT/assets/app-icon/Lisdex.icns" "$APP/Contents/Resources/Lisdex.icns"
-# Menu bar pill / mug: vector template PDFs (ADR 0003, 0015).
-cp "$ROOT"/assets/menubar/{pill,mug}-*.pdf "$APP/Contents/Resources/"
+# Menu bar pill / mug / bulb: vector template PDFs (ADR 0003, 0015).
+cp "$ROOT"/assets/menubar/{pill,mug,bulb}-*.pdf "$APP/Contents/Resources/"
 
 # Ad-hoc signature by default: the app is built on the user's Mac, so it is not quarantined and
 # Gatekeeper lets it run (ADR 0005). Override with CODESIGN_IDENTITY="Developer ID Application: …".

@@ -4,6 +4,8 @@ public enum MenuBarIconVariant: String, Codable, CaseIterable, Sendable {
   case pill
   /// Coffee mug, the familiar alternative.
   case mug
+  /// Light bulb, the third approved choice (Phase 7).
+  case bulb
 
   public static let `default`: MenuBarIconVariant = .pill
 
@@ -11,6 +13,7 @@ public enum MenuBarIconVariant: String, Codable, CaseIterable, Sendable {
     switch self {
     case .pill: "Pill"
     case .mug: "Coffee mug"
+    case .bulb: "Light bulb"
     }
   }
 }

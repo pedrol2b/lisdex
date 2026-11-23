@@ -3,7 +3,7 @@ import LisdexCore
 import Observation
 import SwiftUI
 
-/// Owns the menu bar icon (pill or coffee mug).
+/// Owns the menu bar icon (pill, coffee mug or light bulb).
 /// - The toggle click (right-click / ⌃-click by default, or left-click when swapped in
 ///   Settings → General) toggles Keep Awake, keeping the mode; the other click opens the popover.
 /// - Option + either click: the quick durations menu.

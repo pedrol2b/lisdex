@@ -50,3 +50,9 @@ so stored settings survive the rename.
   still pixel-aligned. Height stays 18 pt; width follows the artwork (`MenuBarImages`). The mug
   is unchanged.
 - While Keep Awake is off the status item sets `appearsDisabled`, so the system dims the glyph.
+
+## Amendment 2026-11-23: light bulb
+
+- A third menu bar choice, **Light bulb** (`MenuBarIconVariant.bulb`), from the approved Figma board
+  (node 10:254): `assets/menubar/bulb-{inactive,active}.svg`, 18 × 18 pt, outlined when off, filled
+  with a cut-out filament when on. Same template rules and `make icons` export as pill and mug.

@@ -1,7 +1,7 @@
 import AppKit
 import LisdexCore
 
-/// Loads the pill / coffee-mug template images bundled by `scripts/build-app.sh`.
+/// Loads the pill / coffee-mug / light-bulb template images bundled by `scripts/build-app.sh`.
 enum MenuBarImages {
   /// Glyphs are 18 pt tall (the menu bar maximum); the width follows each artwork's aspect ratio (ADR 0015).
   static let height: CGFloat = 18
@@ -26,7 +26,12 @@ enum MenuBarImages {
 
   /// Used when running the bare binary (`swift run`) outside the .app bundle.
   private static func fallback(for icon: MenuBarIcon) -> NSImage {
-    let base = icon.variant == .mug ? "mug" : "capsule"
+    let base =
+      switch icon.variant {
+      case .pill: "capsule"
+      case .mug: "mug"
+      case .bulb: "lightbulb"
+      }
     let symbol = icon.isActive ? "\(base).fill" : base
     return NSImage(systemSymbolName: symbol, accessibilityDescription: nil) ?? NSImage()
   }
