@@ -28,6 +28,8 @@ public struct AppSettings: Codable, Equatable, Sendable {
   public let toggleSound: ToggleSound
   /// Which status-item click toggles Keep Awake (the other opens the popover).
   public let clickBehavior: StatusItemClickBehavior
+  /// Global keyboard shortcuts (ADR 0019). None by default.
+  public let shortcuts: ShortcutSettings
   /// Bundle path where the user turned Start on Login on, `nil` when off (ADR 0017). macOS
   /// still owns the on/off truth; this only detects that the app moved since.
   public let startOnLoginPath: String?
@@ -47,6 +49,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
     playsToggleSound: Bool = true,
     toggleSound: ToggleSound = .default,
     clickBehavior: StatusItemClickBehavior = .default,
+    shortcuts: ShortcutSettings = .default,
     startOnLoginPath: String? = nil
   ) {
     self.mode = mode
@@ -63,6 +66,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
     self.playsToggleSound = playsToggleSound
     self.toggleSound = toggleSound
     self.clickBehavior = clickBehavior
+    self.shortcuts = shortcuts
     self.startOnLoginPath = startOnLoginPath
   }
 
@@ -105,6 +109,9 @@ public struct AppSettings: Codable, Equatable, Sendable {
     clickBehavior =
       (try? container.decodeIfPresent(StatusItemClickBehavior.self, forKey: .clickBehavior))
       ?? fallback.clickBehavior
+    shortcuts =
+      (try? container.decodeIfPresent(ShortcutSettings.self, forKey: .shortcuts))
+      ?? fallback.shortcuts
     startOnLoginPath = try? container.decodeIfPresent(String.self, forKey: .startOnLoginPath)
   }
 
@@ -124,6 +131,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
     playsToggleSound: Bool? = nil,
     toggleSound: ToggleSound? = nil,
     clickBehavior: StatusItemClickBehavior? = nil,
+    shortcuts: ShortcutSettings? = nil,
     startOnLoginPath: String?? = nil
   ) -> AppSettings {
     AppSettings(
@@ -141,6 +149,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
       playsToggleSound: playsToggleSound ?? self.playsToggleSound,
       toggleSound: toggleSound ?? self.toggleSound,
       clickBehavior: clickBehavior ?? self.clickBehavior,
+      shortcuts: shortcuts ?? self.shortcuts,
       startOnLoginPath: startOnLoginPath ?? self.startOnLoginPath
     )
   }
