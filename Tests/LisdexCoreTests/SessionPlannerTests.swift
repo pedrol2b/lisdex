@@ -71,6 +71,16 @@ struct SessionPlannerTests {
     }
   }
 
+  @Test("a focus session holds in every mode, even outside a schedule window")
+  func focusSession() {
+    let session = Session.startedByFocus(now: monday10)
+    let evening = TestClock.at("2026-11-16 19:00")
+
+    for mode in [KeepAwakeMode.indefinitely, .duration, .schedule] {
+      #expect(plan(session, mode, at: evening) == .holding(until: nil))
+    }
+  }
+
   @Test("sessions remember who started them")
   func origin() {
     #expect(Session.start(mode: .duration, duration: 1800, now: monday10).origin == .user)

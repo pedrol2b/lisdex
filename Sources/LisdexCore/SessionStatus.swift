@@ -24,6 +24,8 @@ public struct SessionStatus: Equatable, Sendable {
   ) {
     let clock = ClockText(calendar: calendar)
     switch (plan, session) {
+    case (.holding, let session?) where session.origin == .focus:
+      self.init(pill: .active, detail: "While a Focus is on.", progress: nil)
     case (.holding, let session?) where session.origin == .app:
       self.init(pill: .active, detail: Self.whileOpen(openApps), progress: nil)
     case (.holding(nil), let session?):

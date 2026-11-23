@@ -2,10 +2,12 @@ import Foundation
 
 /// A running Keep Awake session (the master switch is on). `nil` session = off.
 public struct Session: Equatable, Sendable {
-  /// Who started the session: the user, or an app from Settings → Apps opening (spec app-trigger).
+  /// Who started the session: the user, an app from Settings → Apps opening (spec app-trigger),
+  /// or a Focus with Lisdex's Focus filter (spec shortcuts-focus).
   public enum Origin: Equatable, Sendable {
     case user
     case app
+    case focus
   }
 
   public let startedAt: Date
@@ -27,6 +29,14 @@ public struct Session: Equatable, Sendable {
   public static func startedByApp(now: Date) -> Session {
     Session(startedAt: now, deadline: nil, origin: .app)
   }
+
+  /// A Focus with "Keep Mac awake" started: hold until it ends, whatever the mode.
+  public static func startedByFocus(now: Date) -> Session {
+    Session(startedAt: now, deadline: nil, origin: .focus)
+  }
+
+  /// The user started it (switch, shortcut, link, action); app and Focus sessions end on their own.
+  public var isUsers: Bool { origin == .user }
 }
 
 /// What should happen right now.
@@ -61,7 +71,7 @@ public enum SessionPlanner {
     session: Session?, mode: KeepAwakeMode, schedule: Schedule, now: Date, calendar: Calendar
   ) -> SessionPlan {
     guard let session else { return .off }
-    if session.origin == .app { return .holding(until: nil) }
+    if !session.isUsers { return .holding(until: nil) }
     switch mode {
     case .indefinitely:
       return .holding(until: nil)

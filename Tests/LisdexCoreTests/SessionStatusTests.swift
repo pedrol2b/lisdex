@@ -115,4 +115,13 @@ struct SessionStatusTests {
     #expect(detail(["Xcode", "Visual Studio Code"]).detail == "While 2 apps are open.")
     #expect(detail([]).detail == "While an app is open.")
   }
+
+  @Test("a focus session says a Focus keeps the Mac awake")
+  func focusSession() {
+    let status = SessionStatus(
+      plan: .holding(until: nil), mode: .schedule, session: .startedByFocus(now: noon),
+      schedule: .default, now: noon, calendar: calendar)
+
+    #expect(status == SessionStatus(pill: .active, detail: "While a Focus is on.", progress: nil))
+  }
 }
