@@ -1,6 +1,6 @@
 # ADR 0020 — App trigger flips the Keep Awake switch
 
-- **Status:** Accepted (owner approved the design 2026-11-23; owner test pending)
+- **Status:** Accepted (owner approved the design and merged 2026-11-23)
 - **Date:** 2026-11-23
 
 ## Context
