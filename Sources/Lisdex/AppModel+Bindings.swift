@@ -37,6 +37,11 @@ extension AppModel {
     set { setToggleSound(newValue) }
   }
 
+  var clickBehaviorSetting: StatusItemClickBehavior {
+    get { settings.clickBehavior }
+    set { setClickBehavior(newValue) }
+  }
+
   var keepDisplayAwakeSetting: Bool {
     get { settings.keepDisplayAwake }
     set { setKeepDisplayAwake(newValue) }

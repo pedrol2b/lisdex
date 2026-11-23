@@ -140,6 +140,10 @@ final class AppModel {
 
   func setAccent(_ accent: AccentChoice) { update(settings.with(accent: accent)) }
 
+  func setClickBehavior(_ behavior: StatusItemClickBehavior) {
+    update(settings.with(clickBehavior: behavior))
+  }
+
   func setPlaysToggleSound(_ on: Bool) {
     update(settings.with(playsToggleSound: on))
     if let sound = settings.feedbackSound { SoundPlayer.play(sound) }

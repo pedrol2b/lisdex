@@ -16,12 +16,12 @@ Managed Macs often block installing apps (the owner's company laptop blocks Amph
 
 | Input                         | Result                                                                                      |
 | ----------------------------- | ------------------------------------------------------------------------------------------- |
-| Left-click status icon        | Open / close the popover.                                                                   |
-| Right-click status icon       | Toggle Keep Awake on/off **without changing the selected mode** (off pauses, on resumes).   |
+| Left-click status icon        | Open / close the popover (default), or toggle when Settings → General → Quick-Start a Session is "Left click" (v1.1). |
+| Right-click / Control-click   | Toggle Keep Awake on/off **without changing the selected mode** (off pauses, on resumes) (default), or open the popover when swapped (v1.1). |
 | Option + left-click (v1.1)    | Small native `NSMenu` of quick durations (15 m, 30 m, 1 h, 2 h, Until I stop).               |
 | `⌘,` in popover               | Settings window. `⌘Q` quits (releases the assertion first).                                 |
 
-Right-click in **For a Duration** mode restarts the last chosen duration. Right-click in **On a Schedule** mode toggles the master switch; when on, the schedule decides whether the Mac is actually held awake.
+The toggle click (right-click by default) in **For a Duration** mode restarts the last chosen duration. Right-click in **On a Schedule** mode toggles the master switch; when on, the schedule decides whether the Mac is actually held awake.
 
 ## Status icon
 

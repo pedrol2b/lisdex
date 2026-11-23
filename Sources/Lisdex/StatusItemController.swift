@@ -61,12 +61,12 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
 
   @objc private func handleClick(_ sender: NSStatusBarButton) {
     let event = NSApp.currentEvent
-    let isSecondary =
+    let click: StatusItemClick =
       event?.type == .rightMouseUp || event?.modifierFlags.contains(.control) == true
-    if isSecondary {
-      model.toggle()
-    } else {
-      togglePopover(relativeTo: sender)
+      ? .secondary : .primary
+    switch model.settings.clickBehavior.action(for: click) {
+    case .toggle: model.toggle()
+    case .openPopover: togglePopover(relativeTo: sender)
     }
   }
 

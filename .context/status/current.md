@@ -1,9 +1,11 @@
 # Current status
 
-_Last updated 2026-11-19._
+_Last updated 2026-11-22._
 
 ## Done
 
+- 2026-11-22 **Phase 7.1 click behavior**: Settings → General → Quick-Start a Session (right-click toggles by default, or left-click). Core `StatusItemClickBehavior` + tests (65). Spec `specs/click-behavior.md`, evidence `evidence/2026-11-22-click-behavior/`.
+- 2026-11-22 Owner: post-1.0 roadmap split into Phase 7 (v1.1 controls), Phase 8 (v1.2 triggers), Phase 9 (v1.3 mouse jiggler). Keyboard shortcuts: one "Start for a duration" shortcut. Jiggler only while Keep Awake is on. (About showed 1.0.0 because the local `build/` app predated the version bump — rebuilt, not a bug.)
 - 2026-11-19 Kickoff: `.context/` scaffold (mirrors Low Cortisol), spec + menu draft (`specs/lisdex-v1.md`), ADRs 0001–0004.
 - 2026-11-19 Owner decisions: IOKit default + opt-in `caffeinate` engine with warning (ADR 0002 accepted); local-only builds, MIT on GitHub (ADR 0005 supersedes 0004); preferences as `settings.v1` JSON like Low Cortisol (ADR 0006); keep display awake by default.
 - 2026-11-19 Name decided: **Lisdex** (short for lisdexamfetamine) — ADR 0007; docs and assets renamed.
@@ -48,11 +50,15 @@ _Last updated 2026-11-19._
 | **4. Settings & polish** ✅ | Settings window (General/Power/Appearance), icon variant switch, accent colors, Start on Login (`SMAppService`), notifications, battery threshold, About. Popover matches Low Cortisol style. | Acceptance 6–8; screenshots in evidence. |
 | **5. Hardening** ✅ | Code review (swift-reviewer), concurrency audit, ≥ 80 % Core coverage, energy check (no busy timers), VoiceOver labels. | Review HIGHs fixed. |
 | **6. Publish v1.0** ✅ | Public GitHub repo, README screenshots + remove "in development" banner, CONTRIBUTING, issue templates, optional `swift test` CI. Local ad-hoc builds (ADR 0005) + Homebrew tap formula building from source (ADR 0008). | A fresh clone builds with `make install`; `brew install pedrol2b/tap/lisdex` works on a clean Mac. |
-| **7. v1.1** | Option-click quick menu, per-day schedule windows, "keep awake while app X runs", AppIntents/Shortcuts. | — |
+| **7. v1.1 — controls** | Swap clicks setting (left toggles / right opens popover, or the reverse); global keyboard shortcuts in Settings (Toggle, Start indefinitely, Start for a duration — one, length picked on its row, Stop; none assigned by default); Option-click quick menu (15 m / 30 m / 1 h / 2 h / Until I stop); light bulb menu bar icon variant (Figma node 10:254, alongside pill and mug). | — |
+| **8. v1.2 — triggers** | Keep awake while app X runs (app picker, `NSWorkspace` launch/quit); per-day schedule windows; Shortcuts / AppIntents (reuse the shortcut actions). | — |
+| **9. v1.3 — mouse jiggler** | Nudge the cursor 2 px and back after an idle threshold (default 60 s), repeat every jiggle interval (default 20 s), stop on any real input incl. held keys/buttons. Runs **only while Keep Awake is holding**. Settings: idle threshold + jiggle interval sliders (no polling-interval setting: one timer computed from system idle time). Needs Accessibility (post-event) permission — new ADR; spike first: TCC grant across ad-hoc rebuilds / `brew upgrade`, and whether synthetic moves reset HID idle time. | — |
 
 ## Next
 
-1. Phase 7 (v1.1) candidates: Option-click quick menu, per-day schedule windows, "keep awake while app X runs", Shortcuts/AppIntents.
+1. Phase 7 (v1.1), smallest first: ~~swap clicks~~ ✅ → keyboard shortcuts → Option-click quick menu → light bulb icon.
+2. Phase 8 (v1.2): app-running trigger, per-day schedule windows, Shortcuts/AppIntents.
+3. Phase 9 (v1.3): mouse jiggler (spike the permission + idle-time questions first).
 
 ## Open questions
 

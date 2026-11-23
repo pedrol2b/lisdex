@@ -57,6 +57,14 @@ private struct GeneralSettings: View {
           "Notify when a timed session ends",
           isOn: Bindable(model).notifyOnSessionEndSetting)
       }
+      Section {
+        Picker(
+          "Quick-Start a Session",
+          selection: Bindable(model).clickBehaviorSetting
+        ) {
+          ForEach(StatusItemClickBehavior.allCases, id: \.self) { Text($0.title).tag($0) }
+        }
+      }
       Section("Sound") {
         Toggle(
           "Play a sound when Keep Awake is switched on or off",
