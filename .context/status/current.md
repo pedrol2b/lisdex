@@ -4,7 +4,7 @@ _Last updated 2026-11-23._
 
 ## Done
 
-- 2026-11-23 **Phase 8.2 Per-day schedule hours** (branch `feat/per-day-schedule`, awaiting owner test): each day has its own hours, edited in a new Settings → Schedule tab; the popover card edits inline while hours match, else shows a summary + Edit Hours… (ADR 0021, spec `specs/per-day-schedule.md`). Core `DayHours`, per-day `Schedule`, v1.1 migration, `summary(calendar:)` (119 tests). Settings window can switch tab while open. Evidence `evidence/2026-11-23-per-day-schedule/`.
+- 2026-11-23 **Phase 8.2 Per-day schedule hours** (branch `feat/per-day-schedule`, awaiting owner test): each day has its own hours, edited in a new Settings → Schedule tab; the popover card edits inline while hours match, else shows a summary + Edit Hours… (ADR 0021, spec `specs/per-day-schedule.md`). Core `DayHours`, per-day `Schedule`, v1.1 migration, `summary(calendar:)`, overlapping windows hold as one (122 tests). Settings window can switch tab while open. Evidence `evidence/2026-11-23-per-day-schedule/`.
 - 2026-11-23 **Phase 8.1 App trigger** (owner said merge 2026-11-23; merged): Settings → Apps; a listed app opening turns Keep Awake on, the last one quitting turns it off if an app started it (ADR 0020, spec `specs/app-trigger.md`). Core `Session.origin`, `AppTriggers`, `AppTriggerRules` (104 tests); no app session below the battery cutoff. Popover switch ignores a same-value set. Evidence `evidence/2026-11-23-app-trigger/`.
 - 2026-11-23 **Shortcut recorder uses the app accent** (owner tested 2026-11-23; merged): the recording outline and text follow Settings → Appearance instead of system blue.
 - 2026-11-23 **Released v1.1.0** (build 3): Phase 7 controls. Tag `v1.1.0` → release workflow (ADR 0018).
