@@ -15,9 +15,18 @@ extension AccentChoice {
   }
 }
 
+/// The user's accent colour (Settings → Appearance); set at the root of each window.
+/// A hand-written key rather than `@Entry`: that macro's plugin ships only with Xcode, and Lisdex
+/// must build with just the Command Line Tools (Homebrew, ADR 0005).
+private struct AccentKey: EnvironmentKey {
+  static let defaultValue: Color = AccentChoice.default.color
+}
+
 extension EnvironmentValues {
-  /// The user's accent colour (Settings → Appearance); set at the root of each window.
-  @Entry var accent: Color = AccentChoice.default.color
+  var accent: Color {
+    get { self[AccentKey.self] }
+    set { self[AccentKey.self] = newValue }
+  }
 }
 
 extension View {
