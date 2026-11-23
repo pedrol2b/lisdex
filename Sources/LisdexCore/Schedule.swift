@@ -155,22 +155,52 @@ public struct Schedule: Equatable, Sendable {
   }
 }
 
-// Temporary until per-day storage (plan Task 2): the v1.1 shape, first day's hours.
+/// JSON: `days`, per-day `hours` keyed by weekday number, plus the v1.1 `start`/`end` (the first
+/// day that's on, Monday first) so a downgrade keeps a sensible schedule. Decoding a day: its own
+/// valid hours, else the v1.1 hours, else 09:00–18:00. Neither kind of hours present → error.
 extension Schedule: Codable {
-  private enum CodingKeys: String, CodingKey { case days, start, end }
+  private enum CodingKeys: String, CodingKey { case days, start, end, hours }
+
+  /// A per-day entry that may be invalid; an invalid one decodes to `nil` instead of failing.
+  private struct LossyDayHours: Decodable {
+    let value: DayHours?
+    init(from decoder: Decoder) throws { value = try? DayHours(from: decoder) }
+  }
 
   public init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-    self.init(
-      days: try container.decode(Set<Weekday>.self, forKey: .days),
-      start: try container.decode(TimeOfDay.self, forKey: .start),
-      end: try container.decode(TimeOfDay.self, forKey: .end))
+    let days = try container.decode(Set<Weekday>.self, forKey: .days)
+    let legacy: DayHours? =
+      if let start = try? container.decode(TimeOfDay.self, forKey: .start),
+        let end = try? container.decode(TimeOfDay.self, forKey: .end)
+      {
+        DayHours(start: start, end: end)
+      } else {
+        nil
+      }
+    let entries =
+      (try? container.decodeIfPresent([String: LossyDayHours].self, forKey: .hours)) ?? nil
+    var hours: [Weekday: DayHours] = [:]
+    for (key, entry) in entries ?? [:] {
+      guard let raw = Int(key), let day = Weekday(rawValue: raw), let value = entry.value
+      else { continue }
+      hours[day] = value
+    }
+    guard legacy != nil || !hours.isEmpty else {
+      throw DecodingError.dataCorrupted(
+        .init(codingPath: container.codingPath, debugDescription: "schedule has no valid hours"))
+    }
+    self.init(days: days, hours: hours, fallback: legacy ?? .workday)
   }
 
   public func encode(to encoder: Encoder) throws {
     var container = encoder.container(keyedBy: CodingKeys.self)
+    let firstOn = Weekday.displayOrder.first(where: days.contains) ?? .monday
     try container.encode(days, forKey: .days)
-    try container.encode(hours(for: .monday).start, forKey: .start)
-    try container.encode(hours(for: .monday).end, forKey: .end)
+    try container.encode(hours(for: firstOn).start, forKey: .start)
+    try container.encode(hours(for: firstOn).end, forKey: .end)
+    let perDay = Dictionary(
+      uniqueKeysWithValues: Weekday.allCases.map { (String($0.rawValue), hours(for: $0)) })
+    try container.encode(perDay, forKey: .hours)
   }
 }
