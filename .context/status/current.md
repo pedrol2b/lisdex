@@ -5,6 +5,7 @@ _Last updated 2026-11-22._
 ## Done
 
 - 2026-11-23 **Shortcut recorder uses the app accent** (owner tested 2026-11-23; merged): the recording outline and text follow Settings → Appearance instead of system blue.
+- 2026-11-23 **Released v1.1.0** (build 3): Phase 7 controls. Tag `v1.1.0` → release workflow (ADR 0018).
 - 2026-11-23 **Phase 7.4 Light bulb menu bar icon** (owner tested 2026-11-23; merged): third Appearance choice from Figma node 10:254; `MenuBarIconVariant.bulb`, `assets/menubar/bulb-*.svg`, exports via `make icons` (87 tests). Evidence `evidence/2026-11-23-bulb-icon/`.
 - 2026-11-23 **Phase 7.3 Option-click quick menu** (owner tested a physical Option-click 2026-11-23; merged): Option + either click opens "Keep Awake for…" (presets, Until I Stop, Stop while on). Core `QuickMenu` + `.option` click (86 tests). Click modifiers now also read `NSEvent.modifierFlags` (the status-item event arrives without them). Evidence `evidence/2026-11-23-quick-menu/`.
 - 2026-11-23 **Phase 7.2 keyboard shortcuts** (owner tested and approved 2026-11-23; merged): Settings → Shortcuts tab, Carbon hot keys, recorder with validation. Core `KeyCombo`/`ShortcutSettings` + tests (80). Evidence `evidence/2026-11-23-keyboard-shortcuts/`.
@@ -54,13 +55,13 @@ _Last updated 2026-11-22._
 | **4. Settings & polish** ✅ | Settings window (General/Power/Appearance), icon variant switch, accent colors, Start on Login (`SMAppService`), notifications, battery threshold, About. Popover matches Low Cortisol style. | Acceptance 6–8; screenshots in evidence. |
 | **5. Hardening** ✅ | Code review (swift-reviewer), concurrency audit, ≥ 80 % Core coverage, energy check (no busy timers), VoiceOver labels. | Review HIGHs fixed. |
 | **6. Publish v1.0** ✅ | Public GitHub repo, README screenshots + remove "in development" banner, CONTRIBUTING, issue templates, optional `swift test` CI. Local ad-hoc builds (ADR 0005) + Homebrew tap formula building from source (ADR 0008). | A fresh clone builds with `make install`; `brew install pedrol2b/tap/lisdex` works on a clean Mac. |
-| **7. v1.1 — controls** | Swap clicks setting (left toggles / right opens popover, or the reverse); global keyboard shortcuts in Settings (Toggle, Start indefinitely, Start for a duration — one, length picked on its row, Stop; none assigned by default); Option-click quick menu (15 m / 30 m / 1 h / 2 h / Until I stop); light bulb menu bar icon variant (Figma node 10:254, alongside pill and mug). | ✅ done 2026-11-23 (owner tested each item; not yet released) |
+| **7. v1.1 — controls** | Swap clicks setting (left toggles / right opens popover, or the reverse); global keyboard shortcuts in Settings (Toggle, Start indefinitely, Start for a duration — one, length picked on its row, Stop; none assigned by default); Option-click quick menu (15 m / 30 m / 1 h / 2 h / Until I stop); light bulb menu bar icon variant (Figma node 10:254, alongside pill and mug). | ✅ released v1.1.0 2026-11-23 |
 | **8. v1.2 — triggers** | Keep awake while app X runs (app picker, `NSWorkspace` launch/quit); per-day schedule windows; Shortcuts / AppIntents (reuse the shortcut actions). | — |
 | **9. v1.3 — mouse jiggler** | Nudge the cursor 2 px and back after an idle threshold (default 60 s), repeat every jiggle interval (default 20 s), stop on any real input incl. held keys/buttons. Runs **only while Keep Awake is holding**. Settings: idle threshold + jiggle interval sliders (no polling-interval setting: one timer computed from system idle time). Needs Accessibility (post-event) permission — new ADR; spike first: TCC grant across ad-hoc rebuilds / `brew upgrade`, and whether synthetic moves reset HID idle time. | — |
 
 ## Next
 
-1. Release v1.1 (Phase 7 complete: swap clicks, keyboard shortcuts, Option-click quick menu, light bulb icon) when the owner decides.
+1. v1.1.0 released 2026-11-23 (Phase 7).
 2. Phase 8 (v1.2): app-running trigger first, then per-day schedule windows, Shortcuts/AppIntents.
 3. Phase 9 (v1.3): mouse jiggler (spike the permission + idle-time questions first).
 
