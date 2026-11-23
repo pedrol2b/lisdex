@@ -21,3 +21,7 @@ Option held), so the click kind now unions `NSApp.currentEvent.modifierFlags` wi
 Review fix: classification moved to Core (`StatusItemClick(isMouseClick:isRightButton:modifiers:)`, tested); live modifiers are read **only for real mouse clicks**. An accessibility press with ⌃⌥ held (VoiceOver VO-Space stand-in) opens the popover, not the quick menu. Physical Option-click still to be confirmed by the owner (the flag-less event may be a synthetic-event artifact; the fix is safe either way).
 
 `make test` 86/86, `make lint` clean.
+
+## Owner test
+
+2026-11-23: owner confirmed a physical Option-click opens the quick menu. Merged to main.
