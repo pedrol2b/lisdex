@@ -35,6 +35,9 @@ Drive Lisdex from Focus modes without touching it: Work Focus on → Mac stays a
 - filter off (Focus ended), session is a focus session → off;
 - else nothing (a user or app session is never touched; manual off wins until the next Focus start).
 - Status line: "While a Focus is on."
+- Hand-over (review fix): the Focus ending while a listed app is open makes it an app session; the last listed app quitting while the Focus keeps the Mac awake makes it a focus session.
+- A link or action's own length (`minutes`, `until=stopped`) applies to that session only (`Session.hasFixedLength`); the selected mode and remembered duration don't change.
+- The filter's switch has no default: on the Focus ending the system calls `perform` with it unset, which must read as "let the Mac sleep". At launch Lisdex reads `KeepAwakeFocusFilter.current` in case a Focus started first; links and Focus changes that arrive before launch finishes are queued.
 
 **App**
 - `Support/Info.plist`: `CFBundleURLTypes` scheme `lisdex`; `AppDelegate` `application(_:open:)` → `AppModel.run(_ command:)` (same paths as the keyboard shortcuts: user sessions, toggle sound).

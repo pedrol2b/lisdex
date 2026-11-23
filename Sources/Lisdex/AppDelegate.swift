@@ -7,6 +7,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
   private var statusItem: StatusItemController?
   private var settingsWindow: SettingsWindowController?
   private var hotKeys: HotKeyCenter?
+  /// Links that arrived before the model existed: a link that launches Lisdex is delivered
+  /// before `applicationDidFinishLaunching`.
+  private var pendingCommands: [KeepAwakeCommand] = []
 
   func applicationDidFinishLaunching(_ notification: Notification) {
     let model = AppModel()
@@ -16,6 +19,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     self.settingsWindow = settingsWindow
     self.statusItem = StatusItemController(model: model, openSettings: settingsWindow.show(tab:))
     model.start()
+    pendingCommands.forEach(model.run)
+    pendingCommands = []
+    IntentBridge.modelDidStart()
     hotKeys = HotKeyCenter(model: model)
     Log.app.notice("Lisdex launched")
     openForScreenshot()
@@ -43,7 +49,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         Log.app.notice("Ignored link \(url.absoluteString, privacy: .public)")
         continue
       }
-      model?.run(command)
+      if let model { model.run(command) } else { pendingCommands.append(command) }
     }
   }
 

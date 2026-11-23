@@ -124,4 +124,15 @@ struct SessionStatusTests {
 
     #expect(status == SessionStatus(pill: .active, detail: "While a Focus is on.", progress: nil))
   }
+
+  @Test("a link's own length shows its countdown in any mode")
+  func fixedLengthCountdown() {
+    let session = Session.fixed(minutes: 60, now: noon)
+    let status = SessionStatus(
+      plan: .holding(until: noon.addingTimeInterval(3600)), mode: .schedule, session: session,
+      schedule: .default, now: noon, calendar: calendar)
+
+    #expect(status.detail.hasPrefix("1 h left"))
+    #expect(status.progress == 0)
+  }
 }

@@ -36,4 +36,11 @@ struct FocusRulesTests {
     #expect(Session.startedByFocus(now: now).isUsers == false)
     #expect(Session.startedByFocus(now: now).deadline == nil)
   }
+
+  @Test("the Focus ending hands its session to a listed app that is still open")
+  func handsOverToApp() {
+    #expect(
+      FocusRules.decide(keepsAwake: false, session: .startedByFocus(now: now), appKeepsAwake: true)
+        == .becomeAppSession)
+  }
 }

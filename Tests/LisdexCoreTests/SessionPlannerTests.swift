@@ -88,4 +88,18 @@ struct SessionPlannerTests {
     #expect(Session.startedByApp(now: monday10).origin == .app)
     #expect(Session.startedByApp(now: monday10).deadline == nil)
   }
+
+  @Test("a link or action's own length beats the selected mode, without changing it")
+  func fixedLength() {
+    let evening = TestClock.at("2026-11-16 19:00")
+    let ninety = Session.fixed(minutes: 90, now: evening)
+    let untilStopped = Session.fixed(minutes: nil, now: evening)
+
+    for mode in [KeepAwakeMode.indefinitely, .duration, .schedule] {
+      #expect(plan(ninety, mode, at: evening) == .holding(until: TestClock.at("2026-11-16 20:30")))
+      #expect(plan(ninety, mode, at: TestClock.at("2026-11-16 20:30")) == .expired)
+      #expect(plan(untilStopped, mode, at: evening) == .holding(until: nil))
+    }
+    #expect(ninety.isUsers)
+  }
 }

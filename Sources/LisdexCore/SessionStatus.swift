@@ -32,7 +32,7 @@ public struct SessionStatus: Equatable, Sendable {
       let elapsed = now.timeIntervalSince(session.startedAt)
       let text = elapsed < 60 ? "less than a minute" : DurationText.short(elapsed)
       self.init(pill: .active, detail: "Awake for \(text).", progress: nil)
-    case (.holding(let until?), let session?) where mode == .duration:
+    case (.holding(let until?), let session?) where mode == .duration || session.hasFixedLength:
       let left = until.timeIntervalSince(now)
       let leftText =
         left < 60

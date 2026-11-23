@@ -40,10 +40,29 @@ cp "$ROOT/assets/app-icon/Lisdex.icns" "$APP/Contents/Resources/Lisdex.icns"
 cp "$ROOT"/assets/menubar/{pill,mug,bulb}-*.pdf "$APP/Contents/Resources/"
 
 if [ -n "$INTENTS_PROCESSOR" ]; then
-  # Constant values the compiler emitted for the app module in this configuration (the build
-  # directory layout differs between SwiftPM versions, so search for them).
+  # Constant values the compiler emitted for the app module in this configuration. The build
+  # directory layout differs between SwiftPM versions and older layouts can linger, so take only
+  # the directory holding the newest file, and only files for current sources.
   find "$ROOT/.build" -ipath "*/$CONFIG/*" -name '*.swiftconstvalues' -not -ipath '*LisdexCore*' \
-    > "$INTENTS_WORK/constvalues.txt"
+    -exec stat -f '%m %N' {} + 2>/dev/null | sort -rn > "$INTENTS_WORK/candidates.txt" || true
+  NEWEST="$(head -1 "$INTENTS_WORK/candidates.txt" | cut -d' ' -f2-)"
+  : > "$INTENTS_WORK/constvalues.txt"
+  if [ -n "$NEWEST" ]; then
+    CONST_DIR="$(dirname "$NEWEST")"
+    for file in "$CONST_DIR"/*.swiftconstvalues; do
+      name="$(basename "$file" .swiftconstvalues)"
+      if [[ "$name" == *-primary ]] || [ -n "$(find "$ROOT/Sources/Lisdex" -name "$name.swift")" ]; then
+        echo "$file" >> "$INTENTS_WORK/constvalues.txt"
+      fi
+    done
+  fi
+  if [ ! -s "$INTENTS_WORK/constvalues.txt" ]; then
+    echo "Shortcuts actions: skipped (no compiler constant values found)"
+    INTENTS_PROCESSOR=""
+  fi
+fi
+
+if [ -n "$INTENTS_PROCESSOR" ]; then
   find "$ROOT/Sources/Lisdex" -name '*.swift' > "$INTENTS_WORK/sources.txt"
   TOOLCHAIN="$(dirname "$(dirname "$(dirname "$(xcrun --find swift)")")")"
   "$INTENTS_PROCESSOR" --force --quiet-warnings \

@@ -17,7 +17,7 @@ struct KeepAwakeFocusFilter: SetFocusFilterIntent {
 
   func perform() async throws -> some IntentResult {
     let keepsAwake = keepAwake == true
-    await MainActor.run { IntentBridge.model?.focusChanged(keepsAwake: keepsAwake) }
+    await MainActor.run { IntentBridge.focusChanged(keepsAwake: keepsAwake) }
     return .result()
   }
 }

@@ -17,6 +17,8 @@ final class AppModel {
   /// when time alone changes it, e.g. a schedule window opening.
   private(set) var currentPlan = SessionPlan.off
   private(set) var powerSource = PowerSource.mains
+  /// Lisdex's Focus filter says the current Focus keeps the Mac awake (spec shortcuts-focus).
+  private var focusKeepsAwake = false
   /// Start on Login, read back from macOS.
   private(set) var loginItem = LoginItem.state
   /// Settings → Shortcuts is capturing a combo: global hot keys are paused meanwhile.
@@ -199,25 +201,35 @@ final class AppModel {
 
   // MARK: Links and Shortcuts actions (spec shortcuts-focus)
 
-  /// A `lisdex://` link or a Shortcuts action: a user action, like a keyboard shortcut.
+  /// A `lisdex://` link or a Shortcuts action: a user action, like a keyboard shortcut. A length
+  /// from the link applies to this session only; the selected mode and duration stay as they are.
   func run(_ command: KeepAwakeCommand) {
     Log.app.notice("Command \(String(describing: command), privacy: .public)")
     switch command {
     case .turnOn(.currentMode):
-      if !isOn || !(session?.isUsers ?? false) { setOn(true, feedback: true) }
-    case .turnOn(.untilStopped): startIndefinitely()
-    case .turnOn(.minutes(let minutes)): startDuration(TimeInterval(minutes) * 60)
+      if !(session?.isUsers ?? false) { setOn(true, feedback: true) }
+    case .turnOn(.untilStopped): startFixed(minutes: nil)
+    case .turnOn(.minutes(let minutes)): startFixed(minutes: minutes)
     case .turnOff: setOn(false, feedback: true)
     case .toggle: toggle()
     }
   }
 
+  private func startFixed(minutes: Int?) {
+    let wasOn = isOn
+    session = .fixed(minutes: minutes, now: .now)
+    reconcile()
+    if isOn, !wasOn, let sound = settings.feedbackSound { SoundPlayer.play(sound) }
+  }
+
   /// Lisdex's Focus filter changed: a Focus with "Keep Mac awake" started (`true`) or the Focus
   /// ended (`false`). Programmatic like the app trigger: no sound, no notification.
   func focusChanged(keepsAwake: Bool) {
+    focusKeepsAwake = keepsAwake
     let action = FocusRules.decide(
       keepsAwake: keepsAwake, session: session,
-      batteryCutoff: BatteryCutoff.shouldStop(settings: settings, power: powerSource))
+      batteryCutoff: BatteryCutoff.shouldStop(settings: settings, power: powerSource),
+      appKeepsAwake: !openTriggerApps.isEmpty)
     switch action {
     case .none:
       return
@@ -227,6 +239,9 @@ final class AppModel {
     case .endSession:
       Log.app.notice("The Focus ended; Keep Awake off")
       session = nil
+    case .becomeAppSession:
+      Log.app.notice("The Focus ended; a listed app keeps the Mac awake")
+      session = .startedByApp(now: .now)
     }
     reconcile()
   }
@@ -257,10 +272,14 @@ final class AppModel {
   private func handle(_ event: AppTriggerEvent) {
     let action = AppTriggerRules.decide(
       event, session: session, triggers: settings.appTriggers,
-      batteryCutoff: BatteryCutoff.shouldStop(settings: settings, power: powerSource))
+      batteryCutoff: BatteryCutoff.shouldStop(settings: settings, power: powerSource),
+      focusKeepsAwake: focusKeepsAwake)
     switch action {
     case .none:
       return
+    case .becomeFocusSession:
+      Log.app.notice("No listed app open; the Focus keeps the Mac awake")
+      session = .startedByFocus(now: .now)
     case .startAppSession:
       Log.app.notice("A listed app opened; Keep Awake on")
       session = .startedByApp(now: .now)

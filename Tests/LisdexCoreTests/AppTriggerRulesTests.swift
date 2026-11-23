@@ -74,4 +74,16 @@ struct AppTriggerRulesTests {
       .launched(bundleID: xcode), session: nil, triggers: listed, batteryCutoff: true)
     #expect(action == .none)
   }
+
+  @Test("the last listed app quitting hands the session to a Focus that keeps the Mac awake")
+  func handsOverToFocus() {
+    #expect(
+      AppTriggerRules.decide(
+        .runningChanged(running: []), session: appSession, triggers: listed,
+        focusKeepsAwake: true) == .becomeFocusSession)
+    #expect(
+      AppTriggerRules.decide(
+        .runningChanged(running: [xcode]), session: appSession, triggers: listed,
+        focusKeepsAwake: true) == .none)
+  }
 }

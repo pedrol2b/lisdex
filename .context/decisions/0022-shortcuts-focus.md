@@ -26,6 +26,10 @@ Native when signed, plus links for everyone (owner, 2026-11-23).
   `KeepAwakeFocusFilter` (`SetFocusFilterIntent`). A Focus-started session has origin `.focus`
   and ends with the Focus; `FocusRules` mirrors the app trigger (never touches other sessions,
   manual off wins, battery cutoff first).
+- A link's or action's length is the session's own (`hasFixedLength`); it never changes the saved
+  mode or duration, so a web page can only switch Keep Awake, not reconfigure Lisdex.
+- App and Focus sessions hand over: when one trigger ends while the other still applies, the
+  session changes origin instead of ending.
 - `scripts/build-app.sh` adds the metadata only when `CODESIGN_IDENTITY` is set and the processor
   exists; otherwise it prints why it skipped. Ad-hoc builds never list actions that would fail.
 

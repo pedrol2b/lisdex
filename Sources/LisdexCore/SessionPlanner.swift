@@ -14,11 +14,24 @@ public struct Session: Equatable, Sendable {
   /// Wall-clock end for "For a Duration"; survives sleep because it is not a countdown.
   public let deadline: Date?
   public let origin: Origin
+  /// A link or Shortcuts action set its own length (`deadline`, or none = until stopped), which
+  /// beats the selected mode without changing it (spec shortcuts-focus, review fix).
+  public let hasFixedLength: Bool
 
-  public init(startedAt: Date, deadline: Date?, origin: Origin = .user) {
+  public init(
+    startedAt: Date, deadline: Date?, origin: Origin = .user, hasFixedLength: Bool = false
+  ) {
     self.startedAt = startedAt
     self.deadline = deadline
     self.origin = origin
+    self.hasFixedLength = hasFixedLength
+  }
+
+  /// A link or action with its own length: `minutes`, or until stopped when `nil`.
+  public static func fixed(minutes: Int?, now: Date) -> Session {
+    Session(
+      startedAt: now, deadline: minutes.map { now.addingTimeInterval(TimeInterval($0) * 60) },
+      hasFixedLength: true)
   }
 
   public static func start(mode: KeepAwakeMode, duration: TimeInterval, now: Date) -> Session {
@@ -72,6 +85,10 @@ public enum SessionPlanner {
   ) -> SessionPlan {
     guard let session else { return .off }
     if !session.isUsers { return .holding(until: nil) }
+    if session.hasFixedLength {
+      guard let deadline = session.deadline else { return .holding(until: nil) }
+      return now < deadline ? .holding(until: deadline) : .expired
+    }
     switch mode {
     case .indefinitely:
       return .holding(until: nil)
