@@ -169,4 +169,44 @@ struct ScheduleTests {
     for day in Weekday.allCases { #expect(schedule.hours(for: day) == hours) }
     #expect(schedule.days == workdays.days)
   }
+
+  @Test("overlapping windows hold as one: the end is the last overlapping window's end")
+  func overlappingWindowsMerge() {
+    let friNight = DayHours(start: t(22), end: t(6))
+    let overlapping = Schedule(
+      days: [.friday, .saturday],
+      hours: [.friday: friNight, .saturday: DayHours(start: t(2), end: t(12))])
+    let contained = Schedule(
+      days: [.friday, .saturday],
+      hours: [.friday: friNight, .saturday: DayHours(start: t(3), end: t(4))])
+    let merged = window("2026-11-20 22:00", "2026-11-21 12:00")
+
+    #expect(
+      overlapping.window(containing: TestClock.at("2026-11-20 23:00"), calendar: calendar) == merged
+    )
+    #expect(
+      overlapping.window(containing: TestClock.at("2026-11-21 01:00"), calendar: calendar) == merged
+    )
+    #expect(
+      overlapping.nextStart(after: merged.end, calendar: calendar)
+        == TestClock.at("2026-11-27 22:00"))
+    #expect(
+      contained.window(containing: TestClock.at("2026-11-21 03:30"), calendar: calendar)
+        == window("2026-11-20 22:00", "2026-11-21 06:00"))
+  }
+
+  @Test("editing the shared hours keeps the hours of days that are off and were customised")
+  func withSharedHours() {
+    let saturday = DayHours(start: t(10), end: t(12))
+    let shorter = DayHours(start: t(9), end: t(17))
+    let schedule = workdays.with(hours: saturday, for: .saturday).withSharedHours(shorter)
+
+    for day in Weekday.allCases where day != .saturday {
+      #expect(schedule.hours(for: day) == shorter)
+    }
+    #expect(schedule.hours(for: .saturday) == saturday)
+    #expect(schedule.days == workdays.days)
+    let none = Schedule(days: [], start: t(9), end: t(18)).withSharedHours(shorter)
+    #expect(none.sharedHours == shorter)
+  }
 }

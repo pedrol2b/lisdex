@@ -40,11 +40,11 @@ struct ScheduleCard: View {
   private func sharedHoursRow(_ hours: DayHours) -> some View {
     HStack(spacing: 6) {
       TimeField(label: "From", time: hours.start) {
-        update(schedule.withAllHours(DayHours(start: $0, end: hours.end)))
+        update(schedule.withSharedHours(DayHours(start: $0, end: hours.end)))
       }
       Text("–").foregroundStyle(.secondary)
       TimeField(label: "To", time: hours.end) {
-        update(schedule.withAllHours(DayHours(start: hours.start, end: $0)))
+        update(schedule.withSharedHours(DayHours(start: hours.start, end: $0)))
       }
       Spacer()
       if hours.isOvernight {

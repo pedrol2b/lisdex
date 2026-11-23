@@ -30,7 +30,7 @@ _Approved by owner 2026-11-23 (Approach A)._
 - Storage (`settings.v1` → `schedule`): new per-day hours field; the old `start`/`end` are still written (from the first day that's on) so a downgrade to v1.1 keeps a sensible schedule. Decoding: per-day hours present → use them; missing → every day gets the old `start`/`end`; a bad per-day entry → that day falls back to the old `start`/`end` (else 09:00–18:00).
 
 **Popover card**
-- Same hours on every day that's on → the card looks and works exactly as today; changing From/To sets the hours for **all seven days**, so switching a day on later never brings back an odd hour.
+- Same hours on every day that's on → the card looks and works exactly as today; changing From/To sets the days that are on plus any day that's off still at the same hours, so switching a day on later never brings back an odd hour, while a day that's off with its own hours keeps them (review fix 2026-11-23).
 - Different hours → day buttons stay; in place of From/To the card shows the summary and an **Edit Hours…** button that opens Settings on the Schedule tab.
 
 **Settings → Schedule tab** (`calendar` symbol, after Power)
@@ -54,7 +54,7 @@ _Approved by owner 2026-11-23 (Approach A)._
 ## Calls (mine — check these)
 
 - Hours are kept for all seven days, so switching a day off and on restores its hours. (Replaces my earlier "a day switched on copies the first day's hours" — simpler and loses nothing.)
-- Editing From/To in the popover sets every day, not only the days that are on.
+- Editing From/To in the popover sets the days that are on and the off days that shared their hours; an off day with its own hours keeps them. (Revised after review: the first call, "every day", silently overwrote customised days.)
 - The Schedule tab is always visible, whatever the current mode.
 
 ## Rollout

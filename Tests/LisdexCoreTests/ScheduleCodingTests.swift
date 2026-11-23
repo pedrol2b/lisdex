@@ -51,10 +51,10 @@ struct ScheduleCodingTests {
   @Test("a bad day falls back to the v1.1 hours; the other days are kept")
   func badDayFallsBack() throws {
     let schedule = try decode(
-      #"{"days":[2,6],"start":540,"end":1080,"hours":{"6":{"start":-1,"end":840},"2":{"start":600,"end":700}}}"#
+      #"{"days":[2,6],"start":600,"end":960,"hours":{"6":{"start":-1,"end":840},"2":{"start":600,"end":700}}}"#
     )
 
-    #expect(schedule.hours(for: .friday) == .workday)
+    #expect(schedule.hours(for: .friday) == DayHours(start: t(10), end: t(16)))
     #expect(schedule.hours(for: .monday) == DayHours(start: t(10), end: t(11, 40)))
   }
 
@@ -64,5 +64,15 @@ struct ScheduleCodingTests {
 
     #expect(schedule.hours(for: .monday) == DayHours(start: t(10), end: t(11, 40)))
     #expect(schedule.hours(for: .tuesday) == .workday)
+  }
+
+  @Test("a bad day with no usable v1.1 hours falls back to 09:00–18:00")
+  func badDayAndBadLegacy() throws {
+    let schedule = try decode(
+      #"{"days":[2,6],"start":-5,"end":960,"hours":{"6":{"start":-1,"end":840},"2":{"start":600,"end":700}}}"#
+    )
+
+    #expect(schedule.hours(for: .friday) == .workday)
+    #expect(schedule.hours(for: .monday) == DayHours(start: t(10), end: t(11, 40)))
   }
 }

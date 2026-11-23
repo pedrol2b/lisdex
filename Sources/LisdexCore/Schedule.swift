@@ -75,6 +75,8 @@ public struct Schedule: Equatable, Sendable {
     days: [.monday, .tuesday, .wednesday, .thursday, .friday],
     start: DayHours.workday.start, end: DayHours.workday.end)
 
+  private static let daysPerWeek = 7
+
   public let days: Set<Weekday>
   private let hoursByDay: [Weekday: DayHours]
 
@@ -111,18 +113,34 @@ public struct Schedule: Equatable, Sendable {
     Schedule(days: days, hours: [:], fallback: hours)
   }
 
-  /// The window `date` falls in (start inclusive, end exclusive), if any.
+  /// The popover's shared From/To: the days that are on, plus any day that's off still at the
+  /// old shared hours, get `hours`; a day that's off with its own hours keeps them.
+  public func withSharedHours(_ hours: DayHours) -> Schedule {
+    let old = sharedHours
+    let changed = Weekday.allCases.filter { days.contains($0) || self.hours(for: $0) == old }
+    return Schedule(
+      days: days,
+      hours: hoursByDay.merging(changed.map { ($0, hours) }) { _, new in new })
+  }
+
+  /// The window `date` falls in (start inclusive, end exclusive), if any. Windows that overlap or
+  /// touch hold as one, so the end is that of the last window in the run.
   public func window(containing date: Date, calendar: Calendar) -> DateInterval? {
     let today = calendar.startOfDay(for: date)
-    // A window that started yesterday can still be running (overnight).
-    for offset in [0, -1] {
-      guard let day = calendar.date(byAdding: .day, value: offset, to: today),
-        let window = window(startingOn: day, calendar: calendar),
-        window.start <= date, date < window.end
-      else { continue }
-      return window
+    // Yesterday's window can still be running (overnight); a run can chain through the week.
+    let windows = (-1...Self.daysPerWeek).compactMap { offset in
+      calendar.date(byAdding: .day, value: offset, to: today).flatMap {
+        window(startingOn: $0, calendar: calendar)
+      }
     }
-    return nil
+    guard let first = windows.firstIndex(where: { $0.start <= date && date < $0.end }) else {
+      return nil
+    }
+    var end = windows[first].end
+    for next in windows[(first + 1)...] where next.start <= end {
+      end = max(end, next.end)
+    }
+    return DateInterval(start: windows[first].start, end: end)
   }
 
   /// The first window start strictly after `date`, within the next week.
