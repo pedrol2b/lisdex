@@ -51,32 +51,64 @@ public struct TimeOfDay: Codable, Comparable, Hashable, Sendable {
   public static func < (lhs: TimeOfDay, rhs: TimeOfDay) -> Bool { lhs.minutes < rhs.minutes }
 }
 
-/// When "On a Schedule" holds the Mac awake: one window, the same on every selected day (v1).
-/// A window whose end is before its start runs overnight and belongs to the day it starts on.
-/// No days, or start == end, means the schedule never holds.
-public struct Schedule: Codable, Equatable, Sendable {
-  public static let `default` = Schedule(
-    days: [.monday, .tuesday, .wednesday, .thursday, .friday],
-    start: TimeOfDay(hour: 9, minute: 0),
-    end: TimeOfDay(hour: 18, minute: 0)
-  )
+/// One day's window. An end before the start runs overnight; start == end never holds.
+public struct DayHours: Codable, Hashable, Sendable {
+  public static let workday = DayHours(
+    start: TimeOfDay(hour: 9, minute: 0), end: TimeOfDay(hour: 18, minute: 0))
 
-  public let days: Set<Weekday>
   public let start: TimeOfDay
   public let end: TimeOfDay
 
-  public init(days: Set<Weekday>, start: TimeOfDay, end: TimeOfDay) {
-    self.days = days
+  public init(start: TimeOfDay, end: TimeOfDay) {
     self.start = start
     self.end = end
   }
 
-  public func toggling(_ day: Weekday) -> Schedule {
-    Schedule(days: days.symmetricDifference([day]), start: start, end: end)
+  public var isOvernight: Bool { end < start }
+}
+
+/// When "On a Schedule" holds the Mac awake: the days that are on, each with its own hours.
+/// Hours are kept for all seven days, so a day switched off keeps them for when it's back on.
+/// A window belongs to the day it starts on. No days means the schedule never holds.
+public struct Schedule: Equatable, Sendable {
+  public static let `default` = Schedule(
+    days: [.monday, .tuesday, .wednesday, .thursday, .friday],
+    start: DayHours.workday.start, end: DayHours.workday.end)
+
+  public let days: Set<Weekday>
+  private let hoursByDay: [Weekday: DayHours]
+
+  /// Days missing from `hours` get `fallback`.
+  public init(days: Set<Weekday>, hours: [Weekday: DayHours], fallback: DayHours = .workday) {
+    self.days = days
+    self.hoursByDay = Dictionary(
+      uniqueKeysWithValues: Weekday.allCases.map { ($0, hours[$0] ?? fallback) })
   }
 
-  public func with(start: TimeOfDay? = nil, end: TimeOfDay? = nil) -> Schedule {
-    Schedule(days: days, start: start ?? self.start, end: end ?? self.end)
+  /// Every day the same hours.
+  public init(days: Set<Weekday>, start: TimeOfDay, end: TimeOfDay) {
+    self.init(days: days, hours: [:], fallback: DayHours(start: start, end: end))
+  }
+
+  public func hours(for day: Weekday) -> DayHours { hoursByDay[day] ?? .workday }
+
+  /// The hours every day that's on shares (all seven days when none is on), or `nil` if they differ.
+  public var sharedHours: DayHours? {
+    let counted = days.isEmpty ? Set(Weekday.allCases) : days
+    let distinct = Set(counted.map(hours(for:)))
+    return distinct.count == 1 ? distinct.first : nil
+  }
+
+  public func toggling(_ day: Weekday) -> Schedule {
+    Schedule(days: days.symmetricDifference([day]), hours: hoursByDay)
+  }
+
+  public func with(hours: DayHours, for day: Weekday) -> Schedule {
+    Schedule(days: days, hours: hoursByDay.merging([day: hours]) { _, new in new })
+  }
+
+  public func withAllHours(_ hours: DayHours) -> Schedule {
+    Schedule(days: days, hours: [:], fallback: hours)
   }
 
   /// The window `date` falls in (start inclusive, end exclusive), if any.
@@ -107,16 +139,38 @@ public struct Schedule: Codable, Equatable, Sendable {
   }
 
   private func window(startingOn day: Date, calendar: Calendar) -> DateInterval? {
-    guard start != end,
-      let weekday = Weekday(rawValue: calendar.component(.weekday, from: day)),
-      days.contains(weekday),
-      let endDay = calendar.date(byAdding: .day, value: end > start ? 0 : 1, to: day),
+    guard let weekday = Weekday(rawValue: calendar.component(.weekday, from: day)),
+      days.contains(weekday)
+    else { return nil }
+    let hours = hours(for: weekday)
+    guard hours.start != hours.end,
+      let endDay = calendar.date(byAdding: .day, value: hours.isOvernight ? 1 : 0, to: day),
       let startDate = calendar.date(
-        bySettingHour: start.hour, minute: start.minute, second: 0, of: day),
+        bySettingHour: hours.start.hour, minute: hours.start.minute, second: 0, of: day),
       let endDate = calendar.date(
-        bySettingHour: end.hour, minute: end.minute, second: 0, of: endDay),
+        bySettingHour: hours.end.hour, minute: hours.end.minute, second: 0, of: endDay),
       endDate > startDate
     else { return nil }
     return DateInterval(start: startDate, end: endDate)
+  }
+}
+
+// Temporary until per-day storage (plan Task 2): the v1.1 shape, first day's hours.
+extension Schedule: Codable {
+  private enum CodingKeys: String, CodingKey { case days, start, end }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    self.init(
+      days: try container.decode(Set<Weekday>.self, forKey: .days),
+      start: try container.decode(TimeOfDay.self, forKey: .start),
+      end: try container.decode(TimeOfDay.self, forKey: .end))
+  }
+
+  public func encode(to encoder: Encoder) throws {
+    var container = encoder.container(keyedBy: CodingKeys.self)
+    try container.encode(days, forKey: .days)
+    try container.encode(hours(for: .monday).start, forKey: .start)
+    try container.encode(hours(for: .monday).end, forKey: .end)
   }
 }

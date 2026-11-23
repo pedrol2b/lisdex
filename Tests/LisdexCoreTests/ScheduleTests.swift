@@ -11,8 +11,9 @@ struct ScheduleTests {
   @Test("default is weekdays 09:00–18:00")
   func defaultSchedule() {
     #expect(workdays.days == [.monday, .tuesday, .wednesday, .thursday, .friday])
-    #expect(workdays.start == TimeOfDay(hour: 9, minute: 0))
-    #expect(workdays.end == TimeOfDay(hour: 18, minute: 0))
+    for day in Weekday.allCases {
+      #expect(workdays.hours(for: day) == DayHours(start: t(9), end: t(18)))
+    }
   }
 
   @Test("days are listed Monday first, with one-letter symbols")
@@ -66,8 +67,8 @@ struct ScheduleTests {
 
   @Test("no days, or start == end, never holds")
   func neverActive() {
-    let noDays = Schedule(days: [], start: workdays.start, end: workdays.end)
-    let empty = Schedule(days: workdays.days, start: workdays.start, end: workdays.start)
+    let noDays = Schedule(days: [], start: t(9), end: t(18))
+    let empty = Schedule(days: workdays.days, start: t(9), end: t(9))
     let monday = TestClock.at("2026-11-16 10:00")
 
     for schedule in [noDays, empty] {
@@ -91,5 +92,81 @@ struct ScheduleTests {
       try JSONDecoder().decode(TimeOfDay.self, from: Data("1440".utf8))
     }
     #expect(TimeOfDay(hour: 23, minute: 59).minutes == 1439)
+  }
+
+  // MARK: - Per-day hours
+
+  private func t(_ hour: Int, _ minute: Int = 0) -> TimeOfDay {
+    TimeOfDay(hour: hour, minute: minute)
+  }
+  private func window(_ start: String, _ end: String) -> DateInterval {
+    DateInterval(start: TestClock.at(start), end: TestClock.at(end))
+  }
+
+  @Test("each day uses its own hours")
+  func perDayWindow() {
+    let shortFriday = workdays.with(hours: DayHours(start: t(9), end: t(14)), for: .friday)
+
+    #expect(
+      shortFriday.window(containing: TestClock.at("2026-11-20 10:00"), calendar: calendar)
+        == window("2026-11-20 09:00", "2026-11-20 14:00"))
+    #expect(
+      shortFriday.window(containing: TestClock.at("2026-11-20 15:00"), calendar: calendar) == nil)
+    #expect(
+      shortFriday.nextStart(after: TestClock.at("2026-11-20 15:00"), calendar: calendar)
+        == TestClock.at("2026-11-23 09:00"))
+    #expect(
+      shortFriday.window(containing: TestClock.at("2026-11-16 17:00"), calendar: calendar)
+        == window("2026-11-16 09:00", "2026-11-16 18:00"))
+  }
+
+  @Test("an overnight window uses the hours of the day it starts on")
+  func overnightUsesStartDayHours() {
+    let schedule = Schedule(
+      days: [.friday, .saturday],
+      hours: [
+        .friday: DayHours(start: t(22), end: t(6)), .saturday: DayHours(start: t(10), end: t(12)),
+      ])
+
+    #expect(
+      schedule.window(containing: TestClock.at("2026-11-21 02:00"), calendar: calendar)
+        == window("2026-11-20 22:00", "2026-11-21 06:00"))
+    #expect(
+      schedule.window(containing: TestClock.at("2026-11-21 08:00"), calendar: calendar) == nil)
+    #expect(
+      schedule.window(containing: TestClock.at("2026-11-21 10:30"), calendar: calendar)
+        == window("2026-11-21 10:00", "2026-11-21 12:00"))
+  }
+
+  @Test("a day switched off keeps its hours")
+  func offDayKeepsHours() {
+    let saturday = DayHours(start: t(10), end: t(12))
+    let schedule = workdays.with(hours: saturday, for: .saturday)
+      .toggling(.saturday).toggling(.saturday).toggling(.saturday)
+
+    #expect(schedule.days.contains(.saturday))
+    #expect(schedule.hours(for: .saturday) == saturday)
+  }
+
+  @Test("shared hours: only the days that are on count, unless none is on")
+  func sharedHours() {
+    let odd = DayHours(start: t(10), end: t(12))
+
+    #expect(workdays.sharedHours == .workday)
+    #expect(
+      workdays.with(hours: DayHours(start: t(9), end: t(14)), for: .friday).sharedHours == nil)
+    #expect(workdays.with(hours: odd, for: .saturday).sharedHours == .workday)
+    #expect(Schedule(days: [], start: t(10), end: t(12)).sharedHours == odd)
+    #expect(Schedule(days: [], hours: [.monday: odd]).sharedHours == nil)
+  }
+
+  @Test("withAllHours sets every day, including days that are off")
+  func withAllHours() {
+    let hours = DayHours(start: t(8), end: t(16, 30))
+    let schedule = workdays.with(hours: DayHours(start: t(9), end: t(14)), for: .friday)
+      .withAllHours(hours)
+
+    for day in Weekday.allCases { #expect(schedule.hours(for: day) == hours) }
+    #expect(schedule.days == workdays.days)
   }
 }

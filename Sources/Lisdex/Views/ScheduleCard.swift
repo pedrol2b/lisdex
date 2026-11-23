@@ -17,12 +17,17 @@ struct ScheduleCard: View {
           dayPill(day)
         }
       }
+      let hours = schedule.sharedHours ?? schedule.hours(for: .monday)
       HStack(spacing: 6) {
-        timePicker("From", schedule.start) { update(schedule.with(start: $0)) }
+        timePicker("From", hours.start) {
+          update(schedule.withAllHours(DayHours(start: $0, end: hours.end)))
+        }
         Text("–").foregroundStyle(.secondary)
-        timePicker("To", schedule.end) { update(schedule.with(end: $0)) }
+        timePicker("To", hours.end) {
+          update(schedule.withAllHours(DayHours(start: hours.start, end: $0)))
+        }
         Spacer()
-        if schedule.end < schedule.start {
+        if hours.isOvernight {
           Text("overnight").font(.caption).foregroundStyle(.secondary)
         }
       }
