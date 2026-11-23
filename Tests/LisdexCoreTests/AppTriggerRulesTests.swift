@@ -67,4 +67,11 @@ struct AppTriggerRulesTests {
     let withoutXcode = listed.removing(bundleID: xcode)
     #expect(decide(.runningChanged(running: [xcode]), appSession, withoutXcode) == .endSession)
   }
+
+  @Test("a listed app opening below the battery cutoff does nothing")
+  func batteryCutoff() {
+    let action = AppTriggerRules.decide(
+      .launched(bundleID: xcode), session: nil, triggers: listed, batteryCutoff: true)
+    #expect(action == .none)
+  }
 }

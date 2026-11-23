@@ -221,7 +221,10 @@ final class AppModel {
 
   /// App-driven on/off is programmatic: no toggle sound, no notification.
   private func handle(_ event: AppTriggerEvent) {
-    switch AppTriggerRules.decide(event, session: session, triggers: settings.appTriggers) {
+    let action = AppTriggerRules.decide(
+      event, session: session, triggers: settings.appTriggers,
+      batteryCutoff: BatteryCutoff.shouldStop(settings: settings, power: powerSource))
+    switch action {
     case .none:
       return
     case .startAppSession:
