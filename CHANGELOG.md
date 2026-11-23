@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Settings → Apps: pick apps that keep your Mac awake while they are open. Keep Awake turns
   on when one opens and off when the last one quits, unless you started it yourself. The
   list starts empty.
+- Settings → Schedule: give each day its own hours, e.g. a short Friday. When the hours differ,
+  the menu shows a summary and an Edit Hours… button. Schedules from 1.1 carry over.
 
 ### Fixed
 

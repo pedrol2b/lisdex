@@ -14,10 +14,10 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
   private let popover = NSPopover()
   /// The items of the quick menu currently shown, indexed by `NSMenuItem.tag`.
   private var quickMenuItems: [QuickMenu.Item] = []
-  private let openSettings: () -> Void
+  private let openSettings: (SettingsTab) -> Void
   private var renderedIcon: MenuBarIcon?
 
-  init(model: AppModel, openSettings: @escaping () -> Void) {
+  init(model: AppModel, openSettings: @escaping (SettingsTab) -> Void) {
     self.model = model
     self.openSettings = openSettings
     super.init()
@@ -48,9 +48,9 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
     let root = MenuView(
       model: model,
       dismiss: { [weak self] in self?.popover.performClose(nil) },
-      openSettings: { [weak self] in
+      openSettings: { [weak self] tab in
         self?.popover.performClose(nil)
-        self?.openSettings()
+        self?.openSettings(tab)
       })
     let host = NSHostingController(rootView: root)
     host.sizingOptions = .preferredContentSize

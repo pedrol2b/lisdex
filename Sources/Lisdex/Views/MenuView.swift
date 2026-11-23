@@ -7,7 +7,7 @@ import SwiftUI
 struct MenuView: View {
   let model: AppModel
   let dismiss: () -> Void
-  let openSettings: () -> Void
+  let openSettings: (SettingsTab) -> Void
 
   /// Countdown text needs seconds; everything else changes at most once a minute.
   private var refreshInterval: TimeInterval {
@@ -33,7 +33,10 @@ struct MenuView: View {
       switch model.state.mode {
       case .indefinitely: EmptyView()
       case .duration: DurationPanel(model: model)
-      case .schedule: ScheduleCard(schedule: model.settings.schedule, update: model.setSchedule)
+      case .schedule:
+        ScheduleCard(
+          schedule: model.settings.schedule, update: model.setSchedule,
+          editHours: { openSettings(.schedule) })
       }
       Divider()
       ToggleRow(
@@ -63,8 +66,10 @@ struct MenuView: View {
 
   private var footer: some View {
     VStack(spacing: 2) {
-      MenuActionRow(symbol: "gearshape", title: "Settings…", shortcut: "⌘ ,", action: openSettings)
-        .keyboardShortcut(",", modifiers: .command)
+      MenuActionRow(
+        symbol: "gearshape", title: "Settings…", shortcut: "⌘ ,", action: { openSettings(.general) }
+      )
+      .keyboardShortcut(",", modifiers: .command)
       Divider().padding(.leading, 36)
       MenuActionRow(symbol: "info.circle", title: "About Lisdex") {
         dismiss()

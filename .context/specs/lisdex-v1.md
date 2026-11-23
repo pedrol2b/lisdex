@@ -107,7 +107,8 @@ When the timer ends: release the assertion, switch Keep Awake off, keep mode = D
 │ │ ▦ Schedule                     Edit  │ │
 │ │  M  T  W  T  F  S  S                 │ │  day pills (on = accent)
 │ │  ●  ●  ●  ●  ●  ○  ○                 │ │
-│ │  09:00 – 18:00                       │ │  v1: one window, same for selected days
+│ │  09:00 – 18:00                       │ │  same hours on every day that's on → edit inline
+│ │  (or) Mon–Thu 09:00–18:00 · Fri 09:00–14:00   │  hours differ (v1.2) → summary + "Edit Hours…"
 │ └──────────────────────────────────────┘ │
 ├──────────────────────────────────────────┤
 │ … Start on Login / Settings / About / Quit
@@ -122,7 +123,7 @@ Changes vs. the first AI mock (`sources/design-menu-draft-2026-11-19.md`): remov
 - **Appearance** — Menu bar icon variant (B Minimal / A Faithful, live preview of both states) · Accent color (yellow, orange, pink, purple, blue, mint, custom).
 - **Shortcuts** (v1.1) — global shortcuts (ADR 0019).
 - **Apps** (v1.2) — apps that keep the Mac awake while open; Add App… / ✕ remove (ADR 0020).
-- **Schedule** — full editor (per-day windows in v1.1).
+- **Schedule** (v1.2, after Power) — one row per day: on/off + From–To; a day that's off keeps its hours (ADR 0021, spec `per-day-schedule.md`).
 
 ## About
 

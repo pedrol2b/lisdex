@@ -2,29 +2,34 @@ import LisdexCore
 import SwiftUI
 
 enum SettingsTab: String {
-  case general, power, appearance, shortcuts, apps
+  case general, power, schedule, appearance, shortcuts, apps
 }
 
-/// Settings → General · Power · Appearance · Shortcuts · Apps (spec "Settings window").
+/// Which Settings tab is showing; owned by the window controller so it can switch tabs on an
+/// already open window (popover "Edit Hours…").
+@MainActor @Observable
+final class SettingsNavigation {
+  var tab: SettingsTab = .general
+}
+
+/// Settings → General · Power · Schedule · Appearance · Shortcuts · Apps (spec "Settings window").
 struct SettingsView: View {
   static let width: CGFloat = 480
 
   let model: AppModel
-  @State private var tab: SettingsTab
-
-  init(model: AppModel, tab: SettingsTab = .general) {
-    self.model = model
-    _tab = State(initialValue: tab)
-  }
+  let navigation: SettingsNavigation
 
   var body: some View {
-    TabView(selection: $tab) {
+    TabView(selection: Bindable(navigation).tab) {
       GeneralSettings(model: model)
         .tabItem { Label("General", systemImage: "gearshape") }
         .tag(SettingsTab.general)
       PowerSettings(model: model)
         .tabItem { Label("Power", systemImage: "bolt") }
         .tag(SettingsTab.power)
+      ScheduleSettingsView(model: model)
+        .tabItem { Label("Schedule", systemImage: "calendar") }
+        .tag(SettingsTab.schedule)
       AppearanceSettings(model: model)
         .tabItem { Label("Appearance", systemImage: "paintpalette") }
         .tag(SettingsTab.appearance)

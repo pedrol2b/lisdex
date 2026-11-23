@@ -103,18 +103,3 @@ public struct DurationPreset: Equatable, Sendable {
 }
 
 /// Locale-aware clock formatting (`calendar.locale`, falling back to the current locale).
-private struct ClockText {
-  let calendar: Calendar
-
-  func time(_ date: Date) -> String { format(date, template: "jmm") }
-  func dayAndTime(_ date: Date) -> String { "\(format(date, template: "EEE")) \(time(date))" }
-
-  private func format(_ date: Date, template: String) -> String {
-    let formatter = DateFormatter()
-    formatter.calendar = calendar
-    formatter.timeZone = calendar.timeZone
-    formatter.locale = calendar.locale ?? .current
-    formatter.setLocalizedDateFormatFromTemplate(template)
-    return formatter.string(from: date)
-  }
-}

@@ -12,14 +12,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     self.model = model
     let settingsWindow = SettingsWindowController(model: model)
     self.settingsWindow = settingsWindow
-    self.statusItem = StatusItemController(model: model, openSettings: settingsWindow.show)
+    self.statusItem = StatusItemController(model: model, openSettings: settingsWindow.show(tab:))
     model.start()
     hotKeys = HotKeyCenter(model: model)
     Log.app.notice("Lisdex launched")
     openForScreenshot()
   }
 
-  /// `open Lisdex.app --args -LisdexScreenshot popover|general|power|appearance|shortcuts` opens that UI
+  /// `open Lisdex.app --args -LisdexScreenshot popover|general|power|schedule|appearance|shortcuts|apps` opens that UI
   /// right after launch, so `scripts/screenshots.sh` can capture README images without clicks.
   private func openForScreenshot() {
     guard let target = UserDefaults.standard.string(forKey: "LisdexScreenshot") else { return }

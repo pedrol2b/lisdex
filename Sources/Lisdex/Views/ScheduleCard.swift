@@ -1,12 +1,14 @@
 import LisdexCore
 import SwiftUI
 
-/// "On a Schedule" card: tap day pills to toggle them, edit the window's start and end inline.
-/// An end before the start runs overnight.
+/// "On a Schedule" card: tap day pills to toggle them. When every day that's on shares its hours,
+/// edit them inline (an end before the start runs overnight); otherwise show a summary and a link
+/// to Settings → Schedule, where each day has its own hours.
 struct ScheduleCard: View {
   @Environment(\.accent) private var accent
   let schedule: Schedule
   let update: (Schedule) -> Void
+  let editHours: () -> Void
 
   var body: some View {
     VStack(alignment: .leading, spacing: 10) {
@@ -17,18 +19,38 @@ struct ScheduleCard: View {
           dayPill(day)
         }
       }
-      HStack(spacing: 6) {
-        timePicker("From", schedule.start) { update(schedule.with(start: $0)) }
-        Text("–").foregroundStyle(.secondary)
-        timePicker("To", schedule.end) { update(schedule.with(end: $0)) }
-        Spacer()
-        if schedule.end < schedule.start {
-          Text("overnight").font(.caption).foregroundStyle(.secondary)
+      if let hours = schedule.sharedHours {
+        sharedHoursRow(hours)
+      } else {
+        VStack(alignment: .leading, spacing: 4) {
+          Text(schedule.summary(calendar: .current))
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            .fixedSize(horizontal: false, vertical: true)
+          Button("Edit Hours…", action: editHours)
+            .buttonStyle(.link)
+            .font(.caption)
         }
       }
     }
     .padding(10)
     .background(.quaternary.opacity(0.5), in: .rect(cornerRadius: 10))
+  }
+
+  private func sharedHoursRow(_ hours: DayHours) -> some View {
+    HStack(spacing: 6) {
+      TimeField(label: "From", time: hours.start) {
+        update(schedule.withSharedHours(DayHours(start: $0, end: hours.end)))
+      }
+      Text("–").foregroundStyle(.secondary)
+      TimeField(label: "To", time: hours.end) {
+        update(schedule.withSharedHours(DayHours(start: hours.start, end: $0)))
+      }
+      Spacer()
+      if hours.isOvernight {
+        Text("overnight").font(.caption).foregroundStyle(.secondary)
+      }
+    }
   }
 
   private func dayPill(_ day: Weekday) -> some View {
@@ -47,24 +69,5 @@ struct ScheduleCard: View {
     .accessibilityLabel(Calendar.current.weekdaySymbols[day.rawValue - 1])
     .accessibilityAddTraits(isOn ? .isSelected : [])
     .accessibilityValue(isOn ? "On" : "Off")
-  }
-
-  private func timePicker(_ label: String, _ time: TimeOfDay, set: @escaping (TimeOfDay) -> Void)
-    -> some View
-  {
-    let calendar = Calendar.current
-    let binding = Binding<Date>(
-      get: {
-        calendar.date(bySettingHour: time.hour, minute: time.minute, second: 0, of: .now) ?? .now
-      },
-      set: { date in
-        let parts = calendar.dateComponents([.hour, .minute], from: date)
-        set(TimeOfDay(hour: parts.hour ?? 0, minute: parts.minute ?? 0))
-      }
-    )
-    return DatePicker(label, selection: binding, displayedComponents: .hourAndMinute)
-      .datePickerStyle(.stepperField)
-      .labelsHidden()
-      .accessibilityLabel(label)
   }
 }
