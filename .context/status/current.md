@@ -54,14 +54,14 @@ _Last updated 2026-11-22._
 | **4. Settings & polish** ✅ | Settings window (General/Power/Appearance), icon variant switch, accent colors, Start on Login (`SMAppService`), notifications, battery threshold, About. Popover matches Low Cortisol style. | Acceptance 6–8; screenshots in evidence. |
 | **5. Hardening** ✅ | Code review (swift-reviewer), concurrency audit, ≥ 80 % Core coverage, energy check (no busy timers), VoiceOver labels. | Review HIGHs fixed. |
 | **6. Publish v1.0** ✅ | Public GitHub repo, README screenshots + remove "in development" banner, CONTRIBUTING, issue templates, optional `swift test` CI. Local ad-hoc builds (ADR 0005) + Homebrew tap formula building from source (ADR 0008). | A fresh clone builds with `make install`; `brew install pedrol2b/tap/lisdex` works on a clean Mac. |
-| **7. v1.1 — controls** | Swap clicks setting (left toggles / right opens popover, or the reverse); global keyboard shortcuts in Settings (Toggle, Start indefinitely, Start for a duration — one, length picked on its row, Stop; none assigned by default); Option-click quick menu (15 m / 30 m / 1 h / 2 h / Until I stop); light bulb menu bar icon variant (Figma node 10:254, alongside pill and mug). | — |
+| **7. v1.1 — controls** | Swap clicks setting (left toggles / right opens popover, or the reverse); global keyboard shortcuts in Settings (Toggle, Start indefinitely, Start for a duration — one, length picked on its row, Stop; none assigned by default); Option-click quick menu (15 m / 30 m / 1 h / 2 h / Until I stop); light bulb menu bar icon variant (Figma node 10:254, alongside pill and mug). | ✅ done 2026-11-23 (owner tested each item; not yet released) |
 | **8. v1.2 — triggers** | Keep awake while app X runs (app picker, `NSWorkspace` launch/quit); per-day schedule windows; Shortcuts / AppIntents (reuse the shortcut actions). | — |
 | **9. v1.3 — mouse jiggler** | Nudge the cursor 2 px and back after an idle threshold (default 60 s), repeat every jiggle interval (default 20 s), stop on any real input incl. held keys/buttons. Runs **only while Keep Awake is holding**. Settings: idle threshold + jiggle interval sliders (no polling-interval setting: one timer computed from system idle time). Needs Accessibility (post-event) permission — new ADR; spike first: TCC grant across ad-hoc rebuilds / `brew upgrade`, and whether synthetic moves reset HID idle time. | — |
 
 ## Next
 
-1. Phase 7 (v1.1), smallest first: ~~swap clicks~~ ✅ → ~~keyboard shortcuts~~ ✅ → Option-click quick menu (built, owner testing) → light bulb icon.
-2. Phase 8 (v1.2): app-running trigger, per-day schedule windows, Shortcuts/AppIntents.
+1. Release v1.1 (Phase 7 complete: swap clicks, keyboard shortcuts, Option-click quick menu, light bulb icon) when the owner decides.
+2. Phase 8 (v1.2): app-running trigger first, then per-day schedule windows, Shortcuts/AppIntents.
 3. Phase 9 (v1.3): mouse jiggler (spike the permission + idle-time questions first).
 
 ## Open questions
