@@ -1,3 +1,4 @@
+import AppKit
 import Carbon.HIToolbox
 import LisdexCore
 import Observation
@@ -22,6 +23,17 @@ final class HotKeyCenter {
     Self.active = self
     installHandler()
     observeModel()
+    NotificationCenter.default.addObserver(
+      self, selector: #selector(retryUnavailable), name: NSApplication.didBecomeActiveNotification,
+      object: nil)
+  }
+
+  /// A combo another app held may be free now: try again whenever Lisdex is brought forward
+  /// (popover or Settings opened).
+  @objc private func retryUnavailable(_ notification: Notification) {
+    guard !model.shortcutsInUseElsewhere.isEmpty, let applied else { return }
+    self.applied = nil
+    apply(combos: applied.combos, paused: applied.paused)
   }
 
   /// Unregisters everything; called on quit.
@@ -73,7 +85,7 @@ final class HotKeyCenter {
       let status = RegisterEventHotKey(
         UInt32(combo.keyCode), combo.modifiers.carbonFlags,
         EventHotKeyID(signature: Self.signature, id: UInt32(index + 1)),
-        GetApplicationEventTarget(), 0, &ref)
+        GetApplicationEventTarget(), OptionBits(kEventHotKeyExclusive), &ref)
       if status == noErr, let ref {
         registered.append(ref)
       } else {

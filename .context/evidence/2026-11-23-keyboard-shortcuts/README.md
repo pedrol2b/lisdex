@@ -14,6 +14,10 @@ state from `pmset -g assertions`, saved combos from `settings.v1`.
 | Re-record Toggle as ⌃⌥⌘K | old ⌃⌥⌘L no-op, ⌃⌥⌘K toggles |
 | Delete while recording | shortcut cleared |
 | ⌃⌥⌘S → Stop, ⌃⌥⌘D → Start for a Duration (900 s) | off; Duration mode with 900 s |
+| Click recorder, close Settings, press ⌃⌥⌘L | fires (recording ends on window close) — was stuck paused before the review fix |
+| Click recorder, switch to Finder, press ⌃⌥⌘L | fires (recording ends when the window resigns key) |
+| Helper app holds ⌃⌥⌘J exclusively; Lisdex Toggle = ⌃⌥⌘J | registration −9878, row shows "Already in use by another app." (`in-use-by-another-app.png`), key does not fire Lisdex |
+| Helper quits, Lisdex brought forward | re-registered, ⌃⌥⌘J toggles |
 | Bare F6 → Toggle | fires on a physical-style event (fn flag set) |
 
 Notes:

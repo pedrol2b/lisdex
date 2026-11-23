@@ -19,6 +19,8 @@ struct ShortcutRecorder: NSViewRepresentable {
 
   func updateNSView(_ view: RecorderView, context: Context) { update(view) }
 
+  static func dismantleNSView(_ view: RecorderView, coordinator: ()) { view.endRecording() }
+
   private func update(_ view: RecorderView) {
     view.title = title
     view.onRecordingChange = onRecordingChange
@@ -79,6 +81,37 @@ final class RecorderView: NSView {
       wasClicked = true
       window?.makeFirstResponder(self)
     }
+  }
+
+  /// Leaving the window (closing it, switching apps) must end recording, or the global
+  /// shortcuts would stay paused (`AppModel.isRecordingShortcut`).
+  override func viewWillMove(toWindow newWindow: NSWindow?) {
+    let center = NotificationCenter.default
+    if let window {
+      center.removeObserver(self, name: NSWindow.didResignKeyNotification, object: window)
+      center.removeObserver(self, name: NSWindow.willCloseNotification, object: window)
+    }
+    if let newWindow {
+      center.addObserver(
+        self, selector: #selector(windowLostFocus), name: NSWindow.didResignKeyNotification,
+        object: newWindow)
+      center.addObserver(
+        self, selector: #selector(windowLostFocus), name: NSWindow.willCloseNotification,
+        object: newWindow)
+    } else {
+      endRecording()
+    }
+    super.viewWillMove(toWindow: newWindow)
+  }
+
+  @objc private func windowLostFocus(_ notification: Notification) { endRecording() }
+
+  /// Stops recording without saving anything.
+  func endRecording() {
+    guard isRecording else { return }
+    if window?.firstResponder === self { window?.makeFirstResponder(nil) }
+    wasClicked = false
+    setRecording(false)
   }
 
   override func becomeFirstResponder() -> Bool {

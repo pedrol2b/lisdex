@@ -17,8 +17,11 @@ recorded in Settings. Options: the KeyboardShortcuts package, our own wrapper ar
   decoding: a bad entry drops only that entry.
 - Combination rules (needs ⌃/⌥/⌘ unless an F-key, macOS-reserved combos, duplicates across
   actions) and display strings live in `LisdexCore` with tests.
-- None assigned by default. A combo another app already registered is kept and marked
-  "Already in use by another app".
+- None assigned by default. Hot keys are registered with `kEventHotKeyExclusive`; when another
+  app holds the combo exclusively, registration fails, the combo is kept, the row says
+  "Already in use by another app", and Lisdex retries whenever it is brought forward. Only
+  exclusive holders are detectable: system symbolic hot keys and other apps' non-exclusive
+  registrations can't be seen through Carbon.
 - `NSEvent` global monitors are not used: they need Accessibility permission, which is reserved
   for the mouse jiggler (Phase 9).
 
