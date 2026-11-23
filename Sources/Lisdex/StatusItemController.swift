@@ -31,7 +31,6 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
     button.action = #selector(handleClick(_:))
     button.sendAction(on: [.leftMouseUp, .rightMouseUp])
     button.imagePosition = .imageOnly
-    button.setAccessibilityHelp("Opens Lisdex. Right-click toggles Keep Awake.")
   }
 
   private func configurePopover() {
@@ -104,6 +103,8 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
   }
 
   private func render() {
+    // Read on every pass so a Settings change re-runs the observation.
+    statusItem.button?.setAccessibilityHelp(model.settings.clickBehavior.accessibilityHelp)
     let icon = model.menuBarIcon
     guard icon != renderedIcon else { return }
     renderedIcon = icon

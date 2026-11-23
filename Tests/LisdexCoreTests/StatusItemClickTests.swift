@@ -27,6 +27,16 @@ struct StatusItemClickTests {
     #expect(StatusItemClickBehavior.leftClickToggles.title == "Left click (right click shows menu)")
   }
 
+  @Test("VoiceOver help describes the chosen clicks")
+  func accessibilityHelp() {
+    #expect(
+      StatusItemClickBehavior.rightClickToggles.accessibilityHelp
+        == "Opens Lisdex. Right-click toggles Keep Awake.")
+    #expect(
+      StatusItemClickBehavior.leftClickToggles.accessibilityHelp
+        == "Toggles Keep Awake. Right-click opens Lisdex.")
+  }
+
   @Test("older settings load with the default; unknown values fall back; the choice round-trips")
   func decoding() throws {
     let old = try JSONDecoder().decode(AppSettings.self, from: Data(#"{"accent":"mint"}"#.utf8))

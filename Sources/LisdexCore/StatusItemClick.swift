@@ -26,6 +26,14 @@ public enum StatusItemClickBehavior: String, Codable, CaseIterable, Sendable {
     }
   }
 
+  /// VoiceOver help for the status item.
+  public var accessibilityHelp: String {
+    switch self {
+    case .rightClickToggles: "Opens Lisdex. Right-click toggles Keep Awake."
+    case .leftClickToggles: "Toggles Keep Awake. Right-click opens Lisdex."
+    }
+  }
+
   public func action(for click: StatusItemClick) -> StatusItemAction {
     switch (self, click) {
     case (.rightClickToggles, .secondary), (.leftClickToggles, .primary): .toggle
