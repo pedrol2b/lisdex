@@ -27,3 +27,9 @@ Notes:
   `alignmentGuide(.firstTextBaseline)` so rows stay single-line.
 
 `make test` 80/80, `make lint` clean.
+
+## Recorder follows the app accent (2026-11-23)
+
+Owner report: the recording outline was system blue, not the Appearance accent. `RecorderView` now
+takes `\.accent` from the SwiftUI environment (resolved per appearance). With accent orange, the
+recording field is orange (`recorder-accent-orange.png`); Esc still cancels.

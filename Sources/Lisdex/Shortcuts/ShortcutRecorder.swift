@@ -4,7 +4,8 @@ import SwiftUI
 
 /// A click-to-record shortcut field (Settings → Shortcuts). While recording it owns the
 /// keyboard: Esc cancels, Delete clears, any other key + modifiers is offered to `onRecord`,
-/// which returns `nil` to accept or a problem to keep recording.
+/// which returns `nil` to accept or a problem to keep recording. While recording it is drawn in
+/// the user's accent (Settings → Appearance), not the system one.
 struct ShortcutRecorder: NSViewRepresentable {
   let title: String
   let onRecordingChange: (Bool) -> Void
@@ -13,15 +14,16 @@ struct ShortcutRecorder: NSViewRepresentable {
 
   func makeNSView(context: Context) -> RecorderView {
     let view = RecorderView()
-    update(view)
+    update(view, context: context)
     return view
   }
 
-  func updateNSView(_ view: RecorderView, context: Context) { update(view) }
+  func updateNSView(_ view: RecorderView, context: Context) { update(view, context: context) }
 
   static func dismantleNSView(_ view: RecorderView, coordinator: ()) { view.endRecording() }
 
-  private func update(_ view: RecorderView) {
+  private func update(_ view: RecorderView, context: Context) {
+    view.accentColor = NSColor(context.environment.accent)
     view.title = title
     view.onRecordingChange = onRecordingChange
     view.onRecord = onRecord
@@ -34,6 +36,7 @@ final class RecorderView: NSView {
   private static let deleteKeys: Set<UInt16> = [51, 117]
 
   var title = "" { didSet { refresh() } }
+  var accentColor = NSColor.controlAccentColor { didSet { refresh() } }
   var onRecordingChange: (Bool) -> Void = { _ in }
   var onRecord: (KeyCombo) -> KeyComboProblem? = { _ in nil }
   var onClear: () -> Void = {}
@@ -172,12 +175,20 @@ final class RecorderView: NSView {
     monitor = nil
   }
 
+  override func viewDidChangeEffectiveAppearance() {
+    super.viewDidChangeEffectiveAppearance()
+    refresh()
+  }
+
   private func refresh() {
     let text = isRecording ? liveModifiers.symbols + "Type shortcut…" : title
     label.stringValue = text
-    label.textColor = isRecording ? .controlAccentColor : .labelColor
-    layer?.borderColor = (isRecording ? NSColor.controlAccentColor : NSColor.separatorColor).cgColor
-    layer?.backgroundColor = NSColor.controlBackgroundColor.cgColor
+    label.textColor = isRecording ? accentColor : .labelColor
+    // Resolve dynamic colours for this view's appearance (CGColor doesn't follow light/dark).
+    effectiveAppearance.performAsCurrentDrawingAppearance {
+      layer?.borderColor = (isRecording ? accentColor : NSColor.separatorColor).cgColor
+      layer?.backgroundColor = NSColor.controlBackgroundColor.cgColor
+    }
     setAccessibilityLabel(isRecording ? "Recording shortcut" : "Shortcut: \(title)")
   }
 }
