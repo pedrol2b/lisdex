@@ -4,7 +4,7 @@ _Last updated 2026-11-22._
 
 ## Done
 
-- 2026-11-23 **Phase 7.2 keyboard shortcuts** (branch `feat/keyboard-shortcuts`, **awaiting owner test before merge**; fallback to KeyboardShortcuts per ADR 0019): Settings → Shortcuts tab, Carbon hot keys, recorder with validation. Core `KeyCombo`/`ShortcutSettings` + tests (80). Evidence `evidence/2026-11-23-keyboard-shortcuts/`.
+- 2026-11-23 **Phase 7.2 keyboard shortcuts** (owner tested and approved 2026-11-23; merged): Settings → Shortcuts tab, Carbon hot keys, recorder with validation. Core `KeyCombo`/`ShortcutSettings` + tests (80). Evidence `evidence/2026-11-23-keyboard-shortcuts/`.
 - 2026-11-22 **Phase 7.1 click behavior**: Settings → General → Quick-Start a Session (right-click toggles by default, or left-click). Core `StatusItemClickBehavior` + tests (65). Spec `specs/click-behavior.md`, evidence `evidence/2026-11-22-click-behavior/`.
 - 2026-11-22 Owner: post-1.0 roadmap split into Phase 7 (v1.1 controls), Phase 8 (v1.2 triggers), Phase 9 (v1.3 mouse jiggler). Keyboard shortcuts: one "Start for a duration" shortcut. Jiggler only while Keep Awake is on. (About showed 1.0.0 because the local `build/` app predated the version bump — rebuilt, not a bug.)
 - 2026-11-19 Kickoff: `.context/` scaffold (mirrors Low Cortisol), spec + menu draft (`specs/lisdex-v1.md`), ADRs 0001–0004.
@@ -57,7 +57,7 @@ _Last updated 2026-11-22._
 
 ## Next
 
-1. Phase 7 (v1.1), smallest first: ~~swap clicks~~ ✅ → keyboard shortcuts (built, owner testing) → Option-click quick menu → light bulb icon.
+1. Phase 7 (v1.1), smallest first: ~~swap clicks~~ ✅ → ~~keyboard shortcuts~~ ✅ → Option-click quick menu → light bulb icon.
 2. Phase 8 (v1.2): app-running trigger, per-day schedule windows, Shortcuts/AppIntents.
 3. Phase 9 (v1.3): mouse jiggler (spike the permission + idle-time questions first).
 

@@ -1,6 +1,6 @@
 # ADR 0019 — Global keyboard shortcuts via Carbon hot keys
 
-- **Status:** Accepted (provisional until the owner tests the build — see Fallback)
+- **Status:** Accepted (owner tested the build 2026-11-23)
 - **Date:** 2026-11-23
 
 ## Context
