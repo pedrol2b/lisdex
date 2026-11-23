@@ -5,6 +5,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
   private var model: AppModel?
   private var statusItem: StatusItemController?
   private var settingsWindow: SettingsWindowController?
+  private var hotKeys: HotKeyCenter?
 
   func applicationDidFinishLaunching(_ notification: Notification) {
     let model = AppModel()
@@ -13,6 +14,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     self.settingsWindow = settingsWindow
     self.statusItem = StatusItemController(model: model, openSettings: settingsWindow.show)
     model.start()
+    hotKeys = HotKeyCenter(model: model)
     Log.app.notice("Lisdex launched")
     openForScreenshot()
   }
@@ -32,6 +34,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
   }
 
   func applicationWillTerminate(_ notification: Notification) {
+    hotKeys?.stop()
     model?.shutdown()
   }
 }

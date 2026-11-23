@@ -19,6 +19,10 @@ final class AppModel {
   private(set) var powerSource = PowerSource.mains
   /// Start on Login, read back from macOS.
   private(set) var loginItem = LoginItem.state
+  /// Settings → Shortcuts is capturing a combo: global hot keys are paused meanwhile.
+  var isRecordingShortcut = false
+  /// Shortcuts macOS refused to register because another app holds the combo.
+  private(set) var shortcutsInUseElsewhere: Set<ShortcutAction> = []
 
   @ObservationIgnored private let store: PreferencesStore
   @ObservationIgnored private let calendar: Calendar
@@ -153,6 +157,34 @@ final class AppModel {
   func setToggleSound(_ sound: ToggleSound) {
     update(settings.with(toggleSound: sound))
     SoundPlayer.play(sound)
+  }
+
+  // MARK: Keyboard shortcuts (ADR 0019)
+
+  /// A global shortcut fired. Each action is a user action, so it plays the toggle sound.
+  func perform(_ action: ShortcutAction) {
+    Log.app.notice("Shortcut \(action.rawValue, privacy: .public)")
+    switch action {
+    case .toggle: toggle()
+    case .startIndefinitely:
+      setMode(.indefinitely)  // restarts the session if it was already on
+      if !isOn { setOn(true, feedback: true) }
+    case .startDuration: startDuration(settings.shortcuts.durationSeconds)
+    case .stop: setOn(false, feedback: true)
+    }
+  }
+
+  func setShortcut(_ combo: KeyCombo?, for action: ShortcutAction) {
+    update(settings.with(shortcuts: settings.shortcuts.with(combo, for: action)))
+  }
+
+  func setShortcutDuration(_ seconds: TimeInterval) {
+    update(settings.with(shortcuts: settings.shortcuts.with(durationSeconds: seconds)))
+  }
+
+  func reportUnavailableShortcuts(_ actions: Set<ShortcutAction>) {
+    guard actions != shortcutsInUseElsewhere else { return }
+    shortcutsInUseElsewhere = actions
   }
 
   func setStartOnLogin(_ enabled: Bool) {
