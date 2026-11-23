@@ -1,6 +1,6 @@
 # Per-day schedule hours — Phase 8.2
 
-_Draft 2026-11-23 — awaiting owner approval._
+_Approved by owner 2026-11-23 (Approach A)._
 
 ## Intent
 
