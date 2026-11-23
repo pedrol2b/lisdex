@@ -99,4 +99,20 @@ struct SessionStatusTests {
     #expect(DurationText.spoken(7200) == "2 hours")
     #expect(DurationText.spoken(0) == "0 minutes")
   }
+
+  @Test("an app session names the app that keeps the Mac awake")
+  func appSession() {
+    let session = Session.startedByApp(now: noon.addingTimeInterval(-600))
+    func detail(_ apps: [String]) -> SessionStatus {
+      SessionStatus(
+        plan: .holding(until: nil), mode: .duration, session: session, schedule: .default,
+        now: noon, calendar: calendar, openApps: apps)
+    }
+
+    #expect(
+      detail(["Xcode"])
+        == SessionStatus(pill: .active, detail: "While Xcode is open.", progress: nil))
+    #expect(detail(["Xcode", "Visual Studio Code"]).detail == "While 2 apps are open.")
+    #expect(detail([]).detail == "While an app is open.")
+  }
 }

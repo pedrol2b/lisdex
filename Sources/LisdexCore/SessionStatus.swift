@@ -20,10 +20,12 @@ public struct SessionStatus: Equatable, Sendable {
 
   public init(
     plan: SessionPlan, mode: KeepAwakeMode, session: Session?, schedule: Schedule, now: Date,
-    calendar: Calendar
+    calendar: Calendar, openApps: [String] = []
   ) {
     let clock = ClockText(calendar: calendar)
     switch (plan, session) {
+    case (.holding, let session?) where session.origin == .app:
+      self.init(pill: .active, detail: Self.whileOpen(openApps), progress: nil)
     case (.holding(nil), let session?):
       let elapsed = now.timeIntervalSince(session.startedAt)
       let text = elapsed < 60 ? "less than a minute" : DurationText.short(elapsed)
@@ -49,6 +51,17 @@ public struct SessionStatus: Equatable, Sendable {
       self.init(pill: .waiting, detail: "Pick at least one day.", progress: nil)
     default:
       self.init(pill: .inactive, detail: "Your Mac can sleep normally.", progress: nil)
+    }
+  }
+}
+
+extension SessionStatus {
+  /// `openApps`: names of the running listed apps, in list order.
+  fileprivate static func whileOpen(_ openApps: [String]) -> String {
+    switch openApps.count {
+    case 0: "While an app is open."
+    case 1: "While \(openApps[0]) is open."
+    default: "While \(openApps.count) apps are open."
     }
   }
 }
