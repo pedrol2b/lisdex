@@ -23,12 +23,16 @@ final class AppModel {
   var isRecordingShortcut = false
   /// Shortcuts macOS refused to register because another app holds the combo.
   private(set) var shortcutsInUseElsewhere: Set<ShortcutAction> = []
+  /// Bundle IDs of running apps, kept for the app trigger. Apps already open when Lisdex starts
+  /// are recorded but never start a session (spec app-trigger).
+  private(set) var runningApps: Set<String>
 
   @ObservationIgnored private let store: PreferencesStore
   @ObservationIgnored private let calendar: Calendar
   @ObservationIgnored private var coordinator: PowerCoordinator!
   @ObservationIgnored private var clock: SessionClock!
   @ObservationIgnored private var powerMonitor: PowerSourceMonitor!
+  @ObservationIgnored private var appWatcher: AppWatcher!
 
   init(store: PreferencesStore = PreferencesStore(), calendar: Calendar = .autoupdatingCurrent) {
     self.store = store
@@ -39,6 +43,7 @@ final class AppModel {
         "Settings unreadable, using defaults: \(error.localizedDescription, privacy: .public)")
     }
     self.settings = settings
+    self.runningApps = AppWatcher.runningBundleIDs()
     self.coordinator = PowerCoordinator { [weak self] request in
       try Self.acquire(request) { self?.engineGaveUp() }
     }
@@ -47,6 +52,9 @@ final class AppModel {
       self?.powerSourceChanged(to: source)
     }
     self.powerSource = powerMonitor.current
+    self.appWatcher = AppWatcher(
+      onLaunch: { [weak self] bundleID in self?.appLaunched(bundleID) },
+      onRunningChange: { [weak self] running in self?.runningAppsChanged(running) })
   }
 
   /// Called once the app has launched: repairs Start on Login after the app moved (ADR 0017),
@@ -74,7 +82,12 @@ final class AppModel {
     SessionStatus(
       plan: plan(at: now), mode: settings.mode, session: session, schedule: settings.schedule,
       now: now,
-      calendar: calendar)
+      calendar: calendar, openApps: openTriggerApps)
+  }
+
+  /// Names of the listed apps running now, in list order (popover detail).
+  var openTriggerApps: [String] {
+    settings.appTriggers.apps.filter { runningApps.contains($0.bundleID) }.map(\.name)
   }
 
   // MARK: - Intents
@@ -84,7 +97,12 @@ final class AppModel {
   func toggle() { setOn(!isOn, feedback: true) }
 
   /// The popover's Keep Awake switch: a user action, so it plays the toggle sound.
-  func switchOn(_ isOn: Bool) { setOn(isOn, feedback: true) }
+  /// SwiftUI can re-send the switch's current value (first click on a freshly opened popover);
+  /// that must not restart the session, or an app session would quietly become the user's.
+  func switchOn(_ isOn: Bool) {
+    guard isOn != self.isOn else { return }
+    setOn(isOn, feedback: true)
+  }
 
   /// `feedback`: the user flipped the switch, so play the toggle sound once it took effect.
   /// Programmatic changes (expiry, battery cutoff, mode restarts) stay silent.
@@ -175,7 +193,45 @@ final class AppModel {
   /// Switch to Indefinitely and turn on (shortcut, quick menu).
   func startIndefinitely() {
     setMode(.indefinitely)  // restarts the session if it was already on
-    if !isOn { setOn(true, feedback: true) }
+    // Off, or on because an app opened: start a session of the user's own.
+    if !isOn || session?.origin == .app { setOn(true, feedback: true) }
+  }
+
+  // MARK: App trigger (spec app-trigger)
+
+  func addAppTrigger(_ app: AppTrigger) {
+    update(settings.with(appTriggers: settings.appTriggers.adding(app)))
+    handle(.runningChanged(running: runningApps))
+  }
+
+  func removeAppTrigger(bundleID: String) {
+    update(settings.with(appTriggers: settings.appTriggers.removing(bundleID: bundleID)))
+    handle(.runningChanged(running: runningApps))
+  }
+
+  private func appLaunched(_ bundleID: String) {
+    runningApps.insert(bundleID)
+    handle(.launched(bundleID: bundleID))
+  }
+
+  private func runningAppsChanged(_ running: Set<String>) {
+    runningApps = running
+    handle(.runningChanged(running: running))
+  }
+
+  /// App-driven on/off is programmatic: no toggle sound, no notification.
+  private func handle(_ event: AppTriggerEvent) {
+    switch AppTriggerRules.decide(event, session: session, triggers: settings.appTriggers) {
+    case .none:
+      return
+    case .startAppSession:
+      Log.app.notice("A listed app opened; Keep Awake on")
+      session = .startedByApp(now: .now)
+    case .endSession:
+      Log.app.notice("No listed app open; Keep Awake off")
+      session = nil
+    }
+    reconcile()
   }
 
   func setShortcut(_ combo: KeyCombo?, for action: ShortcutAction) {
