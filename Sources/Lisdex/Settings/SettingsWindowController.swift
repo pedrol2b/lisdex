@@ -6,8 +6,8 @@ import SwiftUI
 @MainActor
 final class SettingsWindowController {
   private let model: AppModel
-  private lazy var window: NSWindow = makeWindow(tab: initialTab)
-  private var initialTab = SettingsTab.general
+  private let navigation = SettingsNavigation()
+  private lazy var window: NSWindow = makeWindow()
 
   init(model: AppModel) {
     self.model = model
@@ -15,17 +15,17 @@ final class SettingsWindowController {
 
   func show() { show(tab: .general) }
 
-  /// `tab` applies when the window is first created (used by screenshot mode).
+  /// Shows the window on `tab`, switching tab if it is already open.
   func show(tab: SettingsTab) {
-    initialTab = tab
+    navigation.tab = tab
     model.refreshLoginItem()
     NSApp.activate()
     if !window.isVisible { window.center() }
     window.makeKeyAndOrderFront(nil)
   }
 
-  private func makeWindow(tab: SettingsTab) -> NSWindow {
-    let host = NSHostingController(rootView: SettingsView(model: model, tab: tab))
+  private func makeWindow() -> NSWindow {
+    let host = NSHostingController(rootView: SettingsView(model: model, navigation: navigation))
     host.sizingOptions = .preferredContentSize
     let window = NSWindow(contentViewController: host)
     window.title = "Lisdex Settings"
