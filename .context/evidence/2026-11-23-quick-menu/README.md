@@ -18,4 +18,6 @@ Option held), so the click kind now unions `NSApp.currentEvent.modifierFlags` wi
 `NSEvent.modifierFlags` (keys held right now). cliclick's `kd:alt c:` and a click event with only
 `.maskAlternate` set did not reproduce a held Option; a real key-down did.
 
-`make test` 84/84, `make lint` clean.
+Review fix: classification moved to Core (`StatusItemClick(isMouseClick:isRightButton:modifiers:)`, tested); live modifiers are read **only for real mouse clicks**. An accessibility press with ⌃⌥ held (VoiceOver VO-Space stand-in) opens the popover, not the quick menu. Physical Option-click still to be confirmed by the owner (the flag-less event may be a synthetic-event artifact; the fix is safe either way).
+
+`make test` 86/86, `make lint` clean.

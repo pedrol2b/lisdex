@@ -6,6 +6,25 @@ public enum StatusItemClick: Sendable {
   case option
 }
 
+extension StatusItemClick {
+  /// Classifies an activation of the status item. Only a real mouse click reads modifiers:
+  /// an accessibility press (VoiceOver VO-Space holds ⌃⌥) is always `primary`. Option wins over
+  /// Control and the right button.
+  public init(isMouseClick: Bool, isRightButton: Bool, modifiers: KeyModifiers) {
+    guard isMouseClick else {
+      self = .primary
+      return
+    }
+    if modifiers.contains(.option) {
+      self = .option
+    } else if isRightButton || modifiers.contains(.control) {
+      self = .secondary
+    } else {
+      self = .primary
+    }
+  }
+}
+
 /// What a status-item click does.
 public enum StatusItemAction: Equatable, Sendable {
   case toggle

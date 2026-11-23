@@ -70,10 +70,14 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
   }
 
   private static func click(from event: NSEvent?) -> StatusItemClick {
-    // The status item's click event may arrive without modifiers; also read the keys held now.
-    let flags = (event?.modifierFlags ?? []).union(NSEvent.modifierFlags)
-    if flags.contains(.option) { return .option }
-    return event?.type == .rightMouseUp || flags.contains(.control) ? .secondary : .primary
+    let type = event?.type
+    let isMouseClick = type == .leftMouseUp || type == .rightMouseUp
+    // The status item's click event may arrive without modifiers; for real clicks also read the
+    // keys held now. Never for other activations (VoiceOver holds ⌃⌥ while pressing).
+    let flags = isMouseClick ? (event?.modifierFlags ?? []).union(NSEvent.modifierFlags) : []
+    return StatusItemClick(
+      isMouseClick: isMouseClick, isRightButton: type == .rightMouseUp,
+      modifiers: KeyModifiers(flags))
   }
 
   // MARK: Quick menu (Option-click)

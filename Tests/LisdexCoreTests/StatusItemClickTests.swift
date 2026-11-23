@@ -27,6 +27,29 @@ struct StatusItemClickTests {
     #expect(behavior.action(for: .option) == .quickMenu)
   }
 
+  @Test(
+    "classifying a mouse click: Option beats Control and right-click; Control or right is secondary"
+  )
+  func classifyMouse() {
+    func click(right: Bool, _ modifiers: KeyModifiers) -> StatusItemClick {
+      StatusItemClick(isMouseClick: true, isRightButton: right, modifiers: modifiers)
+    }
+    #expect(click(right: false, []) == .primary)
+    #expect(click(right: true, []) == .secondary)
+    #expect(click(right: false, .control) == .secondary)
+    #expect(click(right: false, .option) == .option)
+    #expect(click(right: true, .option) == .option)
+    #expect(click(right: false, [.control, .option]) == .option)
+    #expect(click(right: false, [.command, .shift]) == .primary)
+  }
+
+  @Test("a non-mouse activation (VoiceOver VO-Space, ⌃⌥ held) is a primary click")
+  func classifyNonMouse() {
+    let press = StatusItemClick(
+      isMouseClick: false, isRightButton: false, modifiers: [.control, .option])
+    #expect(press == .primary)
+  }
+
   @Test("titles match the Settings copy")
   func titles() {
     #expect(
