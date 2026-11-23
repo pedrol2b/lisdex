@@ -20,6 +20,7 @@ Managed Macs often block installing apps (the owner's company laptop blocks Amph
 | Right-click / Control-click   | Toggle Keep Awake on/off **without changing the selected mode** (off pauses, on resumes) (default), or open the popover when swapped (v1.1). |
 | Option + either click (v1.1)  | Native menu "Keep Awake for…": 15 Minutes, 30 Minutes, 1 Hour, 2 Hours, Until I Stop, and Stop while on. A duration is remembered like a popover chip. |
 | Global shortcuts (v1.1)       | Settings → Shortcuts: Toggle, Start Indefinitely, Start for a Duration (length on its row), Stop. None by default (ADR 0019). |
+| Listed app opens (v1.2)       | Settings → Apps: when a listed app opens and Keep Awake is off, it turns on ("While Xcode is open."); when the last listed app quits it turns off, unless the user started it. Empty list by default (ADR 0020). |
 | `⌘,` in popover               | Settings window. `⌘Q` quits (releases the assertion first).                                 |
 
 The toggle click (right-click by default) in **For a Duration** mode restarts the last chosen duration. Right-click in **On a Schedule** mode toggles the master switch; when on, the schedule decides whether the Mac is actually held awake.
@@ -119,6 +120,8 @@ Changes vs. the first AI mock (`sources/design-menu-draft-2026-11-19.md`): remov
 - **General** — Start on Login · Activate Keep Awake when Lisdex launches · Notify when a timed session ends.
 - **Power** — Keep the display awake (default **on**) · Allow display sleep on battery (default off) · Stop below battery % (off / 10 / 20 %) · **Keep-awake engine**: macOS power assertions (IOKit, recommended) / `caffeinate`, with the warning text from ADR 0002 shown when `caffeinate` is selected.
 - **Appearance** — Menu bar icon variant (B Minimal / A Faithful, live preview of both states) · Accent color (yellow, orange, pink, purple, blue, mint, custom).
+- **Shortcuts** (v1.1) — global shortcuts (ADR 0019).
+- **Apps** (v1.2) — apps that keep the Mac awake while open; Add App… / ✕ remove (ADR 0020).
 - **Schedule** — full editor (per-day windows in v1.1).
 
 ## About
@@ -127,7 +130,7 @@ Version + build, GitHub link, license (MIT), "Inspired by Amphetamine", disclaim
 
 ## Out of scope (v1)
 
-Closed-lid (clamshell without power) mode, prebuilt/notarized binaries (ADR 0005), per-app triggers ("keep awake while X runs"), download/CPU triggers, Shortcuts/AppIntents, App Store build. Candidates for v1.x.
+Closed-lid (clamshell without power) mode, prebuilt/notarized binaries (ADR 0005), download/CPU triggers, Shortcuts/AppIntents, App Store build. Candidates for v1.x.
 
 ## Acceptance criteria
 

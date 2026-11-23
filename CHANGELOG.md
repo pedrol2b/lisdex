@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Settings → Apps: pick apps that keep your Mac awake while they are open. Keep Awake turns
+  on when one opens and off when the last one quits, unless you started it yourself. The
+  list starts empty.
+
+### Fixed
+
+- Clicking the Keep Awake switch right after opening the menu no longer restarts the session.
+
 ## [1.1.0] - 2026-11-23
 
 ### Added

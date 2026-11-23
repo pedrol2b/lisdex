@@ -35,6 +35,7 @@ Lisdex does one thing: stop your Mac from going to sleep. It's small enough to r
 | ∞ | **Indefinitely.** Stay awake until you turn it off. |
 | ◷ | **For a duration.** 15 min, 30 min, 1 h, 2 h or a custom time. |
 | ▦ | **On a schedule.** Choose days and hours, e.g. weekdays 09:00–18:00. |
+| ⧉ | **While an app is open.** Pick apps like Xcode or VS Code; your Mac stays awake while one is open. |
 | 🖱 | **Left-click** opens the menu. **Right-click** toggles Keep Awake and keeps your selected mode. |
 | 🔔 | **A little pop** when you switch it on or off (like Amphetamine). Pick a different sound, or turn it off. |
 | ⚙︎ | Start on login, keep the display awake, a battery cutoff, accent colours and two icon variants. |
