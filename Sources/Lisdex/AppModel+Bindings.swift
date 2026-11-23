@@ -1,3 +1,4 @@
+import Foundation
 import LisdexCore
 
 /// Settable views of the model for SwiftUI controls, bound with `Bindable(model).property`.
@@ -40,6 +41,11 @@ extension AppModel {
   var clickBehaviorSetting: StatusItemClickBehavior {
     get { settings.clickBehavior }
     set { setClickBehavior(newValue) }
+  }
+
+  var shortcutDurationSetting: TimeInterval {
+    get { settings.shortcuts.durationSeconds }
+    set { setShortcutDuration(newValue) }
   }
 
   var keepDisplayAwakeSetting: Bool {

@@ -62,6 +62,8 @@ final class HotKeyCenter {
     if let applied, applied.combos == combos, applied.paused == paused { return }
     applied = (combos, paused)
     unregisterAll()
+    Log.app.notice(
+      "Shortcuts: \(combos.count, privacy: .public) set, paused \(paused, privacy: .public)")
     guard !paused else { return }
 
     var unavailable = Set<ShortcutAction>()

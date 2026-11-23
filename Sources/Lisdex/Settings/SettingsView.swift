@@ -2,10 +2,10 @@ import LisdexCore
 import SwiftUI
 
 enum SettingsTab: String {
-  case general, power, appearance
+  case general, power, appearance, shortcuts
 }
 
-/// Settings → General · Power · Appearance (spec "Settings window").
+/// Settings → General · Power · Appearance · Shortcuts (spec "Settings window").
 struct SettingsView: View {
   static let width: CGFloat = 480
 
@@ -28,6 +28,9 @@ struct SettingsView: View {
       AppearanceSettings(model: model)
         .tabItem { Label("Appearance", systemImage: "paintpalette") }
         .tag(SettingsTab.appearance)
+      ShortcutSettingsView(model: model)
+        .tabItem { Label("Shortcuts", systemImage: "keyboard") }
+        .tag(SettingsTab.shortcuts)
     }
     .frame(width: Self.width)
     .fixedSize(horizontal: false, vertical: true)
