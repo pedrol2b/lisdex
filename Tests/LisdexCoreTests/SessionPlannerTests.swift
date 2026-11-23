@@ -60,4 +60,22 @@ struct SessionPlannerTests {
     #expect(evening.holdsAwake == false)
     #expect(evening.nextCheck == TestClock.at("2026-11-17 09:00"))
   }
+
+  @Test("an app session holds in every mode, even outside a schedule window")
+  func appSession() {
+    let session = Session.startedByApp(now: monday10)
+    let evening = TestClock.at("2026-11-16 19:00")
+
+    for mode in [KeepAwakeMode.indefinitely, .duration, .schedule] {
+      #expect(plan(session, mode, at: evening) == .holding(until: nil))
+    }
+  }
+
+  @Test("sessions remember who started them")
+  func origin() {
+    #expect(Session.start(mode: .duration, duration: 1800, now: monday10).origin == .user)
+    #expect(Session(startedAt: monday10, deadline: nil).origin == .user)
+    #expect(Session.startedByApp(now: monday10).origin == .app)
+    #expect(Session.startedByApp(now: monday10).deadline == nil)
+  }
 }

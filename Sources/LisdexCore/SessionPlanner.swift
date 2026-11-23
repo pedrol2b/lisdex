@@ -2,17 +2,30 @@ import Foundation
 
 /// A running Keep Awake session (the master switch is on). `nil` session = off.
 public struct Session: Equatable, Sendable {
+  /// Who started the session: the user, or an app from Settings → Apps opening (spec app-trigger).
+  public enum Origin: Equatable, Sendable {
+    case user
+    case app
+  }
+
   public let startedAt: Date
   /// Wall-clock end for "For a Duration"; survives sleep because it is not a countdown.
   public let deadline: Date?
+  public let origin: Origin
 
-  public init(startedAt: Date, deadline: Date?) {
+  public init(startedAt: Date, deadline: Date?, origin: Origin = .user) {
     self.startedAt = startedAt
     self.deadline = deadline
+    self.origin = origin
   }
 
   public static func start(mode: KeepAwakeMode, duration: TimeInterval, now: Date) -> Session {
     Session(startedAt: now, deadline: mode == .duration ? now.addingTimeInterval(duration) : nil)
+  }
+
+  /// A listed app opened: hold until it quits, whatever the mode.
+  public static func startedByApp(now: Date) -> Session {
+    Session(startedAt: now, deadline: nil, origin: .app)
   }
 }
 
@@ -48,6 +61,7 @@ public enum SessionPlanner {
     session: Session?, mode: KeepAwakeMode, schedule: Schedule, now: Date, calendar: Calendar
   ) -> SessionPlan {
     guard let session else { return .off }
+    if session.origin == .app { return .holding(until: nil) }
     switch mode {
     case .indefinitely:
       return .holding(until: nil)
