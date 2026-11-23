@@ -15,3 +15,7 @@ PDF/PNG exports come from `make icons` (ADR 0003).
 
 Not checked by me: the light menu bar (template tinting, same as pill/mug) and the Settings →
 Appearance card (built from `MenuBarIconVariant.allCases`), left for the owner test.
+
+## Owner test
+
+2026-11-23: owner tested the bulb icon. Merged to main.

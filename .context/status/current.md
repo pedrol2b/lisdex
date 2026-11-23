@@ -4,7 +4,7 @@ _Last updated 2026-11-22._
 
 ## Done
 
-- 2026-11-23 **Phase 7.4 Light bulb menu bar icon** (branch `feat/bulb-icon`, awaiting owner test): third Appearance choice from Figma node 10:254; `MenuBarIconVariant.bulb`, `assets/menubar/bulb-*.svg`, exports via `make icons` (87 tests). Evidence `evidence/2026-11-23-bulb-icon/`.
+- 2026-11-23 **Phase 7.4 Light bulb menu bar icon** (owner tested 2026-11-23; merged): third Appearance choice from Figma node 10:254; `MenuBarIconVariant.bulb`, `assets/menubar/bulb-*.svg`, exports via `make icons` (87 tests). Evidence `evidence/2026-11-23-bulb-icon/`.
 - 2026-11-23 **Phase 7.3 Option-click quick menu** (owner tested a physical Option-click 2026-11-23; merged): Option + either click opens "Keep Awake for…" (presets, Until I Stop, Stop while on). Core `QuickMenu` + `.option` click (86 tests). Click modifiers now also read `NSEvent.modifierFlags` (the status-item event arrives without them). Evidence `evidence/2026-11-23-quick-menu/`.
 - 2026-11-23 **Phase 7.2 keyboard shortcuts** (owner tested and approved 2026-11-23; merged): Settings → Shortcuts tab, Carbon hot keys, recorder with validation. Core `KeyCombo`/`ShortcutSettings` + tests (80). Evidence `evidence/2026-11-23-keyboard-shortcuts/`.
 - 2026-11-22 **Phase 7.1 click behavior**: Settings → General → Quick-Start a Session (right-click toggles by default, or left-click). Core `StatusItemClickBehavior` + tests (65). Spec `specs/click-behavior.md`, evidence `evidence/2026-11-22-click-behavior/`.
