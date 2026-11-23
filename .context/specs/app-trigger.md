@@ -1,6 +1,6 @@
 # App trigger — Phase 8.1
 
-_Draft 2026-11-23, waiting for owner approval. Owner picked Approach A._
+_Approved by owner 2026-11-23 (Approach A), with two changes: no turning on at Lisdex launch, and the app list starts empty._
 
 ## Intent
 
@@ -8,7 +8,7 @@ Keep the Mac awake while an app the user picked is open, without touching Lisdex
 
 ## Goals / non-goals / anti-goals
 
-- Goals: a list of apps in Settings; a listed app opening turns Keep Awake on; the last listed app quitting turns it off; no permission prompt.
+- Goals: a list of apps in Settings, empty by default — the user picks every app; a listed app opening turns Keep Awake on; the last listed app quitting turns it off; no permission prompt.
 - Non-goals: per-app settings (display awake, mode) — the existing global settings apply; matching by window title or "app is frontmost"; a separate icon for app-triggered sessions (owner: same icon as today).
 - Anti-goals: Lisdex turning off a session the user started themselves; Lisdex fighting the user (turning back on right after they switched off).
 
@@ -37,7 +37,7 @@ Keep the Mac awake while an app the user picked is open, without touching Lisdex
 - `SessionStatus` for an app session: "While Xcode is open." (first running listed app by list order; "While 2 apps are open." for more).
 
 **App**
-- `AppWatcher` (`@MainActor`) — `NSWorkspace` `didLaunchApplication` / `didTerminateApplication`, plus `runningApplications` at start; matches by bundle ID; reports to `AppModel`. No permission needed.
+- `AppWatcher` (`@MainActor`) — `NSWorkspace` `didLaunchApplication` / `didTerminateApplication`; on a quit it checks `runningApplications` for other listed apps; matches by bundle ID; reports to `AppModel`. No permission needed.
 - `AppModel` applies `AppTriggerRules` and reconciles as usual. No toggle sound for app-driven changes (programmatic, like expiry).
 - Settings: new **Apps** tab (`app.badge` symbol): list of picked apps with icon and name, `+` opens an `NSOpenPanel` on /Applications limited to apps, `−` removes. Empty state: one line explaining what it does.
 
@@ -45,9 +45,9 @@ Keep the Mac awake while an app the user picked is open, without touching Lisdex
 - ADR 0020 (app trigger flips the switch; session origin).
 - Spec `lisdex-v1.md` interactions/settings sections gain the Apps tab.
 
-## My calls (owner can override)
+## Calls (approved by owner 2026-11-23)
 
-- **Lisdex starts while a listed app is already open** → counts as a launch: Keep Awake turns on. "Activate Keep Awake when Lisdex launches" wins if set (session is the user's).
+- **Lisdex starts while a listed app is already open** → nothing happens (owner, 2026-11-23). Only a launch seen while Lisdex runs turns Keep Awake on.
 - **The user changes mode, taps a duration chip or uses a shortcut during an app session** → it becomes a normal user session in that mode; quitting the app no longer turns it off. (Any deliberate user action makes it theirs.)
 - **Switch turned on by the user while a listed app is open** → user session; quitting the app leaves it on.
 - **Battery cutoff ends an app session** → same as a manual off: stays off until a listed app launches again.
