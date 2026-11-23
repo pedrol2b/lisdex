@@ -26,6 +26,8 @@ public struct AppSettings: Codable, Equatable, Sendable {
   /// Play a short sound when the user switches Keep Awake on or off (like Amphetamine).
   public let playsToggleSound: Bool
   public let toggleSound: ToggleSound
+  /// Which status-item click toggles Keep Awake (the other opens the popover).
+  public let clickBehavior: StatusItemClickBehavior
   /// Bundle path where the user turned Start on Login on, `nil` when off (ADR 0017). macOS
   /// still owns the on/off truth; this only detects that the app moved since.
   public let startOnLoginPath: String?
@@ -44,6 +46,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
     accent: AccentChoice = .default,
     playsToggleSound: Bool = true,
     toggleSound: ToggleSound = .default,
+    clickBehavior: StatusItemClickBehavior = .default,
     startOnLoginPath: String? = nil
   ) {
     self.mode = mode
@@ -59,6 +62,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
     self.accent = accent
     self.playsToggleSound = playsToggleSound
     self.toggleSound = toggleSound
+    self.clickBehavior = clickBehavior
     self.startOnLoginPath = startOnLoginPath
   }
 
@@ -98,6 +102,9 @@ public struct AppSettings: Codable, Equatable, Sendable {
     toggleSound =
       (try? container.decodeIfPresent(ToggleSound.self, forKey: .toggleSound))
       ?? fallback.toggleSound
+    clickBehavior =
+      (try? container.decodeIfPresent(StatusItemClickBehavior.self, forKey: .clickBehavior))
+      ?? fallback.clickBehavior
     startOnLoginPath = try? container.decodeIfPresent(String.self, forKey: .startOnLoginPath)
   }
 
@@ -116,6 +123,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
     accent: AccentChoice? = nil,
     playsToggleSound: Bool? = nil,
     toggleSound: ToggleSound? = nil,
+    clickBehavior: StatusItemClickBehavior? = nil,
     startOnLoginPath: String?? = nil
   ) -> AppSettings {
     AppSettings(
@@ -132,6 +140,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
       accent: accent ?? self.accent,
       playsToggleSound: playsToggleSound ?? self.playsToggleSound,
       toggleSound: toggleSound ?? self.toggleSound,
+      clickBehavior: clickBehavior ?? self.clickBehavior,
       startOnLoginPath: startOnLoginPath ?? self.startOnLoginPath
     )
   }
