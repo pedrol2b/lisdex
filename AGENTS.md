@@ -13,6 +13,7 @@ Open-source macOS menu bar app (Swift 6, SwiftPM, AppKit + SwiftUI) that keeps t
 
 - `make test` — unit tests (must pass before you finish).
 - `make app` / `make run` — build and launch `build/Lisdex.app`.
+- `make e2e` — end-to-end smoke test of the built app (links, schedule, app trigger, crash); also runs in CI.
 - `make lint` / `make format` — swift-format check / fix. `make icons` — regenerate icon exports from SVG.
 
 ## Rules

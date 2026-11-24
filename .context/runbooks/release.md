@@ -12,10 +12,9 @@ rm /tmp/lisdex-tap-key /tmp/lisdex-tap-key.pub
 
 ## Each release
 
-1. `make test`, then a local smoke test with `make install`:
-   - toggle Keep Awake on and check `pmset -g assertions | grep -i lisdex`;
-   - toggle it off and check the assertion is gone;
-   - repeat with the caffeinate engine.
+1. `make test` and `make e2e` (links, timed session, kill -9 with both engines, schedule, app
+   trigger, settings; also run by CI). Then the manual checks it can't do: see
+   `.context/runbooks/manual-test.md`.
 2. `Support/Info.plist`: set `CFBundleShortVersionString` to `X.Y.Z` (bump `CFBundleVersion` too).
 3. `CHANGELOG.md`: move `[Unreleased]` items under `## [X.Y.Z] - YYYY-MM-DD` and update the
    links at the bottom.

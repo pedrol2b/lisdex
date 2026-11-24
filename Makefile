@@ -1,7 +1,7 @@
 APP := build/Lisdex.app
 INSTALL_DIR := $(HOME)/Applications
 
-.PHONY: build test coverage format lint app run install icons screenshots clean
+.PHONY: build test coverage format lint app run install icons screenshots e2e clean
 
 # Quit a running instance and wait until it has fully exited (open fails otherwise).
 QUIT_APP := pkill -x Lisdex; while pgrep -x Lisdex >/dev/null; do sleep 0.1; done; sleep 0.5; true
@@ -43,6 +43,9 @@ icons: ## Regenerate icon exports from the SVG sources
 
 screenshots: app ## Capture README screenshots into assets/screenshots/
 	./scripts/screenshots.sh
+
+e2e: app ## End-to-end smoke test of the built app (links, schedule, app trigger, crash)
+	./scripts/e2e.sh
 
 clean:
 	rm -rf .build build

@@ -1,0 +1,51 @@
+name: End-to-End (macOS)
+
+on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - '.github/workflows/e2e.yml'
+      - 'Package.swift'
+      - 'Sources/**'
+      - 'Support/**'
+      - 'scripts/build-app.sh'
+      - 'scripts/e2e.sh'
+      - 'Makefile'
+  push:
+    branches: [main, develop]
+    paths:
+      - '.github/workflows/e2e.yml'
+      - 'Package.swift'
+      - 'Sources/**'
+      - 'Support/**'
+      - 'scripts/build-app.sh'
+      - 'scripts/e2e.sh'
+      - 'Makefile'
+  merge_group:
+    types: [checks_requested]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    name: Smoke test Lisdex.app
+    runs-on: macos-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Show toolchain
+        run: swift --version
+
+      # Builds the app (ad-hoc signed) and runs scripts/e2e.sh: lisdex:// links, a timed
+      # session ending, kill -9 releasing the assertion and caffeinate, the schedule window,
+      # an app trigger (TextEdit) and settings persistence, all checked via pmset.
+      - name: Run end-to-end smoke test
+        run: make e2e
