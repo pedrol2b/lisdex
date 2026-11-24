@@ -133,7 +133,7 @@ Version + build, GitHub link, license (MIT), "Inspired by Amphetamine", disclaim
 
 ## Out of scope (v1)
 
-Closed-lid (clamshell without power) mode, prebuilt/notarized binaries (ADR 0005), download/CPU triggers, Shortcuts/AppIntents, App Store build. Candidates for v1.x.
+Closed-lid (clamshell without power) mode, prebuilt/notarized binaries (ADR 0005), download/CPU triggers, App Store build. Candidates for v1.x. (Shortcuts actions and a Focus filter shipped in 1.2 for certificate-signed builds; ADR 0022.)
 
 ## Acceptance criteria
 

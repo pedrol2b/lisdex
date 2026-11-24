@@ -66,6 +66,8 @@ The `Makefile` contains the common tasks:
 - `make coverage`: run tests with code coverage.
 - `make app`: assemble `build/Lisdex.app` (ad-hoc signed).
 - `make run`: build the app and launch it.
+- `make e2e`: build the app and run the end-to-end smoke test (`scripts/e2e.sh`). It quits a
+  running Lisdex and restores your settings afterwards.
 - `make install`: copy the app to `~/Applications` and launch it.
 - `make clean`: remove build artifacts.
 
