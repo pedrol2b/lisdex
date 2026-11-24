@@ -28,6 +28,8 @@ final class AppModel {
   /// Bundle IDs of running apps, kept for the app trigger. Apps already open when Lisdex starts
   /// are recorded but never start a session (spec app-trigger).
   private(set) var runningApps: Set<String>
+  /// Lisdex may post the jiggler's mouse events (Accessibility permission, ADR 0024).
+  private(set) var jigglerPermitted = PostEventPermission.isGranted
 
   @ObservationIgnored private let store: PreferencesStore
   @ObservationIgnored private let calendar: Calendar
@@ -35,6 +37,8 @@ final class AppModel {
   @ObservationIgnored private var clock: SessionClock!
   @ObservationIgnored private var powerMonitor: PowerSourceMonitor!
   @ObservationIgnored private var appWatcher: AppWatcher!
+  @ObservationIgnored private let jiggler = Jiggler()
+  @ObservationIgnored private var askedForJigglerPermission = false
 
   init(store: PreferencesStore = PreferencesStore(), calendar: Calendar = .autoupdatingCurrent) {
     self.store = store
@@ -316,6 +320,37 @@ final class AppModel {
     refreshLoginItem()
   }
 
+  // MARK: - Mouse jiggler
+
+  /// The jiggler is on and Keep Awake holds, but macOS doesn't let Lisdex post events.
+  var jigglerNeedsPermission: Bool {
+    settings.jiggler.isEnabled && currentPlan.holdsAwake && !jigglerPermitted
+  }
+
+  func setJiggler(_ jiggler: JigglerSettings) {
+    update(settings.with(jiggler: jiggler))
+    reconcile()
+  }
+
+  /// Re-reads the permission (the user may have changed it in System Settings).
+  func refreshJigglerPermission() {
+    let granted = PostEventPermission.isGranted
+    guard granted != jigglerPermitted else { return }
+    jigglerPermitted = granted
+    Log.jiggler.notice(
+      "Accessibility permission \(granted ? "granted" : "missing", privacy: .public)")
+    reconcile()
+  }
+
+  /// "Open Accessibility Settings": the first time, ask macOS to list Lisdex there.
+  func requestJigglerPermission() {
+    if !askedForJigglerPermission {
+      askedForJigglerPermission = true
+      PostEventPermission.request()
+    }
+    PostEventPermission.openSettings()
+  }
+
   /// Re-reads Start on Login (the user may have changed it in System Settings).
   func refreshLoginItem() { loginItem = LoginItem.state }
 
@@ -343,6 +378,7 @@ final class AppModel {
     currentPlan = .off
     clock.schedule(at: nil)
     try? coordinator.apply(nil)
+    jiggler.run(nil)
   }
 
   // MARK: - Reconcile
@@ -379,6 +415,8 @@ final class AppModel {
     }
     currentPlan = plan
     clock.schedule(at: plan.nextCheck)
+    let jiggles = settings.jiggler.isEnabled && plan.holdsAwake && jigglerPermitted
+    jiggler.run(jiggles ? settings.jiggler : nil)
     Log.app.notice(
       "Plan \(String(describing: plan), privacy: .public), mode \(self.settings.mode.rawValue, privacy: .public), engine \(self.settings.engine.rawValue, privacy: .public)"
     )

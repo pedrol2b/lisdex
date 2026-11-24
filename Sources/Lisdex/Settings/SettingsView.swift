@@ -124,6 +124,7 @@ private struct PowerSettings: View {
           ForEach(BatteryThreshold.allCases, id: \.self) { Text($0.title).tag($0) }
         }
       }
+      JigglerSection(model: model)
       Section("Keep-awake engine") {
         Picker("Engine", selection: Bindable(model).engineSetting) {
           ForEach(KeepAwakeEngine.allCases, id: \.self) { Text($0.title).tag($0) }

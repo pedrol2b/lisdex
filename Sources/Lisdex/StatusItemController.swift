@@ -120,6 +120,7 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
       popover.performClose(nil)
     } else {
       model.refreshLoginItem()
+      model.refreshJigglerPermission()
       popover.contentViewController = makeContent()
       NSApp.activate()
       popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
