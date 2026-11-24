@@ -53,6 +53,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
   }
 
+  /// The user may have granted or removed the jiggler's permission in System Settings.
+  func applicationDidBecomeActive(_ notification: Notification) {
+    model?.refreshJigglerPermission()
+  }
+
   func applicationWillTerminate(_ notification: Notification) {
     hotKeys?.stop()
     model?.shutdown()

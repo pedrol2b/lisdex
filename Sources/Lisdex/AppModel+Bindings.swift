@@ -63,6 +63,21 @@ extension AppModel {
     set { setBatteryStopThreshold(newValue) }
   }
 
+  var jigglerEnabledSetting: Bool {
+    get { settings.jiggler.isEnabled }
+    set { setJiggler(settings.jiggler.with(isEnabled: newValue)) }
+  }
+
+  var jigglerIdleThresholdSetting: Double {
+    get { settings.jiggler.idleThreshold }
+    set { setJiggler(settings.jiggler.with(idleThreshold: newValue)) }
+  }
+
+  var jigglerIntervalSetting: Double {
+    get { settings.jiggler.interval }
+    set { setJiggler(settings.jiggler.with(interval: newValue)) }
+  }
+
   var engineSetting: KeepAwakeEngine {
     get { settings.engine }
     set { setEngine(newValue) }

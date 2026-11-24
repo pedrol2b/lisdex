@@ -19,6 +19,7 @@ final class SettingsWindowController {
   func show(tab: SettingsTab) {
     navigation.tab = tab
     model.refreshLoginItem()
+    model.refreshJigglerPermission()
     NSApp.activate()
     if !window.isVisible { window.center() }
     window.makeKeyAndOrderFront(nil)
