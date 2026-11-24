@@ -32,6 +32,8 @@ public struct AppSettings: Codable, Equatable, Sendable {
   public let shortcuts: ShortcutSettings
   /// Apps that keep the Mac awake while open (spec app-trigger). Empty by default.
   public let appTriggers: AppTriggers
+  /// Mouse jiggler for chat apps (spec mouse-jiggler). Off by default.
+  public let jiggler: JigglerSettings
   /// Bundle path where the user turned Start on Login on, `nil` when off (ADR 0017). macOS
   /// still owns the on/off truth; this only detects that the app moved since.
   public let startOnLoginPath: String?
@@ -53,6 +55,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
     clickBehavior: StatusItemClickBehavior = .default,
     shortcuts: ShortcutSettings = .default,
     appTriggers: AppTriggers = .empty,
+    jiggler: JigglerSettings = .default,
     startOnLoginPath: String? = nil
   ) {
     self.mode = mode
@@ -71,6 +74,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
     self.clickBehavior = clickBehavior
     self.shortcuts = shortcuts
     self.appTriggers = appTriggers
+    self.jiggler = jiggler
     self.startOnLoginPath = startOnLoginPath
   }
 
@@ -119,6 +123,8 @@ public struct AppSettings: Codable, Equatable, Sendable {
     appTriggers =
       (try? container.decodeIfPresent(AppTriggers.self, forKey: .appTriggers))
       ?? fallback.appTriggers
+    jiggler =
+      (try? container.decodeIfPresent(JigglerSettings.self, forKey: .jiggler)) ?? fallback.jiggler
     startOnLoginPath = try? container.decodeIfPresent(String.self, forKey: .startOnLoginPath)
   }
 
@@ -140,6 +146,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
     clickBehavior: StatusItemClickBehavior? = nil,
     shortcuts: ShortcutSettings? = nil,
     appTriggers: AppTriggers? = nil,
+    jiggler: JigglerSettings? = nil,
     startOnLoginPath: String?? = nil
   ) -> AppSettings {
     AppSettings(
@@ -159,6 +166,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
       clickBehavior: clickBehavior ?? self.clickBehavior,
       shortcuts: shortcuts ?? self.shortcuts,
       appTriggers: appTriggers ?? self.appTriggers,
+      jiggler: jiggler ?? self.jiggler,
       startOnLoginPath: startOnLoginPath ?? self.startOnLoginPath
     )
   }

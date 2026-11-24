@@ -75,4 +75,18 @@ struct AppSettingsTests {
     #expect(unknown.batteryStopThreshold == .off)
     #expect(unknown.accent == .gold)
   }
+
+  @Test("jiggler settings round-trip; a bad value falls back without losing the rest")
+  func jigglerRoundTrip() throws {
+    #expect(AppSettings.default.jiggler == .default)
+    let settings = AppSettings.default.with(
+      jiggler: JigglerSettings(isEnabled: true, idleThreshold: 120, interval: 30))
+    let data = try JSONEncoder().encode(settings)
+    #expect(try JSONDecoder().decode(AppSettings.self, from: data) == settings)
+
+    let bad = #"{"jiggler": 5, "mode": "schedule"}"#
+    let decoded = try JSONDecoder().decode(AppSettings.self, from: Data(bad.utf8))
+    #expect(decoded.jiggler == .default)
+    #expect(decoded.mode == .schedule)
+  }
 }
