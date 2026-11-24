@@ -49,7 +49,7 @@ Filled vs outlined stays as today: filled while the plan holds the Mac awake.
   `pill-duration-active` style (`<variant>-<badge>-<state>`); `accessibilityLabel` adds the mode
   when badged ("Lisdex — Keep Awake on, for a duration").
 
-**Assets.** 18 SVGs `assets/menubar/<pill|mug|bulb>-<indefinitely|duration|schedule>-<active|inactive>.svg`
+**Assets.** Badge: 9 pt circle, top-right, 0.75 pt moat (7 pt was unreadable; owner 2026-11-24). 18 SVGs `assets/menubar/<pill|mug|bulb>-<indefinitely|duration|schedule>-<active|inactive>.svg`
 exported from the component set (pill 20 × 18, mug and bulb 18 × 18), rendered by
 `scripts/export-icons.sh`, copied by `build-app.sh`.
 

@@ -21,7 +21,10 @@ it adapts to light, dark and highlighted menu bars. Many sessions don't follow t
 - 18 static template glyphs in `assets/menubar/<variant>-<badge>-<state>.svg`, exported from the
   component set and rendered by `make icons` (ADR 0003). The pill keeps the shipped 20 × 18 pt
   artwork in every variant (Figma updated 2026-11-24), so turning badges on never changes the
-  icon's width; mug and bulb stay 18 × 18.
+  icon's width; mug and bulb stay 18 × 18. The badge is a 9 pt circle at the top-right corner
+  with a 0.75 pt moat: Figma's first 7 pt badge was unreadable in the owner's menu bar
+  (2026-11-24). If 9 pt still reads poorly, the fallback is a 10 pt badge beside the icon
+  (canvas 31 × 18; Figma study frame 47:2333).
 - The menu's icon tile and the Settings icon picker stay unbadged; the jiggler never changes the
   icon. VoiceOver: "Lisdex — Keep Awake on, for a duration".
 

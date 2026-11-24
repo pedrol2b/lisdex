@@ -24,4 +24,7 @@
 
 - Settings → Appearance: switch + caption under the icon picker (screenshot in
   `assets/screenshots/settings-appearance.png`).
-- Owner to check: the icons in light and dark menu bars.
+- Owner check 1: the 7 pt badge was too small to read in the menu bar. Study (Figma 47:2333)
+  compared 7 / 9 / 11 pt overlapping and 10 pt beside; owner picked 9 pt overlapping first
+  (10 pt beside if 9 pt isn't enough). Components rebuilt at 9 pt, SVGs re-exported.
+- Owner to check: the 9 pt icons in light and dark menu bars.
