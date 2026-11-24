@@ -31,7 +31,7 @@ The toggle click (right-click by default) in **For a Duration** mode restarts th
 
 - Inactive = outlined, active = filled with the detail knocked out (`assets/menubar/`, ADR 0015).
 - Rendered as `NSImage` template (`isTemplate = true`), 18 × 18 pt, identical canvas for both states, so macOS tints it for light/dark/tinted menu bars.
-- **Pill** (capsule, 16 × 10 pt glyph) is the default and matches the app icon. **Coffee mug** (16 × 14 pt) and **Light bulb** (v1.1) are selectable in Settings → Appearance → Menu bar icon. The app icon is always the pill.
+- **Pill** (capsule, 16 × 10 pt glyph) is the default and matches the app icon. **Coffee mug** (16 × 14 pt) and **Light bulb** (v1.1) are selectable in Settings → Appearance → Menu bar icon. An optional mode badge (∞ / clock / calendar, how the current session ends; off by default) is in the same section (ADR 0025, spec `menu-bar-mode-badge.md`). The app icon is always the pill.
 - Accessibility label: "Lisdex — Keep Awake on/off".
 - "Armed but idle" (schedule mode on, outside a window): inactive icon (v1). A dedicated third glyph is an open question.
 

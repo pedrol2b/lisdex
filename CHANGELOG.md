@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Settings → Appearance → Show the mode on the icon: a small ∞, clock or calendar on the menu bar
+  icon shows how the current session ends. Off by default.
+
 ## [1.2.0] - 2026-11-24
 
 ### Added

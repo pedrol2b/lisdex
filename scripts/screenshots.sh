@@ -35,7 +35,7 @@ BASE="\"engine\":\"iokit\",\"keepDisplayAwake\":true,\"iconVariant\":\"pill\",\"
 shot popover-duration "{$BASE,\"mode\":\"duration\",\"duration\":3600,\"activateOnLaunch\":true}" popover
 shot popover-schedule "{$BASE,\"mode\":\"schedule\",\"activateOnLaunch\":true}" popover
 shot popover-inactive "{$BASE,\"mode\":\"indefinitely\",\"activateOnLaunch\":false}" popover
-shot settings-appearance "{$BASE,\"mode\":\"indefinitely\",\"activateOnLaunch\":false}" appearance
+shot settings-appearance "{$BASE,\"mode\":\"indefinitely\",\"activateOnLaunch\":false,\"showsModeBadge\":true}" appearance
 shot settings-power "{$BASE,\"mode\":\"indefinitely\",\"activateOnLaunch\":false}" power
 shot settings-schedule "{$BASE,\"mode\":\"schedule\",\"activateOnLaunch\":false}" schedule
 shot settings-apps "{$BASE,\"mode\":\"indefinitely\",\"activateOnLaunch\":false}" apps
