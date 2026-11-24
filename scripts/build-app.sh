@@ -9,6 +9,29 @@ APP="$ROOT/build/Lisdex.app"
 cd "$ROOT"
 # SWIFT_BUILD_FLAGS: extra flags, e.g. "--disable-sandbox" inside Homebrew's build sandbox.
 read -r -a EXTRA <<< "${SWIFT_BUILD_FLAGS:-}"
+
+# The macOS 27 SDK turns SwiftUI's @State into a macro whose plugin ships only with Xcode, so with
+# just the Command Line Tools the build fails. Fall back to their newest macOS 26 SDK (the app
+# targets macOS 14, so nothing is lost) until the plugin ships with them too.
+if [ -z "${SDKROOT:-}" ]; then
+  SDK_PATH="$(xcrun --sdk macosx --show-sdk-path)"
+  SDK_MAJOR="$(xcrun --sdk macosx --show-sdk-version | cut -d. -f1)"
+  SWIFT_BIN="$(dirname "$(xcrun --find swift)")"
+  PLATFORM_PLUGINS="$(xcrun --sdk macosx --show-sdk-platform-path 2>/dev/null || true)/Developer/usr/lib/swift/host/plugins"
+  if [ "$SDK_MAJOR" -ge 27 ] \
+    && [ ! -e "$PLATFORM_PLUGINS/libSwiftUIMacros.dylib" ] \
+    && [ ! -e "$SWIFT_BIN/../lib/swift/host/plugins/libSwiftUIMacros.dylib" ]; then
+    FALLBACK_SDK="$(find "$(dirname "$SDK_PATH")" -maxdepth 1 -name 'MacOSX26*.sdk' | sort -V | tail -1)"
+    if [ -z "$FALLBACK_SDK" ]; then
+      echo "error: the macOS $SDK_MAJOR SDK needs SwiftUI's macro plugin, which comes with Xcode." >&2
+      echo "Install Xcode (or Command Line Tools that include a macOS 26 SDK) and try again." >&2
+      exit 1
+    fi
+    export SDKROOT="$FALLBACK_SDK"
+    echo "Using $(basename "$FALLBACK_SDK"): SwiftUI's macro plugin isn't in these Command Line Tools"
+  fi
+fi
+
 IDENTITY="${CODESIGN_IDENTITY:--}"
 
 # Shortcuts actions and the Focus filter (spec shortcuts-focus, ADR 0022) run only in an app
@@ -69,7 +92,7 @@ if [ -n "$INTENTS_PROCESSOR" ]; then
     --output "$APP/Contents/Resources" \
     --toolchain-dir "$TOOLCHAIN" \
     --module-name Lisdex \
-    --sdk-root "$(xcrun --sdk macosx --show-sdk-path)" \
+    --sdk-root "${SDKROOT:-$(xcrun --sdk macosx --show-sdk-path)}" \
     --xcode-version "$(xcodebuild -version | awk '/Build version/ {print $3}')" \
     --platform-family macOS \
     --deployment-target 14.0 \
