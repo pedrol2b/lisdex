@@ -22,18 +22,25 @@ public enum MenuBarIconVariant: String, Codable, CaseIterable, Sendable {
 public struct MenuBarIcon: Equatable, Sendable {
   public let variant: MenuBarIconVariant
   public let isActive: Bool
+  /// The mode badge, when Settings → Appearance shows it (ADR 0025); `nil` = plain icon.
+  public let badge: MenuBarBadge?
 
-  public init(variant: MenuBarIconVariant, isActive: Bool) {
+  public init(variant: MenuBarIconVariant, isActive: Bool, badge: MenuBarBadge? = nil) {
     self.variant = variant
     self.isActive = isActive
+    self.badge = badge
   }
 
   /// Base name of the template PDF bundled in `Contents/Resources` (from `assets/menubar/`).
   public var resourceName: String {
-    "\(variant.rawValue)-\(isActive ? "active" : "inactive")"
+    let state = isActive ? "active" : "inactive"
+    guard let badge else { return "\(variant.rawValue)-\(state)" }
+    return "\(variant.rawValue)-\(badge.rawValue)-\(state)"
   }
 
   public var accessibilityLabel: String {
-    "Lisdex — Keep Awake \(isActive ? "on" : "off")"
+    let base = "Lisdex — Keep Awake \(isActive ? "on" : "off")"
+    guard let badge else { return base }
+    return "\(base), \(badge.spokenName)"
   }
 }

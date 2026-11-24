@@ -149,6 +149,7 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
     let icon = model.menuBarIcon
     guard icon != renderedIcon else { return }
     renderedIcon = icon
+    Log.app.debug("Menu bar icon \(icon.resourceName, privacy: .public)")
     statusItem.button?.image = MenuBarImages.image(for: icon)
     // System-dimmed glyph while inactive, like other keep-awake menu bar apps.
     statusItem.button?.appearsDisabled = !icon.isActive

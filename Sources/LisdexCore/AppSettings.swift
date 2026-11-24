@@ -13,6 +13,8 @@ public struct AppSettings: Codable, Equatable, Sendable {
   public let engine: KeepAwakeEngine
   public let keepDisplayAwake: Bool
   public let iconVariant: MenuBarIconVariant
+  /// Badge the menu bar icon with how the session ends (ADR 0025). Off by default.
+  public let showsModeBadge: Bool
   /// Last chosen "For a Duration" length, in seconds (right-click restarts it).
   public let duration: TimeInterval
   public let schedule: Schedule
@@ -43,6 +45,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
     engine: KeepAwakeEngine = .iokit,
     keepDisplayAwake: Bool = true,
     iconVariant: MenuBarIconVariant = .default,
+    showsModeBadge: Bool = false,
     duration: TimeInterval = 3600,
     schedule: Schedule = .default,
     activateOnLaunch: Bool = false,
@@ -62,6 +65,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
     self.engine = engine
     self.keepDisplayAwake = keepDisplayAwake
     self.iconVariant = iconVariant
+    self.showsModeBadge = showsModeBadge
     self.duration = duration
     self.schedule = schedule
     self.activateOnLaunch = activateOnLaunch
@@ -125,6 +129,9 @@ public struct AppSettings: Codable, Equatable, Sendable {
       ?? fallback.appTriggers
     jiggler =
       (try? container.decodeIfPresent(JigglerSettings.self, forKey: .jiggler)) ?? fallback.jiggler
+    showsModeBadge =
+      (try? container.decodeIfPresent(Bool.self, forKey: .showsModeBadge))
+      ?? fallback.showsModeBadge
     startOnLoginPath = try? container.decodeIfPresent(String.self, forKey: .startOnLoginPath)
   }
 
@@ -134,6 +141,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
     engine: KeepAwakeEngine? = nil,
     keepDisplayAwake: Bool? = nil,
     iconVariant: MenuBarIconVariant? = nil,
+    showsModeBadge: Bool? = nil,
     duration: TimeInterval? = nil,
     schedule: Schedule? = nil,
     activateOnLaunch: Bool? = nil,
@@ -154,6 +162,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
       engine: engine ?? self.engine,
       keepDisplayAwake: keepDisplayAwake ?? self.keepDisplayAwake,
       iconVariant: iconVariant ?? self.iconVariant,
+      showsModeBadge: showsModeBadge ?? self.showsModeBadge,
       duration: duration ?? self.duration,
       schedule: schedule ?? self.schedule,
       activateOnLaunch: activateOnLaunch ?? self.activateOnLaunch,

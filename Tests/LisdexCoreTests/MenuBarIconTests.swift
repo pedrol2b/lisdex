@@ -24,6 +24,30 @@ struct MenuBarIconTests {
     #expect(MenuBarIcon(variant: variant, isActive: isActive).resourceName == expected)
   }
 
+  @Test(
+    "badged resource names are <variant>-<badge>-<state>",
+    arguments: [
+      (MenuBarIconVariant.pill, true, MenuBarBadge.duration, "pill-duration-active"),
+      (MenuBarIconVariant.mug, false, MenuBarBadge.schedule, "mug-schedule-inactive"),
+      (MenuBarIconVariant.bulb, true, MenuBarBadge.indefinitely, "bulb-indefinitely-active"),
+    ])
+  func badgedResourceNames(
+    variant: MenuBarIconVariant, isActive: Bool, badge: MenuBarBadge, expected: String
+  ) {
+    #expect(
+      MenuBarIcon(variant: variant, isActive: isActive, badge: badge).resourceName == expected)
+  }
+
+  @Test("a badged icon's accessibility label adds the mode")
+  func badgedAccessibilityLabel() {
+    #expect(
+      MenuBarIcon(variant: .pill, isActive: true, badge: .duration).accessibilityLabel
+        == "Lisdex — Keep Awake on, for a duration")
+    #expect(
+      MenuBarIcon(variant: .bulb, isActive: false, badge: .schedule).accessibilityLabel
+        == "Lisdex — Keep Awake off, on a schedule")
+  }
+
   @Test("Settings → Appearance offers pill, coffee mug and light bulb, in that order")
   func choices() {
     #expect(MenuBarIconVariant.allCases == [.pill, .mug, .bulb])
