@@ -38,20 +38,25 @@ Lisdex does one thing: stop your Mac from going to sleep. It's small enough to r
 | ⧉ | **While an app is open.** Pick apps like Xcode or VS Code; your Mac stays awake while one is open. |
 | ◐ | **Focus modes and Shortcuts.** Links like `lisdex://on` work from any Shortcuts automation; native actions and a Focus filter when you build with a signing certificate ([details](#shortcuts-and-focus)). |
 | ⌖ | **Stay available in chat apps.** An optional mouse jiggler keeps Teams and Slack from marking you Away while Keep Awake is on ([details](#mouse-jiggler)). |
-| 🖱 | **Left-click** opens the menu. **Right-click** toggles Keep Awake and keeps your selected mode. |
+| 🖱 | **Left-click** opens the menu. **Right-click** toggles Keep Awake and keeps your selected mode (or swap them). **Option-click** for a quick menu: 15 min to 2 h. |
+| ⌘ | **Keyboard shortcuts.** Toggle, start or stop Keep Awake from any app; none are set until you pick them. |
 | 🔔 | **A little pop** when you switch it on or off (like Amphetamine). Pick a different sound, or turn it off. |
-| ⚙︎ | Start on login, keep the display awake, a battery cutoff, accent colours and two icon variants. |
+| ⚙︎ | Start on login, keep the display awake, a battery cutoff and accent colours. |
 
 ## Screenshots
 
 <p align="center">
   <img src="assets/screenshots/popover-inactive.png" width="31%" alt="Lisdex menu, inactive, mode Indefinitely">
   <img src="assets/screenshots/popover-duration.png" width="31%" alt="Lisdex menu, active for a duration of 1 hour with progress">
-  <img src="assets/screenshots/popover-schedule.png" width="31%" alt="Lisdex menu, schedule mode Monday to Friday 9:00 to 18:00">
+  <img src="assets/screenshots/popover-schedule.png" width="31%" alt="Lisdex menu, schedule mode Monday to Thursday 9:00 to 18:00 and Friday 9:00 to 15:00">
 </p>
 <p align="center">
-  <img src="assets/screenshots/settings-power.png" width="48%" alt="Settings, Power tab: display, battery cutoff and keep-awake engine">
-  <img src="assets/screenshots/settings-appearance.png" width="48%" alt="Settings, Appearance tab: pill or coffee mug menu bar icon and accent colours">
+  <img src="assets/screenshots/settings-schedule.png" width="48%" alt="Settings, Schedule tab: hours for each day, Friday until 15:00">
+  <img src="assets/screenshots/settings-power.png" width="48%" alt="Settings, Power tab: display, battery cutoff, mouse jiggler for chat apps and keep-awake engine">
+</p>
+<p align="center">
+  <img src="assets/screenshots/settings-apps.png" width="48%" alt="Settings, Apps tab: Xcode and Visual Studio Code keep the Mac awake while open">
+  <img src="assets/screenshots/settings-appearance.png" width="48%" alt="Settings, Appearance tab: pill, coffee mug or light bulb menu bar icon and accent colours">
 </p>
 
 ### How it keeps your Mac awake

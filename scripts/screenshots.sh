@@ -28,10 +28,15 @@ shot() {
   echo "captured $1"
 }
 
-BASE='"engine":"iokit","keepDisplayAwake":true,"iconVariant":"pill","accent":"gold","schedule":{"start":540,"end":1080,"days":[2,3,4,5,6]},"notifyOnSessionEnd":true,"playsToggleSound":false'
+# Weekdays 09:00–18:00 with a short Friday (weekday 6) until 15:00.
+SCHEDULE='"schedule":{"days":[2,3,4,5,6],"start":540,"end":1080,"hours":{"6":{"start":540,"end":900}}}'
+APPS='"appTriggers":[{"bundleID":"com.apple.dt.Xcode","name":"Xcode"},{"bundleID":"com.microsoft.VSCode","name":"Visual Studio Code"}]'
+BASE="\"engine\":\"iokit\",\"keepDisplayAwake\":true,\"iconVariant\":\"pill\",\"accent\":\"gold\",$SCHEDULE,$APPS,\"notifyOnSessionEnd\":true,\"playsToggleSound\":false"
 shot popover-duration "{$BASE,\"mode\":\"duration\",\"duration\":3600,\"activateOnLaunch\":true}" popover
 shot popover-schedule "{$BASE,\"mode\":\"schedule\",\"activateOnLaunch\":true}" popover
 shot popover-inactive "{$BASE,\"mode\":\"indefinitely\",\"activateOnLaunch\":false}" popover
 shot settings-appearance "{$BASE,\"mode\":\"indefinitely\",\"activateOnLaunch\":false}" appearance
 shot settings-power "{$BASE,\"mode\":\"indefinitely\",\"activateOnLaunch\":false}" power
+shot settings-schedule "{$BASE,\"mode\":\"schedule\",\"activateOnLaunch\":false}" schedule
+shot settings-apps "{$BASE,\"mode\":\"indefinitely\",\"activateOnLaunch\":false}" apps
 quit
