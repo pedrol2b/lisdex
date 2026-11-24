@@ -121,7 +121,7 @@ You then get *Turn Keep Awake On*, *Turn Keep Awake Off* and *Is Keep Awake On?*
 
 ## Mouse jiggler
 
-Teams and Slack mark you Away when your Mac sees no keyboard or mouse input, even while Keep Awake holds. Turn on **Settings → Power → Keep me active in chat apps**: after you've been idle for a while (1 minute by default), Lisdex posts a mouse move that doesn't move the cursor, every 20 seconds, until you touch the Mac again. It only runs while Keep Awake is on and the screen isn't locked. While it runs, the screen saver and display sleep wait too.
+Teams and Slack mark you Away when your Mac sees no keyboard or mouse input, even while Keep Awake holds. Turn on **Settings → Power → Keep me active in chat apps**: after you've been idle for a while (1 minute by default), Lisdex posts a mouse move that doesn't move the cursor, every 20 seconds, until you touch the Mac again. It only runs while Keep Awake is on and the screen isn't locked or asleep. While it runs, the screen saver and display sleep wait too.
 
 It needs the **Accessibility** permission (Settings has a button that opens the right pane). Builds without a signing certificate, including Homebrew's, lose that permission on every update while System Settings still shows Lisdex as allowed: switch Lisdex off and on there.
 

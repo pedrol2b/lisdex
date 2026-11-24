@@ -36,7 +36,14 @@ public struct JigglerClock: Sendable {
     self.settings = settings
   }
 
-  public func step(now: Date, idleSeconds: TimeInterval, inputHeld: Bool, state: State) -> Step {
+  /// `paused`: the screen is locked or the display asleep. A jiggle would wake it, so the clock
+  /// waits an interval and forgets its state (the user's return restarts the idle wait).
+  public func step(
+    now: Date, idleSeconds: TimeInterval, inputHeld: Bool, paused: Bool = false, state: State
+  ) -> Step {
+    if paused {
+      return finish(jiggle: false, nextCheck: now + settings.interval, state: .initial, now: now)
+    }
     let observed = observe(now: now, idleSeconds: idleSeconds, inputHeld: inputHeld, state: state)
     let realInput = observed.lastRealInput ?? now
     let idleStart = realInput + settings.idleThreshold

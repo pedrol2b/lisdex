@@ -20,7 +20,9 @@ touch. Spike 2026-11-23/24 (evidence `2026-11-24-mouse-jiggler`):
 - Jiggle with a 0 px `.mouseMoved` at the cursor (not "2 px and back"): invisible, same effect.
 - Off by default; Lisdex asks for the permission only from Settings → Power → Chat apps
   ("Open Accessibility Settings"). Runs only while enabled, Keep Awake holds (any session
-  origin) and the permission is granted; not while the screen is locked.
+  origin) and the permission is granted; not while the screen is locked or the display asleep
+  (a jiggle would wake it). Caps Lock and fn don't count as held keys. While running, Lisdex
+  holds a `ProcessInfo` activity so App Nap can't delay the timer.
 - `JigglerClock` (Core, pure) decides from the idle time and held keys/buttons; an idle reading
   within 1 s of Lisdex's own last jiggle is Lisdex's. One timer, no fixed polling.
 - The permission is re-read when the popover or Settings opens, when Lisdex becomes active and

@@ -10,6 +10,9 @@ final class Jiggler {
   private var settings: JigglerSettings?
   private var state = JigglerClock.State.initial
   private var timer: Timer?
+  /// Keeps App Nap from delaying the timer while the jiggler runs (e.g. with the caffeinate
+  /// engine Lisdex itself holds no power assertion).
+  private var activity: NSObjectProtocol?
 
   /// `nil` stops it. The same settings again keep the current timer and state.
   func run(_ settings: JigglerSettings?) {
@@ -19,8 +22,15 @@ final class Jiggler {
     timer = nil
     state = .initial
     if settings == nil {
+      activity.map(ProcessInfo.processInfo.endActivity)
+      activity = nil
       Log.jiggler.notice("Jiggler stopped")
     } else {
+      if activity == nil {
+        activity = ProcessInfo.processInfo.beginActivity(
+          options: .userInitiatedAllowingIdleSystemSleep,
+          reason: "Mouse jiggler keeps chat apps from going Away")
+      }
       Log.jiggler.notice("Jiggler running")
       tick()
     }
@@ -28,13 +38,9 @@ final class Jiggler {
 
   private func tick() {
     guard let settings else { return }
-    let now = Date.now
-    if Self.isScreenLocked {
-      schedule(at: now + settings.interval)
-      return
-    }
     let step = JigglerClock(settings: settings).step(
-      now: now, idleSeconds: Self.idleSeconds, inputHeld: Self.isInputHeld, state: state)
+      now: .now, idleSeconds: Self.idleSeconds, inputHeld: Self.isInputHeld,
+      paused: Self.isScreenLocked || CGDisplayIsAsleep(CGMainDisplayID()) != 0, state: state)
     state = step.state
     if step.jiggle { Self.postMouseMove() }
     schedule(at: step.nextCheck)
@@ -64,8 +70,13 @@ final class Jiggler {
     if buttons.contains(where: { CGEventSource.buttonState(.combinedSessionState, button: $0) }) {
       return true
     }
-    return (0..<128).contains { CGEventSource.keyState(.combinedSessionState, key: CGKeyCode($0)) }
+    return (0..<128).contains {
+      !toggleKeys.contains($0) && CGEventSource.keyState(.combinedSessionState, key: CGKeyCode($0))
+    }
   }
+
+  /// Caps Lock and fn can report their toggle state rather than a physical press.
+  private static let toggleKeys: Set<Int> = [57, 63]
 
   private static var isScreenLocked: Bool {
     let session = CGSessionCopyCurrentDictionary() as? [String: Any]

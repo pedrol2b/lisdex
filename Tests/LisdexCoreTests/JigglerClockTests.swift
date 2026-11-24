@@ -69,4 +69,13 @@ struct JigglerClockTests {
     #expect(step.jiggle == false)
     #expect(step.nextCheck == t0 + 1)
   }
+
+  @Test("paused (screen locked or display asleep): no jiggle, idle wait starts over afterwards")
+  func pausedNeverJiggles() {
+    let step = clock.step(
+      now: t0 + 20, idleSeconds: 20, inputHeld: false, paused: true, state: afterFirstJiggle())
+    #expect(step.jiggle == false)
+    #expect(step.state == .initial)
+    #expect(step.nextCheck == t0 + 40)
+  }
 }
