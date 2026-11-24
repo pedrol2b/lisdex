@@ -18,6 +18,11 @@ extension AppModel {
     set { setStartOnLogin(newValue) }
   }
 
+  var showsModeBadgeSetting: Bool {
+    get { settings.showsModeBadge }
+    set { setShowsModeBadge(newValue) }
+  }
+
   var activateOnLaunchSetting: Bool {
     get { settings.activateOnLaunch }
     set { setActivateOnLaunch(newValue) }

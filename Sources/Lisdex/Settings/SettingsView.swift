@@ -145,6 +145,9 @@ private struct PowerSettings: View {
 }
 
 private struct AppearanceSettings: View {
+  /// ADR 0025: under the mode badge switch.
+  static let modeBadgeCaption = "A small ∞, clock or calendar shows how the current session ends."
+
   let model: AppModel
 
   var body: some View {
@@ -157,6 +160,8 @@ private struct AppearanceSettings: View {
               select: { model.setIconVariant(variant) })
           }
         }
+        Toggle("Show the mode on the icon", isOn: Bindable(model).showsModeBadgeSetting)
+        Text(Self.modeBadgeCaption).font(.caption).foregroundStyle(.secondary)
       }
       Section("Accent colour") {
         HStack(spacing: 10) {

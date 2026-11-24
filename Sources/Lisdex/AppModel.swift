@@ -75,7 +75,10 @@ final class AppModel {
   var state: KeepAwakeState { KeepAwakeState(isOn: isOn, mode: settings.mode) }
 
   var menuBarIcon: MenuBarIcon {
-    MenuBarIcon(variant: settings.iconVariant, isActive: currentPlan.holdsAwake)
+    MenuBarIcon(
+      variant: settings.iconVariant, isActive: currentPlan.holdsAwake,
+      badge: settings.showsModeBadge
+        ? MenuBarBadge.resolve(session: session, mode: settings.mode) : nil)
   }
 
   func plan(at now: Date) -> SessionPlan {
@@ -153,6 +156,8 @@ final class AppModel {
   }
 
   func setActivateOnLaunch(_ on: Bool) { update(settings.with(activateOnLaunch: on)) }
+
+  func setShowsModeBadge(_ on: Bool) { update(settings.with(showsModeBadge: on)) }
 
   func setNotifyOnSessionEnd(_ on: Bool) { update(settings.with(notifyOnSessionEnd: on)) }
 
