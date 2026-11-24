@@ -4,7 +4,8 @@ _Last updated 2026-11-24._
 
 ## Done
 
-- 2026-11-24 **Phase 11.1 Mode badge** (branch `feat/mode-badge`): Settings → Appearance → "Show the mode on the icon" (off by default) badges the menu bar icon with ∞ / clock / calendar for how the current session ends (approach A, ADR 0025, spec `specs/menu-bar-mode-badge.md`). Figma pill badges rebuilt on the shipped 20 × 18 pill; 18 SVGs exported to `assets/menubar/`. Core `MenuBarBadge.resolve`, `AppSettings.showsModeBadge`, `MenuBarAssetTests` (161 tests). Evidence `evidence/2026-11-24-mode-badge/`.
+- 2026-11-24 **Released v1.3.0** (build 5): mode badge (9 pt after the owner found 7 pt unreadable). **Released v1.2.0** (build 4) earlier the same day: Phases 8 + 9, e2e in CI; release published by hand from the draft (pipeline drafts on purpose).
+- 2026-11-24 **Phase 11.1 Mode badge** (merged 2026-11-24, released in 1.3.0): Settings → Appearance → "Show the mode on the icon" (off by default) badges the menu bar icon with ∞ / clock / calendar for how the current session ends (approach A, ADR 0025, spec `specs/menu-bar-mode-badge.md`). Figma pill badges rebuilt on the shipped 20 × 18 pill; 18 SVGs exported to `assets/menubar/`. Core `MenuBarBadge.resolve`, `AppSettings.showsModeBadge`, `MenuBarAssetTests` (161 tests). Evidence `evidence/2026-11-24-mode-badge/`.
 - 2026-11-24 **Release prep 1.2.0** (branch `chore/release-1.2.0`; owner: Phases 8 + 9 ship together as 1.2.0): `scripts/e2e.sh` + `make e2e` + E2E workflow on `macos-latest` (links, timed session, kill -9 with both engines, schedule window, app trigger, settings persistence, all via `pmset`; 9/9 locally); manual checklist `runbooks/manual-test.md` for what CI can't do (jiggler, Shortcuts/Focus, clicks); README screenshots retaken (+ Schedule, Apps tabs; Power with Chat apps; per-day menu; light bulb) and feature rows for shortcuts / Option-click.
 - 2026-11-23 **Phase 8.3 Shortcuts, Focus filter and links** (owner said merge 2026-11-24 without a GUI test of actions/Focus; merged): `lisdex://` links in every build; App Intents actions + `SetFocusFilterIntent` when built with `CODESIGN_IDENTITY` (ad-hoc builds can't run App Intents — spike 2026-11-23, ADR 0022, spec `specs/shortcuts-focus.md`). Core `KeepAwakeCommand`, `FocusRules`, `Session.Origin.focus` (135 tests; review fixes: cold-launch links, Focus sync at launch, app/Focus hand-over, links never change saved settings). Evidence `evidence/2026-11-23-shortcuts-focus/`.
 - 2026-11-23 **Build without Xcode** (owner said merge 2026-11-24; merged): Command Line Tools builds failed since v1.0 (`@Entry` needs `libSwiftUIMacros`, which only Xcode ships) and on the macOS 27 SDK `@State` is a macro too. Replaced `@Entry` with an `EnvironmentKey`; `build-app.sh` falls back to the newest macOS 26 SDK when the plugin is missing (ADR 0023). Verified: CLT-only Homebrew-style build passes; Xcode build unchanged.
@@ -69,7 +70,7 @@ _Last updated 2026-11-24._
 
 ## Next
 
-1. 1.2.0 (Phases 8 + 9): owner runs `runbooks/manual-test.md` on a signed build, then merge, push, tag `v1.2.0` when the owner says.
+1. 1.2.0 and 1.3.0 released 2026-11-24.
 2. Phase 10 fixes (jiggler and Focus first: people notice those), as 1.2.1.
 3. Phase 11: owner picks features.
 
