@@ -10,6 +10,8 @@ public enum AppTriggerAction: Equatable, Sendable {
   case none
   case startAppSession
   case endSession
+  /// The last listed app quit but a Focus still keeps the Mac awake: the Focus takes over.
+  case becomeFocusSession
 }
 
 /// The app trigger's rules (spec app-trigger, ADR 0020): a listed app opening turns Keep Awake
@@ -19,7 +21,8 @@ public enum AppTriggerAction: Equatable, Sendable {
 /// session the cutoff would end at once (with a "Keep Awake stopped" notification).
 public enum AppTriggerRules {
   public static func decide(
-    _ event: AppTriggerEvent, session: Session?, triggers: AppTriggers, batteryCutoff: Bool = false
+    _ event: AppTriggerEvent, session: Session?, triggers: AppTriggers, batteryCutoff: Bool = false,
+    focusKeepsAwake: Bool = false
   ) -> AppTriggerAction {
     switch event {
     case .launched(let bundleID):
@@ -29,7 +32,8 @@ public enum AppTriggerRules {
       return .startAppSession
     case .runningChanged(let running):
       guard session?.origin == .app else { return .none }
-      return running.isDisjoint(with: triggers.bundleIDs) ? .endSession : .none
+      guard running.isDisjoint(with: triggers.bundleIDs) else { return .none }
+      return focusKeepsAwake ? .becomeFocusSession : .endSession
     }
   }
 }

@@ -2,21 +2,36 @@ import Foundation
 
 /// A running Keep Awake session (the master switch is on). `nil` session = off.
 public struct Session: Equatable, Sendable {
-  /// Who started the session: the user, or an app from Settings → Apps opening (spec app-trigger).
+  /// Who started the session: the user, an app from Settings → Apps opening (spec app-trigger),
+  /// or a Focus with Lisdex's Focus filter (spec shortcuts-focus).
   public enum Origin: Equatable, Sendable {
     case user
     case app
+    case focus
   }
 
   public let startedAt: Date
   /// Wall-clock end for "For a Duration"; survives sleep because it is not a countdown.
   public let deadline: Date?
   public let origin: Origin
+  /// A link or Shortcuts action set its own length (`deadline`, or none = until stopped), which
+  /// beats the selected mode without changing it (spec shortcuts-focus, review fix).
+  public let hasFixedLength: Bool
 
-  public init(startedAt: Date, deadline: Date?, origin: Origin = .user) {
+  public init(
+    startedAt: Date, deadline: Date?, origin: Origin = .user, hasFixedLength: Bool = false
+  ) {
     self.startedAt = startedAt
     self.deadline = deadline
     self.origin = origin
+    self.hasFixedLength = hasFixedLength
+  }
+
+  /// A link or action with its own length: `minutes`, or until stopped when `nil`.
+  public static func fixed(minutes: Int?, now: Date) -> Session {
+    Session(
+      startedAt: now, deadline: minutes.map { now.addingTimeInterval(TimeInterval($0) * 60) },
+      hasFixedLength: true)
   }
 
   public static func start(mode: KeepAwakeMode, duration: TimeInterval, now: Date) -> Session {
@@ -27,6 +42,14 @@ public struct Session: Equatable, Sendable {
   public static func startedByApp(now: Date) -> Session {
     Session(startedAt: now, deadline: nil, origin: .app)
   }
+
+  /// A Focus with "Keep Mac awake" started: hold until it ends, whatever the mode.
+  public static func startedByFocus(now: Date) -> Session {
+    Session(startedAt: now, deadline: nil, origin: .focus)
+  }
+
+  /// The user started it (switch, shortcut, link, action); app and Focus sessions end on their own.
+  public var isUsers: Bool { origin == .user }
 }
 
 /// What should happen right now.
@@ -61,7 +84,11 @@ public enum SessionPlanner {
     session: Session?, mode: KeepAwakeMode, schedule: Schedule, now: Date, calendar: Calendar
   ) -> SessionPlan {
     guard let session else { return .off }
-    if session.origin == .app { return .holding(until: nil) }
+    if !session.isUsers { return .holding(until: nil) }
+    if session.hasFixedLength {
+      guard let deadline = session.deadline else { return .holding(until: nil) }
+      return now < deadline ? .holding(until: deadline) : .expired
+    }
     switch mode {
     case .indefinitely:
       return .holding(until: nil)

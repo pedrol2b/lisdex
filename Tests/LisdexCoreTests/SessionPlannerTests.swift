@@ -71,11 +71,35 @@ struct SessionPlannerTests {
     }
   }
 
+  @Test("a focus session holds in every mode, even outside a schedule window")
+  func focusSession() {
+    let session = Session.startedByFocus(now: monday10)
+    let evening = TestClock.at("2026-11-16 19:00")
+
+    for mode in [KeepAwakeMode.indefinitely, .duration, .schedule] {
+      #expect(plan(session, mode, at: evening) == .holding(until: nil))
+    }
+  }
+
   @Test("sessions remember who started them")
   func origin() {
     #expect(Session.start(mode: .duration, duration: 1800, now: monday10).origin == .user)
     #expect(Session(startedAt: monday10, deadline: nil).origin == .user)
     #expect(Session.startedByApp(now: monday10).origin == .app)
     #expect(Session.startedByApp(now: monday10).deadline == nil)
+  }
+
+  @Test("a link or action's own length beats the selected mode, without changing it")
+  func fixedLength() {
+    let evening = TestClock.at("2026-11-16 19:00")
+    let ninety = Session.fixed(minutes: 90, now: evening)
+    let untilStopped = Session.fixed(minutes: nil, now: evening)
+
+    for mode in [KeepAwakeMode.indefinitely, .duration, .schedule] {
+      #expect(plan(ninety, mode, at: evening) == .holding(until: TestClock.at("2026-11-16 20:30")))
+      #expect(plan(ninety, mode, at: TestClock.at("2026-11-16 20:30")) == .expired)
+      #expect(plan(untilStopped, mode, at: evening) == .holding(until: nil))
+    }
+    #expect(ninety.isUsers)
   }
 }

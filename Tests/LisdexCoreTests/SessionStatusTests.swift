@@ -115,4 +115,24 @@ struct SessionStatusTests {
     #expect(detail(["Xcode", "Visual Studio Code"]).detail == "While 2 apps are open.")
     #expect(detail([]).detail == "While an app is open.")
   }
+
+  @Test("a focus session says a Focus keeps the Mac awake")
+  func focusSession() {
+    let status = SessionStatus(
+      plan: .holding(until: nil), mode: .schedule, session: .startedByFocus(now: noon),
+      schedule: .default, now: noon, calendar: calendar)
+
+    #expect(status == SessionStatus(pill: .active, detail: "While a Focus is on.", progress: nil))
+  }
+
+  @Test("a link's own length shows its countdown in any mode")
+  func fixedLengthCountdown() {
+    let session = Session.fixed(minutes: 60, now: noon)
+    let status = SessionStatus(
+      plan: .holding(until: noon.addingTimeInterval(3600)), mode: .schedule, session: session,
+      schedule: .default, now: noon, calendar: calendar)
+
+    #expect(status.detail.hasPrefix("1 h left"))
+    #expect(status.progress == 0)
+  }
 }

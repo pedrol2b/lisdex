@@ -31,6 +31,26 @@ if [ -z "${SDKROOT:-}" ]; then
     echo "Using $(basename "$FALLBACK_SDK"): SwiftUI's macro plugin isn't in these Command Line Tools"
   fi
 fi
+
+IDENTITY="${CODESIGN_IDENTITY:--}"
+
+# Shortcuts actions and the Focus filter (spec shortcuts-focus, ADR 0022) run only in an app
+# signed with a team identity, so ad-hoc builds leave the App Intents metadata out entirely.
+INTENTS_PROCESSOR=""
+if [ "$IDENTITY" = "-" ]; then
+  echo "Shortcuts actions: skipped (ad-hoc signature)"
+elif ! INTENTS_PROCESSOR="$(xcrun --find appintentsmetadataprocessor 2>/dev/null)"; then
+  INTENTS_PROCESSOR=""
+  echo "Shortcuts actions: skipped (appintentsmetadataprocessor not found; it comes with Xcode)"
+else
+  INTENTS_WORK="$(mktemp -d)"
+  trap 'rm -rf "$INTENTS_WORK"' EXIT
+  for flag in -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend \
+    "$ROOT/scripts/appintents-protocols.json"; do
+    EXTRA+=(-Xswiftc "$flag")
+  done
+fi
+
 swift build -c "$CONFIG" ${EXTRA[@]+"${EXTRA[@]}"}
 BIN="$(swift build -c "$CONFIG" ${EXTRA[@]+"${EXTRA[@]}"} --show-bin-path)/Lisdex"
 
@@ -42,9 +62,52 @@ cp "$ROOT/assets/app-icon/Lisdex.icns" "$APP/Contents/Resources/Lisdex.icns"
 # Menu bar pill / mug / bulb: vector template PDFs (ADR 0003, 0015).
 cp "$ROOT"/assets/menubar/{pill,mug,bulb}-*.pdf "$APP/Contents/Resources/"
 
+if [ -n "$INTENTS_PROCESSOR" ]; then
+  # Constant values the compiler emitted for the app module in this configuration. The build
+  # directory layout differs between SwiftPM versions and older layouts can linger, so take only
+  # the directory holding the newest file, and only files for current sources.
+  find "$ROOT/.build" -ipath "*/$CONFIG/*" -name '*.swiftconstvalues' -not -ipath '*LisdexCore*' \
+    -exec stat -f '%m %N' {} + 2>/dev/null | sort -rn > "$INTENTS_WORK/candidates.txt" || true
+  NEWEST="$(head -1 "$INTENTS_WORK/candidates.txt" | cut -d' ' -f2-)"
+  : > "$INTENTS_WORK/constvalues.txt"
+  if [ -n "$NEWEST" ]; then
+    CONST_DIR="$(dirname "$NEWEST")"
+    for file in "$CONST_DIR"/*.swiftconstvalues; do
+      name="$(basename "$file" .swiftconstvalues)"
+      if [[ "$name" == *-primary ]] || [ -n "$(find "$ROOT/Sources/Lisdex" -name "$name.swift")" ]; then
+        echo "$file" >> "$INTENTS_WORK/constvalues.txt"
+      fi
+    done
+  fi
+  if [ ! -s "$INTENTS_WORK/constvalues.txt" ]; then
+    echo "Shortcuts actions: skipped (no compiler constant values found)"
+    INTENTS_PROCESSOR=""
+  fi
+fi
+
+if [ -n "$INTENTS_PROCESSOR" ]; then
+  find "$ROOT/Sources/Lisdex" -name '*.swift' > "$INTENTS_WORK/sources.txt"
+  TOOLCHAIN="$(dirname "$(dirname "$(dirname "$(xcrun --find swift)")")")"
+  "$INTENTS_PROCESSOR" --force --quiet-warnings \
+    --output "$APP/Contents/Resources" \
+    --toolchain-dir "$TOOLCHAIN" \
+    --module-name Lisdex \
+    --sdk-root "${SDKROOT:-$(xcrun --sdk macosx --show-sdk-path)}" \
+    --xcode-version "$(xcodebuild -version | awk '/Build version/ {print $3}')" \
+    --platform-family macOS \
+    --deployment-target 14.0 \
+    --target-triple "$(uname -m)-apple-macos14.0" \
+    --source-file-list "$INTENTS_WORK/sources.txt" \
+    --swift-const-vals-list "$INTENTS_WORK/constvalues.txt" 2>&1 | grep -v "^[0-9-]* [0-9:.]* appintentsmetadataprocessor" || true
+  if [ -f "$APP/Contents/Resources/Metadata.appintents/extract.actionsdata" ]; then
+    echo "Shortcuts actions: added"
+  else
+    echo "Shortcuts actions: metadata step failed; building without them" >&2
+  fi
+fi
+
 # Ad-hoc signature by default: the app is built on the user's Mac, so it is not quarantined and
 # Gatekeeper lets it run (ADR 0005). Override with CODESIGN_IDENTITY="Developer ID Application: …".
-IDENTITY="${CODESIGN_IDENTITY:--}"
 codesign --force --sign "$IDENTITY" "$APP"
 echo "Signed with: $([ "$IDENTITY" = "-" ] && echo ad-hoc || echo "$IDENTITY")"
 
