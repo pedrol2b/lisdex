@@ -121,7 +121,7 @@ Changes vs. the first AI mock (`sources/design-menu-draft-2026-11-19.md`): remov
 ## Settings window (tabs)
 
 - **General** — Start on Login · Activate Keep Awake when Lisdex launches · Notify when a timed session ends.
-- **Power** — Keep the display awake (default **on**) · Allow display sleep on battery (default off) · Stop below battery % (off / 10 / 20 %) · **Keep-awake engine**: macOS power assertions (IOKit, recommended) / `caffeinate`, with the warning text from ADR 0002 shown when `caffeinate` is selected.
+- **Power** — Keep the display awake (default **on**) · Allow display sleep on battery (default off) · Stop below battery % (off / 10 / 20 %) · **Keep-awake engine**: macOS power assertions (IOKit, recommended) / `caffeinate`, with the warning text from ADR 0002 shown when `caffeinate` is selected. **Chat apps** (v1.3): mouse jiggler switch (off), Start after (30 s – 4 min, default 1 min), Repeat every (10–60 s, default 20 s), Accessibility permission row (ADR 0024, spec `mouse-jiggler.md`).
 - **Appearance** — Menu bar icon variant (B Minimal / A Faithful, live preview of both states) · Accent color (yellow, orange, pink, purple, blue, mint, custom).
 - **Shortcuts** (v1.1) — global shortcuts (ADR 0019).
 - **Apps** (v1.2) — apps that keep the Mac awake while open; Add App… / ✕ remove (ADR 0020).

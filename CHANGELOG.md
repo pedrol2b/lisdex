@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Builds signed with a certificate (`CODESIGN_IDENTITY=… make app`) add Shortcuts actions (Turn
   Keep Awake On/Off, Is Keep Awake On?) and a Focus filter that keeps the Mac awake while a
   Focus is on.
+- Settings → Power → Chat apps: an optional mouse jiggler keeps Teams and Slack from marking
+  you Away while Keep Awake is on. After you've been idle (1 min by default) Lisdex posts a
+  mouse move that doesn't move the cursor, every 20 s, until you touch the Mac. Off by
+  default; needs the Accessibility permission.
 
 ### Fixed
 

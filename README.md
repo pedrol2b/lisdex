@@ -37,6 +37,7 @@ Lisdex does one thing: stop your Mac from going to sleep. It's small enough to r
 | ▦ | **On a schedule.** Choose days and hours, e.g. weekdays 09:00–18:00 with a short Friday. |
 | ⧉ | **While an app is open.** Pick apps like Xcode or VS Code; your Mac stays awake while one is open. |
 | ◐ | **Focus modes and Shortcuts.** Links like `lisdex://on` work from any Shortcuts automation; native actions and a Focus filter when you build with a signing certificate ([details](#shortcuts-and-focus)). |
+| ⌖ | **Stay available in chat apps.** An optional mouse jiggler keeps Teams and Slack from marking you Away while Keep Awake is on ([details](#mouse-jiggler)). |
 | 🖱 | **Left-click** opens the menu. **Right-click** toggles Keep Awake and keeps your selected mode. |
 | 🔔 | **A little pop** when you switch it on or off (like Amphetamine). Pick a different sound, or turn it off. |
 | ⚙︎ | Start on login, keep the display awake, a battery cutoff, accent colours and two icon variants. |
@@ -117,6 +118,12 @@ CODESIGN_IDENTITY="Apple Development: Your Name (TEAMID)" make install
 ```
 
 You then get *Turn Keep Awake On*, *Turn Keep Awake Off* and *Is Keep Awake On?* in Shortcuts, and in System Settings → Focus → (a Focus) → Focus Filters → Lisdex a **Keep Mac awake** switch: Lisdex turns on while that Focus is on and off when it ends. Turning it off yourself wins until the Focus starts again. Needs Xcode (not just the Command Line Tools).
+
+## Mouse jiggler
+
+Teams and Slack mark you Away when your Mac sees no keyboard or mouse input, even while Keep Awake holds. Turn on **Settings → Power → Keep me active in chat apps**: after you've been idle for a while (1 minute by default), Lisdex posts a mouse move that doesn't move the cursor, every 20 seconds, until you touch the Mac again. It only runs while Keep Awake is on and the screen isn't locked. While it runs, the screen saver and display sleep wait too.
+
+It needs the **Accessibility** permission (Settings has a button that opens the right pane). Builds without a signing certificate, including Homebrew's, lose that permission on every update while System Settings still shows Lisdex as allowed: switch Lisdex off and on there.
 
 ## Uninstall
 
