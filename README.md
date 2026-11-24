@@ -63,7 +63,7 @@ Lisdex is **built on your Mac from source**. There is no prebuilt download (see 
 ### Requirements
 
 - macOS 14 Sonoma or later (Apple silicon or Intel)
-- Xcode Command Line Tools with Swift 6: `xcode-select --install`
+- Xcode Command Line Tools with Swift 6: `xcode-select --install` (full Xcode works too). On macOS 27 the Command Line Tools' newest SDK needs a SwiftUI plugin that only Xcode ships, so the build uses their macOS 26 SDK instead and says so.
 - [Homebrew](https://brew.sh) (only for option 1)
 
 ### Option 1 — Homebrew (recommended)

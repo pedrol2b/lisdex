@@ -18,6 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Clicking the Keep Awake switch right after opening the menu no longer restarts the session.
+- Building with only the Command Line Tools (e.g. `brew install` without Xcode) works again: no
+  more `@Entry` macro, and on macOS 27 the build falls back to the tools' macOS 26 SDK because
+  their macOS 27 SDK needs a SwiftUI macro plugin that only Xcode ships.
 
 ## [1.1.0] - 2026-11-23
 
