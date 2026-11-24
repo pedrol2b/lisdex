@@ -89,4 +89,22 @@ struct AppSettingsTests {
     #expect(decoded.jiggler == .default)
     #expect(decoded.mode == .schedule)
   }
+
+  @Test("the mode badge is off by default and round-trips")
+  func modeBadgeDefaultsOffAndRoundTrips() throws {
+    #expect(AppSettings.default.showsModeBadge == false)
+    let settings = AppSettings.default.with(showsModeBadge: true)
+    let data = try JSONEncoder().encode(settings)
+    #expect(try JSONDecoder().decode(AppSettings.self, from: data).showsModeBadge == true)
+  }
+
+  @Test("settings from 1.2 (no key) or a bad value leave the mode badge off")
+  func modeBadgeMissingKeyIsOff() throws {
+    let old = try JSONDecoder().decode(AppSettings.self, from: Data(#"{"mode":"duration"}"#.utf8))
+    #expect(old.showsModeBadge == false)
+    let bad = try JSONDecoder().decode(
+      AppSettings.self, from: Data(#"{"mode":"duration","showsModeBadge":"yes"}"#.utf8))
+    #expect(bad.showsModeBadge == false)
+    #expect(bad.mode == .duration)
+  }
 }
