@@ -27,6 +27,17 @@ struct MenuView: View {
       ) {
         TileGlyph(variant: model.settings.iconVariant, isOn: model.state.isOn)
       }
+      if model.jigglerNeedsPermission {
+        Button(action: PostEventPermission.openSettings) {
+          Label {
+            Text("Mouse jiggler needs permission")
+          } icon: {
+            Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange)
+          }
+        }
+        .buttonStyle(.link)
+        .font(.caption)
+      }
       Divider()
       Text("Mode").font(.subheadline).foregroundStyle(.secondary)
       ModePicker(selection: model.state.mode, select: model.setMode)
