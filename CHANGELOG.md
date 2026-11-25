@@ -19,6 +19,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Settings → Automation → Schedule: pick the days and one set of hours; turn on "Different hours
   per day" to set each day separately.
 
+### Fixed
+
+- Settings → Automation → Chat apps: granting Accessibility permission now shows up within a few
+  seconds instead of only after relaunching Lisdex.
+
 ## [1.3.0] - 2026-11-24
 
 ### Added

@@ -21,3 +21,10 @@ re-imported afterwards.
 
 The Automation screenshot from the owner's real settings shows "Lisdex needs Accessibility
 permission": expected for a fresh ad-hoc build (macOS ties the grant to the signature).
+
+## Jiggler permission (follow-up)
+
+TCC log showed `AUTHREQ_RESULT authValue=2` (allowed) for Lisdex while the Settings row still said
+"needs Accessibility permission"; after a relaunch the row was ✅. With `AXIsProcessTrusted` added to
+the check, the owner switched Lisdex off and on in Accessibility on a fresh build and the row
+turned ✅ without a relaunch (2026-11-25).

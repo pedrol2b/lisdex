@@ -1,4 +1,5 @@
 import AppKit
+import ApplicationServices
 import CoreGraphics
 
 /// The Accessibility ("post events") permission the mouse jiggler needs (ADR 0024). After an
@@ -10,7 +11,10 @@ enum PostEventPermission {
       "x-apple.systempreferences:com.apple.settings.PrivacySecurity.extension?Privacy_Accessibility"
   )!
 
-  static var isGranted: Bool { CGPreflightPostEventAccess() }
+  /// `AXIsProcessTrusted` asks TCC each time, so a grant made while Lisdex runs shows up on the
+  /// next check. `CGPreflightPostEventAccess` alone keeps its first answer for the life of the
+  /// process (seen 2026-11-25: denied until relaunch, while TCC already allowed it).
+  static var isGranted: Bool { AXIsProcessTrusted() || CGPreflightPostEventAccess() }
 
   /// Adds Lisdex to the Accessibility list (macOS may show its own prompt).
   static func request() { _ = CGRequestPostEventAccess() }
