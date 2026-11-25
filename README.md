@@ -31,7 +31,7 @@ Lisdex does one thing: stop your Mac from going to sleep. It's small enough to r
 
 | | |
 | --- | --- |
-| <img src="assets/menubar/pill-inactive@3x.png" height="18" alt=""> → <img src="assets/menubar/pill-active@3x.png" height="18" alt=""> | **Menu bar only.** No Dock icon. A capsule pill, outlined when inactive and filled when active. Prefer a coffee mug or a light bulb? It's one setting away, and an optional badge (∞, clock or calendar) shows how the current session ends. |
+| <img src="assets/menubar/capsule-inactive@3x.png" height="18" alt=""> → <img src="assets/menubar/capsule-active@3x.png" height="18" alt=""> | **Menu bar only.** No Dock icon. A capsule, outlined when inactive and filled when active. Prefer a molecule or a coffee cup? It's one setting away, and an optional badge (∞, clock or calendar) shows how the current session ends. |
 | ∞ | **Indefinitely.** Stay awake until you turn it off. |
 | ◷ | **For a duration.** 15 min, 30 min, 1 h, 2 h or a custom time. |
 | ▦ | **On a schedule.** Choose days and hours, e.g. weekdays 09:00–18:00 with a short Friday. |
@@ -56,7 +56,7 @@ Lisdex does one thing: stop your Mac from going to sleep. It's small enough to r
 </p>
 <p align="center">
   <img src="assets/screenshots/settings-general.png" width="48%" alt="Settings, General tab: startup, which click turns Keep Awake on or off, notifications and sound">
-  <img src="assets/screenshots/settings-appearance.png" width="48%" alt="Settings, Appearance tab: pill, coffee mug or light bulb menu bar icon, the mode badge switch and accent colours with a custom colour">
+  <img src="assets/screenshots/settings-appearance.png" width="48%" alt="Settings, Appearance tab: capsule, molecule or coffee menu bar icon, the mode badge switch and accent colours with a custom colour">
 </p>
 
 ### How it keeps your Mac awake

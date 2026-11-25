@@ -5,20 +5,20 @@ import Testing
 
 @Suite("MenuBarIcon")
 struct MenuBarIconTests {
-  @Test("the pill is the default variant")
+  @Test("the capsule is the default variant")
   func defaultVariant() {
-    #expect(MenuBarIconVariant.default == .pill)
+    #expect(MenuBarIconVariant.default == .capsule)
   }
 
   @Test(
     "resource names match the exported assets",
     arguments: [
-      (MenuBarIconVariant.pill, false, "pill-inactive"),
-      (MenuBarIconVariant.pill, true, "pill-active"),
-      (MenuBarIconVariant.mug, false, "mug-inactive"),
-      (MenuBarIconVariant.mug, true, "mug-active"),
-      (MenuBarIconVariant.bulb, false, "bulb-inactive"),
-      (MenuBarIconVariant.bulb, true, "bulb-active"),
+      (MenuBarIconVariant.capsule, false, "capsule-inactive"),
+      (MenuBarIconVariant.capsule, true, "capsule-active"),
+      (MenuBarIconVariant.molecule, false, "molecule-inactive"),
+      (MenuBarIconVariant.molecule, true, "molecule-active"),
+      (MenuBarIconVariant.coffee, false, "coffee-inactive"),
+      (MenuBarIconVariant.coffee, true, "coffee-active"),
     ])
   func resourceNames(variant: MenuBarIconVariant, isActive: Bool, expected: String) {
     #expect(MenuBarIcon(variant: variant, isActive: isActive).resourceName == expected)
@@ -27,9 +27,12 @@ struct MenuBarIconTests {
   @Test(
     "badged resource names are <variant>-<badge>-<state>",
     arguments: [
-      (MenuBarIconVariant.pill, true, MenuBarBadge.duration, "pill-duration-active"),
-      (MenuBarIconVariant.mug, false, MenuBarBadge.schedule, "mug-schedule-inactive"),
-      (MenuBarIconVariant.bulb, true, MenuBarBadge.indefinitely, "bulb-indefinitely-active"),
+      (MenuBarIconVariant.capsule, true, MenuBarBadge.duration, "capsule-duration-active"),
+      (MenuBarIconVariant.coffee, false, MenuBarBadge.schedule, "coffee-schedule-inactive"),
+      (
+        MenuBarIconVariant.molecule, true, MenuBarBadge.indefinitely,
+        "molecule-indefinitely-active"
+      ),
     ])
   func badgedResourceNames(
     variant: MenuBarIconVariant, isActive: Bool, badge: MenuBarBadge, expected: String
@@ -41,44 +44,59 @@ struct MenuBarIconTests {
   @Test("a badged icon's accessibility label adds the mode")
   func badgedAccessibilityLabel() {
     #expect(
-      MenuBarIcon(variant: .pill, isActive: true, badge: .duration).accessibilityLabel
+      MenuBarIcon(variant: .capsule, isActive: true, badge: .duration).accessibilityLabel
         == "Lisdex — Keep Awake on, for a duration")
     #expect(
-      MenuBarIcon(variant: .bulb, isActive: false, badge: .schedule).accessibilityLabel
+      MenuBarIcon(variant: .molecule, isActive: false, badge: .schedule).accessibilityLabel
         == "Lisdex — Keep Awake off, on a schedule")
   }
 
-  @Test("Settings → Appearance offers pill, coffee mug and light bulb, in that order")
+  @Test("Settings → Appearance offers capsule, molecule and coffee, in that order")
   func choices() {
-    #expect(MenuBarIconVariant.allCases == [.pill, .mug, .bulb])
-    #expect(MenuBarIconVariant.allCases.map(\.title) == ["Pill", "Coffee mug", "Light bulb"])
+    #expect(MenuBarIconVariant.allCases == [.capsule, .molecule, .coffee])
+    #expect(MenuBarIconVariant.allCases.map(\.title) == ["Capsule", "Molecule", "Coffee"])
   }
 
   @Test("accessibility label states whether Keep Awake is on")
   func accessibilityLabel() {
     #expect(
-      MenuBarIcon(variant: .pill, isActive: true).accessibilityLabel == "Lisdex — Keep Awake on")
+      MenuBarIcon(variant: .capsule, isActive: true).accessibilityLabel
+        == "Lisdex — Keep Awake on")
     #expect(
-      MenuBarIcon(variant: .mug, isActive: false).accessibilityLabel == "Lisdex — Keep Awake off")
+      MenuBarIcon(variant: .coffee, isActive: false).accessibilityLabel
+        == "Lisdex — Keep Awake off")
   }
 
-  @Test("variants round-trip through their raw value for persistence")
-  func rawValues() {
-    #expect(MenuBarIconVariant(rawValue: "pill") == .pill)
-    #expect(MenuBarIconVariant(rawValue: "mug") == .mug)
-    #expect(MenuBarIconVariant(rawValue: "bulb") == .bulb)
-    #expect(MenuBarIconVariant(rawValue: "unknown") == nil)
+  @Test("variants are stored by their new names")
+  func storedNames() throws {
+    let data = try JSONEncoder().encode(AppSettings.default.with(iconVariant: .molecule))
+    #expect(String(decoding: data, as: UTF8.self).contains(#""iconVariant":"molecule""#))
   }
 
   @Test(
-    "settings saved with a retired molecule variant load with the pill",
-    arguments: ["minimal", "faithful"])
+    "older saved variants carry over: pill and bulb → capsule, mug → coffee",
+    arguments: [
+      ("capsule", MenuBarIconVariant.capsule), ("molecule", .molecule), ("coffee", .coffee),
+      ("pill", .capsule), ("bulb", .capsule), ("mug", .coffee),
+    ])
+  func aliases(raw: String, expected: MenuBarIconVariant) throws {
+    let json = #"{"iconVariant":"\#(raw)","accent":"pink"}"#
+
+    let settings = try JSONDecoder().decode(AppSettings.self, from: Data(json.utf8))
+
+    #expect(settings.iconVariant == expected)
+    #expect(settings.accent == .preset(.pink))
+  }
+
+  @Test(
+    "retired molecule variants and unknown values load with the capsule, not the new molecule",
+    arguments: ["minimal", "faithful", "unknown"])
   func retiredVariantsFallBack(raw: String) throws {
     let json = #"{"iconVariant":"\#(raw)","accent":"pink"}"#
 
     let settings = try JSONDecoder().decode(AppSettings.self, from: Data(json.utf8))
 
-    #expect(settings.iconVariant == .pill)
+    #expect(settings.iconVariant == .capsule)
     #expect(settings.accent == .preset(.pink))
   }
 }

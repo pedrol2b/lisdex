@@ -1,6 +1,6 @@
 # ADR 0015 — Pill icon direction (supersedes the icon parts of 0009–0012)
 
-- **Status:** Accepted — assets landed 2026-11-20 (Figma node 10:254, exported as SVG)
+- **Status:** Accepted — assets landed 2026-11-20 (Figma node 10:254, exported as SVG). Menu bar icon set superseded by ADR 0029 (2026-11-25); the app icon part still stands.
 - **Date:** 2026-11-20
 
 ## Context

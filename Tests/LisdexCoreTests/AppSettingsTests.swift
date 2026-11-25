@@ -12,7 +12,7 @@ struct AppSettingsTests {
     #expect(settings.mode == .indefinitely)
     #expect(settings.engine == .iokit)
     #expect(settings.keepDisplayAwake == true)
-    #expect(settings.iconVariant == .pill)
+    #expect(settings.iconVariant == .capsule)
     #expect(settings.duration == 3600)
     #expect(settings.schedule == .default)
     #expect(settings.activateOnLaunch == false)

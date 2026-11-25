@@ -9,11 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Molecule menu bar icon (Settings → Appearance).
 - Settings → Appearance → Accent colour: a colour-wheel swatch picks any colour, and a hex field
   shows the current colour and takes a typed or pasted one.
 
 ### Changed
 
+- New menu bar icons: Capsule (default), Molecule and Coffee, each with the mode badges. The light
+  bulb is gone; a saved pill or light bulb becomes the Capsule and a saved coffee mug the Coffee.
+- The menu's mode rows use new ∞, clock and calendar symbols.
 - Settings reorganised into General, Appearance, Power, Automation and Shortcuts. Schedule, Apps
   and the chat-apps jiggler are now under Automation; every group has a heading and explanations
   sit under the setting they explain.

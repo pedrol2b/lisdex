@@ -29,9 +29,9 @@ The toggle click (right-click by default) in **For a Duration** mode restarts th
 
 ## Status icon
 
-- Inactive = outlined, active = filled with the detail knocked out (`assets/menubar/`, ADR 0015).
-- Rendered as `NSImage` template (`isTemplate = true`), 18 × 18 pt, identical canvas for both states, so macOS tints it for light/dark/tinted menu bars.
-- **Pill** (capsule, 16 × 10 pt glyph) is the default and matches the app icon. **Coffee mug** (16 × 14 pt) and **Light bulb** (v1.1) are selectable in Settings → Appearance → Menu bar icon. An optional mode badge (∞ / clock / calendar, how the current session ends; off by default) is in the same section (ADR 0025, spec `menu-bar-mode-badge.md`). The app icon is always the pill.
+- Inactive = outlined, active = filled with the detail knocked out (`assets/menubar/`, ADR 0029).
+- Rendered as `NSImage` template (`isTemplate = true`), 18 pt tall (capsule 18 × 18, coffee 20 × 18, molecule 32 × 18), identical canvas for both states, so macOS tints it for light/dark/tinted menu bars.
+- **Capsule** is the default and matches the app icon. **Molecule** and **Coffee** are selectable in Settings → Appearance → Menu bar icon. An optional mode badge (∞ / clock / calendar, how the current session ends; off by default) is in the same section (ADR 0025, spec `menu-bar-mode-badge.md`). The app icon is always the capsule pill. Saved `pill`/`bulb` become Capsule, `mug` becomes Coffee (ADR 0029).
 - Accessibility label: "Lisdex — Keep Awake on/off".
 - "Armed but idle" (schedule mode on, outside a window): inactive icon (v1). A dedicated third glyph is an open question.
 
@@ -90,7 +90,7 @@ sentence case; an explanation is one grey line under the row it explains, only w
 isn't obvious; a footer is only for a note about the whole group; no inline symbols in text.
 
 - **General** — *Startup*: Start on login (+ approval row) · Turn on Keep Awake when Lisdex opens. *Menu bar icon*: Turn Keep Awake on or off with Right-click / Left-click (spec `click-behavior.md`). *Feedback*: Notify when a timed session ends · Play a sound when switched on or off · Sound.
-- **Appearance** — *Menu bar icon*: pill / coffee mug / light bulb cards with both states · Show the session mode on the icon (ADR 0025). *Accent colour*: gold, orange, pink, purple, blue, mint, then a colour-wheel swatch that opens the system colour panel beside the window (custom colour, stored as `#RRGGBB`), then a hex field showing the current colour: a typed or pasted `#RRGGBB` applies at once, `#RGB` on Return; invalid text turns red and changes nothing; picking a colour elsewhere replaces the text and ends editing. A hex equal to a preset selects that preset.
+- **Appearance** — *Menu bar icon*: Capsule / Molecule / Coffee cards with both states · Show the session mode on the icon (ADR 0025). *Accent colour*: gold, orange, pink, purple, blue, mint, then a colour-wheel swatch that opens the system colour panel beside the window (custom colour, stored as `#RRGGBB`), then a hex field showing the current colour: a typed or pasted `#RRGGBB` applies at once, `#RGB` on Return; invalid text turns red and changes nothing; picking a colour elsewhere replaces the text and ends editing. A hex equal to a preset selects that preset.
 - **Power** — *Display*: Keep the display awake (default **on**) · Except on battery (default off). *Battery*: Turn off below (off / 10 / 20 %). *Advanced*: Keep-awake engine — power assertions (IOKit, recommended) / `caffeinate`, with the ADR 0002 warning when `caffeinate` is selected.
 - **Automation** — *Schedule*: day pills · Hours (one shared From–To) · Different hours per day (lists the days that are on, each with its own hours; ADR 0021). *Apps*: apps that keep the Mac awake while open; Add App… / ✕ (ADR 0020). *Chat apps*: mouse jiggler switch, Start after, Repeat every, Accessibility permission row (ADR 0024). The popover's "Edit Hours…" opens this tab.
 - **Shortcuts** — *Global shortcuts*: one recorder per action, plus Duration under "Start for a duration" (ADR 0019).
