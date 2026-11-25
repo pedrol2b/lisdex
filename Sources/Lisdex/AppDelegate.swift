@@ -27,7 +27,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     openForScreenshot()
   }
 
-  /// `open Lisdex.app --args -LisdexScreenshot popover|general|appearance|power|automation|shortcuts` opens that UI
+  /// `open Lisdex.app --args -LisdexScreenshot popover|about|general|appearance|power|automation|shortcuts` opens that UI
   /// right after launch, so `scripts/screenshots.sh` can capture README images without clicks.
   private func openForScreenshot() {
     guard let target = UserDefaults.standard.string(forKey: "LisdexScreenshot") else { return }
@@ -35,6 +35,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
       try? await Task.sleep(for: .milliseconds(600))
       if target == "popover" {
         self?.statusItem?.showPopover()
+      } else if target == "about" {
+        AboutPanel.show()
       } else if let tab = SettingsTab(rawValue: target) {
         self?.settingsWindow?.show(tab: tab)
       }

@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The menu is redesigned: a status card says whether the Mac is awake and until when, with one
   Turn On / Turn Off button; the modes are a list showing each mode's setting; problems show as a
   banner with a button that fixes them. Start on Login moved to Settings → General.
+- About Lisdex: a tagline, links to GitHub, issues and sponsoring, and short credits.
 
 ### Fixed
 

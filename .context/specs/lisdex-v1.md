@@ -97,7 +97,18 @@ isn't obvious; a footer is only for a note about the whole group; no inline symb
 
 ## About
 
-Version + build, GitHub link, license (MIT), "Inspired by Amphetamine", disclaimer that the name and pill are a visual reference, not medical content.
+Standard macOS About panel (ADR 0028): icon, name, version + build, then the credits, one short
+fact per line with no break inside a sentence:
+
+```
+Keeps your Mac awake.
+GitHub · Report an issue · Sponsor        (repo · issues/new/choose · github.com/sponsors/pedrol2b)
+Inspired by Amphetamine.
+Named after lisdexamfetamine.
+Not medical content.
+MIT License
+© 2026 Pedro Bueno                         (NSHumanReadableCopyright)
+```
 
 ## Out of scope (v1)
 
