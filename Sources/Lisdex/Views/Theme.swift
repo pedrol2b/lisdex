@@ -4,7 +4,6 @@ import SwiftUI
 
 enum Theme {
   static let popoverWidth: CGFloat = 340
-  static let tileCornerRadius: CGFloat = 8
 }
 
 /// 0xRRGGBB ↔ colours.

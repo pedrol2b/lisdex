@@ -40,3 +40,31 @@ struct ScheduleSummaryTests {
     #expect(Schedule(days: [], start: t(9), end: t(18)).summary(calendar: calendar) == "No days")
   }
 }
+
+@Suite("Schedule days summary")
+struct ScheduleDaysSummaryTests {
+  private let calendar = TestClock.calendar
+
+  private func days(_ days: Set<Weekday>) -> String {
+    Schedule(days: days, start: TimeOfDay(hour: 9, minute: 0), end: TimeOfDay(hour: 18, minute: 0))
+      .daysSummary(calendar: calendar)
+  }
+
+  @Test("consecutive days that are on form a range, Monday first")
+  func ranges() {
+    #expect(days([.monday, .tuesday, .wednesday, .thursday, .friday]) == "Mon–Fri")
+    #expect(days([.monday, .wednesday, .friday]) == "Mon, Wed, Fri")
+    #expect(days([.monday, .tuesday, .thursday, .friday, .sunday]) == "Mon–Tue, Thu–Fri, Sun")
+    #expect(days([.saturday, .sunday]) == "Sat–Sun")
+  }
+
+  @Test("hours don't split a range; every day and no day have their own words")
+  func special() {
+    let friday = Schedule.default.with(
+      hours: DayHours(start: TimeOfDay(hour: 9, minute: 0), end: TimeOfDay(hour: 15, minute: 0)),
+      for: .friday)
+    #expect(friday.daysSummary(calendar: calendar) == "Mon–Fri")
+    #expect(days(Set(Weekday.allCases)) == "Every day")
+    #expect(days([]) == "No days")
+  }
+}

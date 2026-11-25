@@ -2,8 +2,8 @@ import AppKit
 import LisdexCore
 import SwiftUI
 
-/// Root of the left-click popover (spec: `.context/specs/lisdex-v1.md`).
-/// Header (live status) · Keep Awake switch · mode picker with its per-mode controls · footer.
+/// Root of the left-click popover (spec `lisdex-v1.md`, ADR 0027): status card · warnings ·
+/// mode list with the selected mode's controls · Settings / About / Quit.
 struct MenuView: View {
   let model: AppModel
   let dismiss: () -> Void
@@ -11,57 +11,20 @@ struct MenuView: View {
 
   /// Countdown text needs seconds; everything else changes at most once a minute.
   private var refreshInterval: TimeInterval {
-    model.isOn && model.state.mode == .duration ? 1 : 15
+    model.isOn && model.status(at: .now).progress != nil ? 1 : 15
   }
 
   var body: some View {
     VStack(alignment: .leading, spacing: 10) {
       TimelineView(.periodic(from: .now, by: refreshInterval)) { context in
-        HeaderView(status: model.status(at: context.date))
+        StatusCard(
+          status: model.status(at: context.date), isOn: model.isOn,
+          iconVariant: model.settings.iconVariant, toggle: { model.switchOn(!model.isOn) })
       }
+      warnings
       Divider()
-      ToggleRow(
-        title: "Keep Awake",
-        detail: "Prevent your Mac from sleeping.",
-        isOn: Bindable(model).keepAwakeSwitch
-      ) {
-        TileGlyph(variant: model.settings.iconVariant, isOn: model.state.isOn)
-      }
-      if model.jigglerNeedsPermission {
-        Button(action: PostEventPermission.openSettings) {
-          Label {
-            Text("Mouse jiggler needs permission")
-          } icon: {
-            Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange)
-          }
-        }
-        .buttonStyle(.link)
-        .font(.caption)
-      }
-      Divider()
-      Text("Mode").font(.subheadline).foregroundStyle(.secondary)
-      ModePicker(selection: model.state.mode, select: model.setMode)
-      switch model.state.mode {
-      case .indefinitely: EmptyView()
-      case .duration: DurationPanel(model: model)
-      case .schedule:
-        ScheduleCard(
-          schedule: model.settings.schedule, update: model.setSchedule,
-          editHours: { openSettings(.automation) })
-      }
-      Divider()
-      ToggleRow(
-        title: "Start on Login",
-        detail: loginDetail,
-        isOn: Bindable(model).startOnLoginSwitch
-      ) {
-        Image(systemName: "arrow.up.forward.app").foregroundStyle(.secondary)
-      }
-      if model.loginItem == .needsApproval {
-        Button("Allow in System Settings…", action: LoginItem.openSystemSettings)
-          .buttonStyle(.link)
-          .font(.caption)
-      }
+      ModeList(
+        selection: model.state.mode, summary: summary, select: model.setMode, controls: controls)
       Divider()
       footer
     }
@@ -70,9 +33,37 @@ struct MenuView: View {
     .accent(model.settings.accent)
   }
 
-  private var loginDetail: String {
-    model.loginItem == .needsApproval
-      ? "Waiting for your approval." : "Launch Lisdex when you log in."
+  @ViewBuilder private var warnings: some View {
+    if model.jigglerNeedsPermission {
+      WarningBanner(
+        title: "Mouse jiggler is paused", detail: "Lisdex needs Accessibility permission.",
+        actionTitle: "Allow…", action: model.requestJigglerPermission)
+    }
+    if model.loginItem == .needsApproval {
+      WarningBanner(
+        title: "Start on login is waiting", detail: "Approve Lisdex in Login Items.",
+        actionTitle: "Open…", action: LoginItem.openSystemSettings)
+    }
+  }
+
+  /// The right-hand text of each mode row: what that mode would do now.
+  private func summary(_ mode: KeepAwakeMode) -> String {
+    switch mode {
+    case .indefinitely: "until you stop"
+    case .duration: DurationText.short(model.settings.duration)
+    case .schedule: model.settings.schedule.daysSummary(calendar: .current)
+    }
+  }
+
+  @ViewBuilder private func controls(_ mode: KeepAwakeMode) -> some View {
+    switch mode {
+    case .indefinitely: EmptyView()
+    case .duration: DurationPanel(model: model)
+    case .schedule:
+      ScheduleCard(
+        schedule: model.settings.schedule, update: model.setSchedule,
+        editHours: { openSettings(.automation) })
+    }
   }
 
   private var footer: some View {
@@ -92,60 +83,5 @@ struct MenuView: View {
       }
       .keyboardShortcut("q", modifiers: .command)
     }
-  }
-}
-
-private struct HeaderView: View {
-  let status: SessionStatus
-
-  var body: some View {
-    HStack(alignment: .top) {
-      VStack(alignment: .leading, spacing: 2) {
-        Text("Lisdex").font(.title3.bold())
-        Text(status.detail).font(.subheadline).foregroundStyle(.secondary).monospacedDigit()
-      }
-      Spacer()
-      StatusPill(pill: status.pill)
-    }
-  }
-}
-
-private struct StatusPill: View {
-  @Environment(\.accent) private var accent
-  let pill: SessionStatus.Pill
-
-  var body: some View {
-    let color: Color =
-      switch pill {
-      case .active: accent
-      case .waiting: accent.opacity(0.6)
-      case .inactive: .secondary
-      }
-    HStack(spacing: 5) {
-      Circle().fill(color).frame(width: 6, height: 6)
-      Text(pill.rawValue)
-    }
-    .font(.caption.weight(.semibold))
-    .foregroundStyle(color)
-    .padding(.horizontal, 8)
-    .padding(.vertical, 4)
-    .background(color.opacity(0.15), in: .capsule)
-  }
-}
-
-/// The menu bar glyph inside the Keep Awake tile: accent and filled when on, grey outline when off.
-private struct TileGlyph: View {
-  @Environment(\.accent) private var accent
-  let variant: MenuBarIconVariant
-  let isOn: Bool
-
-  var body: some View {
-    Image(nsImage: MenuBarImages.image(for: MenuBarIcon(variant: variant, isActive: isOn)))
-      .renderingMode(.template)
-      .resizable()
-      .scaledToFit()
-      .frame(width: IconTile<EmptyView>.size - 6)
-      .foregroundStyle(isOn ? accent : .secondary)
-      .accessibilityHidden(true)
   }
 }

@@ -9,7 +9,8 @@ Record the results in `.context/evidence/<date>-release-<version>/`.
 
 - [ ] Left-click opens the menu; right-click toggles (or the other way round, per Settings →
       General → Menu bar icon). Option-click opens the quick menu; 15 Minutes starts a session.
-- [ ] The switch in the menu turns Keep Awake on and off; the icon fills and dims.
+- [ ] Turn On / Turn Off in the menu switches Keep Awake; the icon fills and dims, the card tints.
+- [ ] Picking a mode row never turns Keep Awake on; only the selected mode shows its controls.
 - [ ] A global shortcut (Settings → Shortcuts) toggles Keep Awake from another app.
 
 ## Schedule (per day)
@@ -42,7 +43,7 @@ Record the results in `.context/evidence/<date>-release-<version>/`.
 - [ ] Touch the mouse: jiggles stop until you've been idle again. Caps Lock on doesn't block them.
 - [ ] Display asleep or screen locked: no jiggles (the display stays asleep).
 - [ ] Full-screen video while jiggling: no cursor or playback controls appear.
-- [ ] Remove Lisdex from Accessibility: the menu shows "Mouse jiggler needs permission".
+- [ ] Remove Lisdex from Accessibility: the menu shows the "Mouse jiggler is paused" banner; Allow… opens Accessibility.
 
 ## Shortcuts and Focus (signed build only)
 

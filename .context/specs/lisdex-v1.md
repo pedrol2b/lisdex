@@ -35,88 +35,53 @@ The toggle click (right-click by default) in **For a Duration** mode restarts th
 - Accessibility label: "Lisdex — Keep Awake on/off".
 - "Armed but idle" (schedule mode on, outside a window): inactive icon (v1). A dedicated third glyph is an open question.
 
-## Menu (popover) — draft
+## Menu (popover)
 
-~340 pt wide, dark material, 12 pt corner sections, SF Pro, accent = yellow by default. Rows use the Low Cortisol row component (icon tile · title · subtitle · trailing control).
-
-### State 1 — Inactive
+Redesigned by ADR 0027 (2026-11-25, design B). ~340 pt wide, dark material, accent = gold by
+default. Top to bottom: status card · warning banners · mode list · footer.
 
 ```
 ┌──────────────────────────────────────────┐
-│ Lisdex                      ○ Inactive  │  header: name + status pill (grey)
-│ Your Mac can sleep normally.             │
+│ ╭──────────────────────────────────────╮ │  status card, accent-tinted while on
+│ │ Awake until 3:15 PM              [▮] │ │  caption · menu bar glyph (filled when on)
+│ │ 37 min left                          │ │  headline (large)
+│ │ ▬▬▬▬▬▬▬▬────────────────             │ │  progress, timed sessions only
+│ │ [            Turn Off              ] │ │  wide button = the Keep Awake switch
+│ ╰──────────────────────────────────────╯ │
+│ ╭ ⚠ Mouse jiggler is paused   [Allow…] ╮ │  banner per problem, accent-tinted
+│ ╰   Lisdex needs Accessibility permission╯│
 ├──────────────────────────────────────────┤
-│ [⬡] Keep Awake                     [ ○ ] │  master toggle
-│     Prevent your Mac from sleeping.      │
-├──────────────────────────────────────────┤
-│ MODE                                     │
-│ ┌────────────┬────────────┬────────────┐ │  segmented, 3 options
-│ │ ∞ Indefin. │ ◷ Duration │ ▦ Schedule │ │  (selection kept while off)
-│ └────────────┴────────────┴────────────┘ │
-├──────────────────────────────────────────┤
-│ [⌂] Start on Login                 [ ○ ] │
-│     Launch Lisdex when you log in.      │
+│ ○ ∞ Indefinitely          until you stop │  radio rows; setting on the right
+│ ● ◷ For a Duration                   1 h │
+│   [15 min][30 min][ 1 h ][2 h][Custom…]  │  only the selected mode's controls
+│ ○ ▦ On a Schedule                Mon–Fri │
 ├──────────────────────────────────────────┤
 │  ⚙  Settings…                        ⌘,  │
-│  ⓘ  About Lisdex                     ›  │
+│  ⓘ  About Lisdex                         │
 │  ⏻  Quit Lisdex                     ⌘Q  │
 └──────────────────────────────────────────┘
 ```
 
-### State 2 — Active, Indefinitely
+Card texts (`SessionStatus` caption / headline, Core, tested):
 
-```
-│ Lisdex                       ● Active   │  yellow pill
-│ Awake for 1 h 12 min.                    │  elapsed since session start
-├──────────────────────────────────────────┤
-│ [⬢] Keep Awake                     [ ● ] │
-│     Prevent your Mac from sleeping.      │
-├──────────────────────────────────────────┤
-│ MODE   [∞ Indefinitely]  Duration  Sched │
-├──────────────────────────────────────────┤
-│ … Start on Login / Settings / About / Quit
-```
+| Situation | Caption | Headline |
+| --------- | ------- | -------- |
+| Off | Keep Awake is off | Mac can sleep |
+| On until stopped | Awake · until you stop | On for 1 h 12 min (Just started under a minute) |
+| Timed (mode or a link/action with minutes) | Awake until 15:15 | 37 min left (45 s left in the last minute) + progress |
+| Schedule, inside a window | Next: Tue 09:00 | Until 18:00 |
+| Schedule, waiting | Schedule is on | Next: Tue 09:00 (Pick at least one day) |
+| App / Focus session | Awake | While Xcode is open / While 2 apps are open / While a Focus is on |
 
-### State 3 — Active, For a Duration
-
-```
-│ Lisdex                       ● Active   │
-│ 42 min left · until 12:30                │  countdown (updates every minute; seconds < 1 min)
-├──────────────────────────────────────────┤
-│ [⬢] Keep Awake                     [ ● ] │
-├──────────────────────────────────────────┤
-│ MODE   Indefinitely  [◷ Duration]  Sched │
-│ ┌─────┬─────┬─────┬─────┬──────────────┐ │  duration chips, shown only in this mode
-│ │15 m │30 m │[1 h]│ 2 h │ Custom…      │ │  picking a chip (re)starts the timer
-│ └─────┴─────┴─────┴─────┴──────────────┘ │
-│ ▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▁▁▁▁▁▁▁▁▁▁▁▁▁▁  │  thin progress bar (accent)
-├──────────────────────────────────────────┤
-│ … Start on Login / Settings / About / Quit
-```
-
-When the timer ends: release the assertion, switch Keep Awake off, keep mode = Duration, optional notification ("Lisdex session ended").
-
-### State 4 — Active, On a Schedule
-
-```
-│ Lisdex                ● Active · Sched. │  pill: "Active" inside a window,
-│ Until 18:00 · next: Mon 09:00            │        "Waiting" (grey-yellow) outside
-├──────────────────────────────────────────┤
-│ [⬢] Keep Awake                     [ ● ] │
-├──────────────────────────────────────────┤
-│ MODE   Indefinitely  Duration  [▦ Sched] │
-│ ┌──────────────────────────────────────┐ │  schedule card, shown only in this mode
-│ │ ▦ Schedule                     Edit  │ │
-│ │  M  T  W  T  F  S  S                 │ │  day pills (on = accent)
-│ │  ●  ●  ●  ●  ●  ○  ○                 │ │
-│ │  09:00 – 18:00                       │ │  same hours on every day that's on → edit inline
-│ │  (or) Mon–Thu 09:00–18:00 · Fri 09:00–14:00   │  hours differ (v1.2) → summary + "Edit Hours…"
-│ └──────────────────────────────────────┘ │
-├──────────────────────────────────────────┤
-│ … Start on Login / Settings / About / Quit
-```
-
-Changes vs. the first AI mock (`sources/design-menu-draft-2026-11-19.md`): removed the separate _Quick Duration_ section (merged into Duration mode), schedule card only visible in schedule mode, Accent Color moved to Settings.
+- The card is tinted with the accent while holding, lighter while a schedule waits, plain when off.
+- Banners: "Mouse jiggler is paused · Lisdex needs Accessibility permission · Allow…" (jiggler on,
+  Keep Awake holding, permission missing) and "Start on login is waiting · Approve Lisdex in Login
+  Items · Open…". Each disappears once fixed.
+- Mode rows: Indefinitely "until you stop"; For a Duration the last length ("1 h"); On a Schedule
+  the days that are on ("Mon–Fri", "Mon, Wed, Fri", "Every day", "No days"). Selecting a row
+  never turns Keep Awake on. Duration chips start the timer; the schedule box has day pills plus
+  one From–To, or the summary and Edit Hours… when days differ (opens Settings → Automation).
+- Start on Login is in Settings → General only.
 
 ## Settings window (tabs)
 

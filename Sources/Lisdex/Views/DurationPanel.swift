@@ -1,10 +1,10 @@
 import LisdexCore
 import SwiftUI
 
-/// "For a Duration" controls: preset chips, a custom length, and the progress of the running timer.
+/// "For a Duration" controls: preset chips and a custom length (the timer's progress is on the
+/// status card).
 /// Picking a chip (re)starts the timer (spec, state 3).
 struct DurationPanel: View {
-  @Environment(\.accent) private var accent
   static let customRange = 5...(24 * 60)
   static let customStep = 5
 
@@ -37,14 +37,6 @@ struct DurationPanel: View {
         }
       }
       if showsCustom { customRow }
-      if model.isOn, model.settings.mode == .duration {
-        TimelineView(.periodic(from: .now, by: 1)) { context in
-          ProgressView(value: model.status(at: context.date).progress ?? 0)
-            .progressViewStyle(.linear)
-            .tint(accent)
-            .accessibilityLabel("Time elapsed")
-        }
-      }
     }
   }
 

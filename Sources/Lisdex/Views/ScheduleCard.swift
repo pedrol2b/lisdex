@@ -11,8 +11,6 @@ struct ScheduleCard: View {
 
   var body: some View {
     VStack(alignment: .leading, spacing: 10) {
-      Label("Schedule", systemImage: "calendar")
-        .font(.subheadline.weight(.semibold))
       WeekdayPills(schedule: schedule, update: update)
       if let hours = schedule.sharedHours {
         sharedHoursRow(hours)
@@ -28,6 +26,7 @@ struct ScheduleCard: View {
         }
       }
     }
+    .frame(maxWidth: .infinity, alignment: .leading)
     .padding(10)
     .background(.quaternary.opacity(0.5), in: .rect(cornerRadius: 10))
   }
