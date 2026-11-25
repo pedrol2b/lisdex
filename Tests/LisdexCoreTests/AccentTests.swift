@@ -53,3 +53,38 @@ struct AccentTests {
     #expect(Accent.custom(rgb: 0x010203).customRGB == 0x010203)
   }
 }
+
+@Suite("Accent hex input")
+struct AccentHexTests {
+  @Test(
+    "valid hex parses, with or without #, any case, short form expanded, spaces trimmed",
+    arguments: [
+      ("#12AB3C", 0x12AB3C), ("12ab3c", 0x12AB3C), ("  #12Ab3c ", 0x12AB3C),
+      ("#FA0", 0xFFAA00), ("fa0", 0xFFAA00),
+    ] as [(String, UInt32)])
+  func valid(_ input: String, _ rgb: UInt32) {
+    #expect(Accent.rgb(fromHex: input) == rgb)
+  }
+
+  @Test(
+    "invalid hex is rejected",
+    arguments: [
+      "", "#", "#12AB3", "#12AB3CD", "#GG0000", "red", "##12AB3C", "#12 AB3C", "0x12AB3C",
+    ])
+  func invalid(_ input: String) {
+    #expect(Accent.rgb(fromHex: input) == nil)
+  }
+
+  @Test("hex is #RRGGBB, upper case")
+  func hexString() {
+    #expect(Accent.preset(.gold).hex == "#F4C85B")
+    #expect(Accent.custom(rgb: 0x0A0B0C).hex == "#0A0B0C")
+  }
+
+  @Test("a colour equal to a preset becomes that preset; anything else is custom")
+  func fromRGB() {
+    #expect(Accent(rgb: 0xF4C85B) == .preset(.gold))
+    #expect(Accent(rgb: 0x4FD1A5) == .preset(.mint))
+    #expect(Accent(rgb: 0x123456) == .custom(rgb: 0x123456))
+  }
+}

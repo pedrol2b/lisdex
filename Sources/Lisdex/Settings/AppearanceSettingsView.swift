@@ -29,7 +29,8 @@ struct AppearanceSettingsView: View {
 }
 
 /// The preset swatches, then a colour-wheel swatch that opens the system colour panel and shows
-/// the picked colour in its middle once one is chosen.
+/// the picked colour in its middle once one is chosen; the hex field at the end shows the current
+/// colour and takes a typed or pasted one.
 private struct AccentPicker: View {
   let accent: Accent
   let select: (Accent) -> Void
@@ -51,9 +52,70 @@ private struct AccentPicker: View {
           }
         }
       } select: {
-        ColorPanelPresenter.shared.show(initial: accent.rgb) { select(.custom(rgb: $0)) }
+        ColorPanelPresenter.shared.show(initial: accent.rgb) { select(Accent(rgb: $0)) }
       }
+      Spacer(minLength: 8)
+      AccentHexField(accent: accent, select: select)
     }
+  }
+}
+
+/// `#RRGGBB` of the current accent. A full six-digit hex applies as it's typed or pasted; `#RGB`
+/// applies on Return. Invalid text turns red and changes nothing. A colour picked anywhere else
+/// (swatch, colour panel) replaces the text and ends editing, so a half-typed value never comes
+/// back; leaving the field just shows the current colour again.
+private struct AccentHexField: View {
+  private static let width: CGFloat = 86
+  private static let fullDigits = 6
+
+  let accent: Accent
+  let select: (Accent) -> Void
+  @State private var text = ""
+  @FocusState private var isFocused: Bool
+
+  private var parsed: UInt32? { Accent.rgb(fromHex: text) }
+
+  var body: some View {
+    TextField("Hex colour", text: $text)
+      .labelsHidden()
+      .textFieldStyle(.roundedBorder)
+      .font(.body.monospaced())
+      .foregroundStyle(parsed == nil ? Color.red : .primary)
+      .frame(width: Self.width)
+      .focused($isFocused)
+      .onAppear { text = accent.hex }
+      .onSubmit(commit)
+      .onChange(of: text) { _, _ in applyIfComplete() }
+      .onChange(of: isFocused) { _, focused in
+        if !focused { text = accent.hex }
+      }
+      .onChange(of: accent) { _, new in
+        guard new.rgb != parsed else { return }  // the field's own edit
+        text = new.hex
+        isFocused = false
+      }
+      .help("Type or paste a hex colour, like #F4C85B, then press Return.")
+      .accessibilityLabel("Accent colour hex")
+  }
+
+  /// Applies while typing only once all six digits are in, so "#F4C" doesn't flash a colour.
+  private func applyIfComplete() {
+    guard let rgb = parsed, text.filter(\.isHexDigit).count == Self.fullDigits,
+      rgb != accent.rgb
+    else { return }
+    select(Accent(rgb: rgb))
+  }
+
+  /// Return: applies a valid entry and shows it normalised; an invalid one is replaced by the
+  /// current colour.
+  private func commit() {
+    guard let rgb = parsed else {
+      text = accent.hex
+      return
+    }
+    let picked = Accent(rgb: rgb)
+    if picked != accent { select(picked) }
+    text = picked.hex
   }
 }
 

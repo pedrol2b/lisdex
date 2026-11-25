@@ -23,6 +23,9 @@ Record the results in `.context/evidence/<date>-release-<version>/`.
 
 - [ ] Settings → Appearance: the last swatch opens the Colors panel beside the Settings window;
       picking a colour re-tints the window and the menu, and survives a relaunch.
+- [ ] The hex field shows the current colour. Paste `#5AA9FF` → the blue swatch is selected. Type
+      `000`, click a swatch → the field shows that swatch's hex and stops editing. `000` + Return
+      → black. `#12345` + Return → red, then back to the current colour.
 
 ## Apps
 

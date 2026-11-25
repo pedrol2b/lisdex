@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Settings → Appearance → Accent colour: a colour-wheel swatch picks any colour.
+- Settings → Appearance → Accent colour: a colour-wheel swatch picks any colour, and a hex field
+  shows the current colour and takes a typed or pasted one.
 
 ### Changed
 

@@ -38,7 +38,11 @@ Options weighed in the browser mockups (`.superpowers/brainstorm/`, not committe
 - Accent: `AppSettings.accent` is now `Accent` (`.preset(AccentChoice)` or `.custom(rgb:)`),
   stored as one string — a preset's name, as before, or `#RRGGBB`. An older Lisdex can't read
   `#RRGGBB` and falls back to gold (ADR 0006). The custom swatch opens `NSColorPanel` beside the
-  Settings window (it opened in the screen corner and looked broken).
+  Settings window (it opened in the screen corner and looked broken). A hex field ends the row
+  (owner request): `Accent.rgb(fromHex:)` parses `#RRGGBB` / `RRGGBB` / `#RGB`, `Accent(rgb:)`
+  maps a preset's exact colour back to the preset. Six digits apply while typing, `#RGB` on
+  Return; leaving the field never applies (a stale entry overwrote a swatch pick when the colour
+  panel took focus — owner found it 2026-11-25), and a colour picked elsewhere ends editing.
 - `WeekdayPills` is shared by the popover card and Settings.
 
 ## Consequences

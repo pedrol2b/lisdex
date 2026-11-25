@@ -32,7 +32,32 @@ public enum Accent: Equatable, Hashable, Sendable {
 
   private static let rgbMask: UInt32 = 0xFF_FFFF
   private static let hexDigits = 6
+  private static let shortHexDigits = 3
   private static let hexPrefix = "#"
+
+  /// A preset when `rgb` is exactly a preset's colour, else custom (Settings hex field).
+  public init(rgb: UInt32) {
+    let masked = rgb & Self.rgbMask
+    self =
+      AccentChoice.allCases.first { $0.rgb == masked }.map(Accent.preset) ?? .custom(rgb: masked)
+  }
+
+  /// `#RRGGBB` or `RRGGBB`, any case, surrounding spaces ignored; `#RGB` is short for `#RRGGBB`.
+  /// Anything else → `nil`.
+  public static func rgb(fromHex input: String) -> UInt32? {
+    let trimmed = input.trimmingCharacters(in: .whitespaces)
+    let digits =
+      trimmed.hasPrefix(hexPrefix) ? trimmed.dropFirst(hexPrefix.count) : Substring(trimmed)
+    guard digits.allSatisfy(\.isHexDigit) else { return nil }
+    switch digits.count {
+    case hexDigits: return UInt32(digits, radix: 16)
+    case shortHexDigits: return UInt32(String(digits.flatMap { [$0, $0] }), radix: 16)
+    default: return nil
+    }
+  }
+
+  /// `#RRGGBB`, upper case.
+  public var hex: String { Self.hexPrefix + String(format: "%06X", rgb) }
 
   /// 0xRRGGBB.
   public var rgb: UInt32 {
@@ -75,7 +100,7 @@ extension Accent: Codable {
     case .preset(let choice):
       try container.encode(choice.rawValue)
     case .custom:
-      try container.encode(Self.hexPrefix + String(format: "%06X", rgb))
+      try container.encode(hex)
     }
   }
 }
