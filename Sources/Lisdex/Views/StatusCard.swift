@@ -8,7 +8,6 @@ struct StatusCard: View {
   @Environment(\.accent) private var accent
   let status: SessionStatus
   let isOn: Bool
-  let iconVariant: MenuBarIconVariant
   let toggle: () -> Void
 
   private var tint: Double {
@@ -21,19 +20,13 @@ struct StatusCard: View {
 
   var body: some View {
     VStack(alignment: .leading, spacing: 8) {
-      HStack(alignment: .top) {
-        VStack(alignment: .leading, spacing: 2) {
-          Text(status.caption).font(.subheadline).foregroundStyle(.secondary)
-          Text(status.headline).font(.title2.bold())
-        }
-        .monospacedDigit()
-        .accessibilityElement(children: .combine)
-        Spacer(minLength: 8)
-        Image(nsImage: MenuBarImages.image(for: MenuBarIcon(variant: iconVariant, isActive: isOn)))
-          .renderingMode(.template)
-          .foregroundStyle(isOn ? accent : .secondary)
-          .accessibilityHidden(true)
+      VStack(alignment: .leading, spacing: 2) {
+        Text(status.caption).font(.subheadline).foregroundStyle(.secondary)
+        Text(status.headline).font(.title2.bold())
       }
+      .monospacedDigit()
+      .frame(maxWidth: .infinity, alignment: .leading)
+      .accessibilityElement(children: .combine)
       if let progress = status.progress {
         ProgressView(value: progress)
           .progressViewStyle(.linear)

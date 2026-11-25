@@ -19,7 +19,7 @@ struct MenuView: View {
       TimelineView(.periodic(from: .now, by: refreshInterval)) { context in
         StatusCard(
           status: model.status(at: context.date), isOn: model.isOn,
-          iconVariant: model.settings.iconVariant, toggle: { model.switchOn(!model.isOn) })
+          toggle: { model.switchOn(!model.isOn) })
       }
       warnings
       Divider()

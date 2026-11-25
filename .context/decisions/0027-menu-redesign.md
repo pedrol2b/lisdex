@@ -31,6 +31,8 @@ committed):
   switch did. Choosing a mode row never turns Keep Awake on.
 - Banners use the accent (owner, 2026-11-25), not system orange; the ⚠ symbol and the wording mark
   them as warnings. The jiggler's Allow… first asks macOS to list Lisdex, then opens the pane.
+- No icon in the card: the owner tried it without the menu bar glyph and found it cleaner
+  (2026-11-25); the status item already shows it.
 - Start on Login leaves the popover; its "waiting for approval" state becomes a banner.
 - Removed: `ModePicker`, `ToggleRow`, `IconTile`, the header and status pill.
 

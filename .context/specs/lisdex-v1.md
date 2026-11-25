@@ -43,7 +43,7 @@ default. Top to bottom: status card · warning banners · mode list · footer.
 ```
 ┌──────────────────────────────────────────┐
 │ ╭──────────────────────────────────────╮ │  status card, accent-tinted while on
-│ │ Awake until 3:15 PM              [▮] │ │  caption · menu bar glyph (filled when on)
+│ │ Awake until 3:15 PM                  │ │  caption
 │ │ 37 min left                          │ │  headline (large)
 │ │ ▬▬▬▬▬▬▬▬────────────────             │ │  progress, timed sessions only
 │ │ [            Turn Off              ] │ │  wide button = the Keep Awake switch
