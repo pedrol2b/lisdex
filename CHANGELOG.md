@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-11-25
+
 ### Added
 
 - Molecule menu bar icon (Settings → Appearance).
@@ -15,18 +17,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- New menu bar icons: Capsule (default), Molecule and Coffee, each with the mode badges. The light
-  bulb is gone; a saved pill or light bulb becomes the Capsule and a saved coffee mug the Coffee.
-- The menu's mode rows use new ∞, clock and calendar symbols.
+- The menu is redesigned: a status card says whether the Mac is awake and until when, with one
+  Turn On / Turn Off button; the modes are a list showing each mode's setting; problems show as a
+  banner with a button that fixes them. Start on Login moved to Settings → General.
 - Settings reorganised into General, Appearance, Power, Automation and Shortcuts. Schedule, Apps
   and the chat-apps jiggler are now under Automation; every group has a heading and explanations
   sit under the setting they explain.
 - Settings → Automation → Schedule: pick the days and one set of hours; turn on "Different hours
   per day" to set each day separately.
-
-- The menu is redesigned: a status card says whether the Mac is awake and until when, with one
-  Turn On / Turn Off button; the modes are a list showing each mode's setting; problems show as a
-  banner with a button that fixes them. Start on Login moved to Settings → General.
+- New menu bar icons: Capsule (default), Molecule and Coffee, each with the mode badges. The light
+  bulb is gone; a saved pill or light bulb becomes the Capsule and a saved coffee mug the Coffee.
+- The menu's mode rows use new ∞, clock and calendar symbols.
 - About Lisdex: a tagline, links to GitHub, issues and sponsoring, and short credits.
 
 ### Fixed
@@ -109,7 +110,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Open-source scaffolding: README, license, code of conduct, contributing guide, security
   policy, issue templates, labels and CI workflows (tests, format, build, release).
 
-[Unreleased]: https://github.com/pedrol2b/lisdex/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/pedrol2b/lisdex/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/pedrol2b/lisdex/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/pedrol2b/lisdex/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/pedrol2b/lisdex/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/pedrol2b/lisdex/compare/v1.0.1...v1.1.0

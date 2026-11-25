@@ -4,6 +4,7 @@ _Last updated 2026-11-25._
 
 ## Done
 
+- 2026-11-25 **Released v1.4.0** (build 6): Settings reorganised, menu redesign, accent hex field, About credits, new icon family (Capsule / Molecule / Coffee), live Accessibility check. `make test` (178) and `make e2e` passed; owner reviewed each part on the running build.
 - 2026-11-25 **Icon redesign** (owner approved the build 2026-11-25): menu bar icons from Figma page 50:2093 — Capsule (default), Molecule, Coffee, each inactive/active with ∞ / clock / calendar overlay badges (24 SVGs, light bulb and old pill/mug removed). Saved `pill`/`bulb` → Capsule, `mug` → Coffee, unknown → Capsule. New 16 pt mode symbols in the menu's mode rows (`assets/modes/`). App icon unchanged (no in-app switch: no Dock tile, and a bundle icon would break the signature). 178 tests. ADR 0029. Evidence `evidence/2026-11-25-icon-redesign/`.
 - 2026-11-25 **Settings reorganised** (branch `feat/settings-rework`, owner reviewed the running build 2026-11-25): five tabs — General · Appearance · Power · Automation (Schedule + Apps + Chat apps) · Shortcuts — with one row pattern (headings, sentence case, explanations under their row). Schedule: day pills + one shared From–To, "Different hours per day" on demand. Custom accent colour via the system colour panel. Feature parity checked against the old views (ADR 0026, spec `lisdex-v1.md` "Settings window"). Core `Accent`, `Schedule.unifyingHours()` (170 tests). Evidence `evidence/2026-11-25-settings-rework/`.
 - 2026-11-25 **Accent never falls back to white** (owner saw the accent at #FFFFFF once; not reproduced — a fresh build keeps the saved accent, and opening the colour panel sends no stray action): a colour-panel colour with no sRGB form used to become white and be saved; it is now ignored and logged (`Log.app`, "Colour panel sent a colour without an sRGB form"). Cause unconfirmed; check that log line if it recurs.
@@ -77,7 +78,7 @@ _Last updated 2026-11-25._
 
 ## Next
 
-1. 1.2.0 and 1.3.0 released 2026-11-24.
+1. 1.2.0 and 1.3.0 released 2026-11-24; 1.4.0 released 2026-11-25.
 2. Phase 10 fixes (jiggler and Focus first: people notice those), as 1.2.1.
 3. Phase 11: owner picks features.
 
