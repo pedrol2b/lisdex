@@ -19,9 +19,10 @@ enum RGB {
       blue: Double(rgb & 0xFF) / channelMax, alpha: 1)
   }
 
-  /// The colour as 0xRRGGBB in sRGB; colours outside sRGB are clamped.
-  static func value(of color: NSColor) -> UInt32 {
-    let srgb = color.usingColorSpace(.sRGB) ?? .white
+  /// The colour as 0xRRGGBB in sRGB (components outside sRGB are clamped), or `nil` when it has
+  /// no RGB form (a pattern image, some catalog colours) — never a made-up white.
+  static func value(of color: NSColor) -> UInt32? {
+    guard let srgb = color.usingColorSpace(.sRGB) else { return nil }
     func channel(_ component: CGFloat) -> UInt32 {
       UInt32((min(max(component, 0), 1) * channelMax).rounded())
     }

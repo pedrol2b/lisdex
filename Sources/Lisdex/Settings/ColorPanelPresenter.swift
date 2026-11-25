@@ -37,6 +37,12 @@ final class ColorPanelPresenter: NSObject {
   }
 
   @objc private func colorChanged(_ panel: NSColorPanel) {
-    onChange?(RGB.value(of: panel.color))
+    guard let rgb = RGB.value(of: panel.color) else {
+      Log.app.notice(
+        "Colour panel sent a colour without an sRGB form; accent unchanged (\(String(describing: panel.color), privacy: .public))"
+      )
+      return
+    }
+    onChange?(rgb)
   }
 }
