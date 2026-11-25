@@ -113,6 +113,15 @@ public struct Schedule: Equatable, Sendable {
     Schedule(days: days, hours: [:], fallback: hours)
   }
 
+  /// Every day gets the hours of the first day that's on (Monday first; Monday when none is on),
+  /// the same day the v1.1 `start`/`end` come from. Settings → "Different hours per day" off.
+  public func unifyingHours() -> Schedule {
+    withAllHours(hours(for: firstDayOn))
+  }
+
+  /// The first day that's on, Monday first; Monday when none is.
+  var firstDayOn: Weekday { Weekday.displayOrder.first(where: days.contains) ?? .monday }
+
   /// The popover's shared From/To: the days that are on, plus any day that's off still at the
   /// old shared hours, get `hours`; a day that's off with its own hours keeps them.
   public func withSharedHours(_ hours: DayHours) -> Schedule {
@@ -213,10 +222,9 @@ extension Schedule: Codable {
 
   public func encode(to encoder: Encoder) throws {
     var container = encoder.container(keyedBy: CodingKeys.self)
-    let firstOn = Weekday.displayOrder.first(where: days.contains) ?? .monday
     try container.encode(days, forKey: .days)
-    try container.encode(hours(for: firstOn).start, forKey: .start)
-    try container.encode(hours(for: firstOn).end, forKey: .end)
+    try container.encode(hours(for: firstDayOn).start, forKey: .start)
+    try container.encode(hours(for: firstDayOn).end, forKey: .end)
     let perDay = Dictionary(
       uniqueKeysWithValues: Weekday.allCases.map { (String($0.rawValue), hours(for: $0)) })
     try container.encode(perDay, forKey: .hours)

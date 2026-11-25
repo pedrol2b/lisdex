@@ -5,7 +5,6 @@ import SwiftUI
 /// edit them inline (an end before the start runs overnight); otherwise show a summary and a link
 /// to Settings → Schedule, where each day has its own hours.
 struct ScheduleCard: View {
-  @Environment(\.accent) private var accent
   let schedule: Schedule
   let update: (Schedule) -> Void
   let editHours: () -> Void
@@ -14,11 +13,7 @@ struct ScheduleCard: View {
     VStack(alignment: .leading, spacing: 10) {
       Label("Schedule", systemImage: "calendar")
         .font(.subheadline.weight(.semibold))
-      HStack(spacing: 6) {
-        ForEach(Weekday.displayOrder, id: \.self) { day in
-          dayPill(day)
-        }
-      }
+      WeekdayPills(schedule: schedule, update: update)
       if let hours = schedule.sharedHours {
         sharedHoursRow(hours)
       } else {
@@ -52,8 +47,22 @@ struct ScheduleCard: View {
       }
     }
   }
+}
 
-  private func dayPill(_ day: Weekday) -> some View {
+/// One pill per weekday, Monday first; tapping one switches that day on or off. Shared by the
+/// popover's schedule card and Settings → Automation.
+struct WeekdayPills: View {
+  @Environment(\.accent) private var accent
+  let schedule: Schedule
+  let update: (Schedule) -> Void
+
+  var body: some View {
+    HStack(spacing: 6) {
+      ForEach(Weekday.displayOrder, id: \.self, content: pill)
+    }
+  }
+
+  private func pill(_ day: Weekday) -> some View {
     let isOn = schedule.days.contains(day)
     return Button {
       update(schedule.toggling(day))

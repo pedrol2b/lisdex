@@ -94,7 +94,7 @@ struct KeyComboTests {
   func titles() {
     #expect(
       ShortcutAction.allCases.map(\.title) == [
-        "Toggle Keep Awake", "Start Indefinitely", "Start for a Duration", "Stop",
+        "Turn Keep Awake on or off", "Start indefinitely", "Start for a duration", "Stop",
       ])
   }
 

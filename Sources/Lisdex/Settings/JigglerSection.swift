@@ -1,12 +1,11 @@
 import LisdexCore
 import SwiftUI
 
-/// Settings → Power → "Chat apps": the mouse jiggler (spec mouse-jiggler, ADR 0024).
+/// Settings → Automation → "Chat apps": the mouse jiggler (spec mouse-jiggler, ADR 0024).
 struct JigglerSection: View {
   static let caption = """
-    Teams and Slack mark you Away when the Mac sees no input. While Keep Awake is on, Lisdex \
-    moves the mouse by 0 px after you've been idle, so they don't. While it runs, the screen \
-    saver and display sleep wait too.
+    While Keep Awake is on and you're idle, nudges the mouse by 0 px so Teams and Slack don't \
+    mark you Away. The screen saver and display sleep wait too.
     """
   static let updateNote =
     "After updating Lisdex, macOS may keep showing it as allowed while it isn't: switch Lisdex off and on there."
@@ -19,10 +18,10 @@ struct JigglerSection: View {
 
   var body: some View {
     Section("Chat apps") {
-      Toggle(
-        "Keep me active in chat apps (mouse jiggler)",
-        isOn: Bindable(model).jigglerEnabledSetting)
-      Text(Self.caption).font(.caption).foregroundStyle(.secondary)
+      Toggle(isOn: Bindable(model).jigglerEnabledSetting) {
+        Text("Keep me active in chat apps")
+        Text(Self.caption)
+      }
       sliderRow(
         "Start after", value: Bindable(model).jigglerIdleThresholdSetting,
         range: JigglerSettings.idleThresholdRange, step: JigglerSettings.idleThresholdStep)

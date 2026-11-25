@@ -53,8 +53,8 @@ struct StatusItemClickTests {
   @Test("titles match the Settings copy")
   func titles() {
     #expect(
-      StatusItemClickBehavior.rightClickToggles.title == "Right click (left click shows menu)")
-    #expect(StatusItemClickBehavior.leftClickToggles.title == "Left click (right click shows menu)")
+      StatusItemClickBehavior.rightClickToggles.title == "Right-click")
+    #expect(StatusItemClickBehavior.leftClickToggles.title == "Left-click")
   }
 
   @Test("VoiceOver help describes the chosen clicks")
@@ -75,8 +75,8 @@ struct StatusItemClickTests {
     let swapped = AppSettings.default.with(clickBehavior: .leftClickToggles)
     let back = try JSONDecoder().decode(AppSettings.self, from: JSONEncoder().encode(swapped))
 
-    #expect(old.clickBehavior == .rightClickToggles && old.accent == .mint)
-    #expect(bad.clickBehavior == .rightClickToggles && bad.accent == .mint)
+    #expect(old.clickBehavior == .rightClickToggles && old.accent == .preset(.mint))
+    #expect(bad.clickBehavior == .rightClickToggles && bad.accent == .preset(.mint))
     #expect(back == swapped)
   }
 }

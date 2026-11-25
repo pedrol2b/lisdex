@@ -19,7 +19,7 @@ struct AppSettingsTests {
     #expect(settings.notifyOnSessionEnd == true)
     #expect(settings.allowDisplaySleepOnBattery == false)
     #expect(settings.batteryStopThreshold == .off)
-    #expect(settings.accent == .gold)
+    #expect(settings.accent == .preset(.gold))
   }
 
   @Test("with(...) returns a changed copy and leaves the original untouched")
@@ -64,7 +64,7 @@ struct AppSettingsTests {
   func phase4Fields() throws {
     let saved = AppSettings.default.with(
       activateOnLaunch: true, notifyOnSessionEnd: false, allowDisplaySleepOnBattery: true,
-      batteryStopThreshold: .below10, accent: .mint)
+      batteryStopThreshold: .below10, accent: .preset(.mint))
 
     let decoded = try JSONDecoder().decode(AppSettings.self, from: JSONEncoder().encode(saved))
     let unknown = try JSONDecoder().decode(
@@ -73,7 +73,7 @@ struct AppSettingsTests {
 
     #expect(decoded == saved)
     #expect(unknown.batteryStopThreshold == .off)
-    #expect(unknown.accent == .gold)
+    #expect(unknown.accent == .preset(.gold))
   }
 
   @Test("jiggler settings round-trip; a bad value falls back without losing the rest")

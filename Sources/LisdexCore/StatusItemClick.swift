@@ -43,8 +43,8 @@ public enum StatusItemClickBehavior: String, Codable, CaseIterable, Sendable {
 
   public var title: String {
     switch self {
-    case .rightClickToggles: "Right click (left click shows menu)"
-    case .leftClickToggles: "Left click (right click shows menu)"
+    case .rightClickToggles: "Right-click"
+    case .leftClickToggles: "Left-click"
     }
   }
 

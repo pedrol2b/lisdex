@@ -1,9 +1,10 @@
 # Current status
 
-_Last updated 2026-11-24._
+_Last updated 2026-11-25._
 
 ## Done
 
+- 2026-11-25 **Settings reorganised** (branch `feat/settings-rework`, owner reviewed the running build 2026-11-25): five tabs — General · Appearance · Power · Automation (Schedule + Apps + Chat apps) · Shortcuts — with one row pattern (headings, sentence case, explanations under their row). Schedule: day pills + one shared From–To, "Different hours per day" on demand. Custom accent colour via the system colour panel. Feature parity checked against the old views (ADR 0026, spec `lisdex-v1.md` "Settings window"). Core `Accent`, `Schedule.unifyingHours()` (170 tests). Evidence `evidence/2026-11-25-settings-rework/`.
 - 2026-11-24 **Released v1.3.0** (build 5): mode badge (9 pt after the owner found 7 pt unreadable). **Released v1.2.0** (build 4) earlier the same day: Phases 8 + 9, e2e in CI; release published by hand from the draft (pipeline drafts on purpose).
 - 2026-11-24 **Phase 11.1 Mode badge** (merged 2026-11-24, released in 1.3.0): Settings → Appearance → "Show the mode on the icon" (off by default) badges the menu bar icon with ∞ / clock / calendar for how the current session ends (approach A, ADR 0025, spec `specs/menu-bar-mode-badge.md`). Figma pill badges rebuilt on the shipped 20 × 18 pill; 18 SVGs exported to `assets/menubar/`. Core `MenuBarBadge.resolve`, `AppSettings.showsModeBadge`, `MenuBarAssetTests` (161 tests). Evidence `evidence/2026-11-24-mode-badge/`.
 - 2026-11-24 **Release prep 1.2.0** (branch `chore/release-1.2.0`; owner: Phases 8 + 9 ship together as 1.2.0): `scripts/e2e.sh` + `make e2e` + E2E workflow on `macos-latest` (links, timed session, kill -9 with both engines, schedule window, app trigger, settings persistence, all via `pmset`; 9/9 locally); manual checklist `runbooks/manual-test.md` for what CI can't do (jiggler, Shortcuts/Focus, clicks); README screenshots retaken (+ Schedule, Apps tabs; Power with Chat apps; per-day menu; light bulb) and feature rows for shortcuts / Option-click.

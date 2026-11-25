@@ -51,12 +51,12 @@ Lisdex does one thing: stop your Mac from going to sleep. It's small enough to r
   <img src="assets/screenshots/popover-schedule.png" width="31%" alt="Lisdex menu, schedule mode Monday to Thursday 9:00 to 18:00 and Friday 9:00 to 15:00">
 </p>
 <p align="center">
-  <img src="assets/screenshots/settings-schedule.png" width="48%" alt="Settings, Schedule tab: hours for each day, Friday until 15:00">
-  <img src="assets/screenshots/settings-power.png" width="48%" alt="Settings, Power tab: display, battery cutoff, mouse jiggler for chat apps and keep-awake engine">
+  <img src="assets/screenshots/settings-automation.png" width="48%" alt="Settings, Automation tab: schedule days and hours with Friday until 15:00, apps that keep the Mac awake (Xcode, Visual Studio Code), and the mouse jiggler for chat apps">
+  <img src="assets/screenshots/settings-power.png" width="48%" alt="Settings, Power tab: keep the display awake, battery cutoff and keep-awake engine">
 </p>
 <p align="center">
-  <img src="assets/screenshots/settings-apps.png" width="48%" alt="Settings, Apps tab: Xcode and Visual Studio Code keep the Mac awake while open">
-  <img src="assets/screenshots/settings-appearance.png" width="48%" alt="Settings, Appearance tab: pill, coffee mug or light bulb menu bar icon, the mode badge switch and accent colours">
+  <img src="assets/screenshots/settings-general.png" width="48%" alt="Settings, General tab: startup, which click turns Keep Awake on or off, notifications and sound">
+  <img src="assets/screenshots/settings-appearance.png" width="48%" alt="Settings, Appearance tab: pill, coffee mug or light bulb menu bar icon, the mode badge switch and accent colours with a custom colour">
 </p>
 
 ### How it keeps your Mac awake

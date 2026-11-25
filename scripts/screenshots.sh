@@ -37,6 +37,6 @@ shot popover-schedule "{$BASE,\"mode\":\"schedule\",\"activateOnLaunch\":true}" 
 shot popover-inactive "{$BASE,\"mode\":\"indefinitely\",\"activateOnLaunch\":false}" popover
 shot settings-appearance "{$BASE,\"mode\":\"indefinitely\",\"activateOnLaunch\":false,\"showsModeBadge\":true}" appearance
 shot settings-power "{$BASE,\"mode\":\"indefinitely\",\"activateOnLaunch\":false}" power
-shot settings-schedule "{$BASE,\"mode\":\"schedule\",\"activateOnLaunch\":false}" schedule
-shot settings-apps "{$BASE,\"mode\":\"indefinitely\",\"activateOnLaunch\":false}" apps
+shot settings-automation "{$BASE,\"mode\":\"schedule\",\"activateOnLaunch\":false}" automation
+shot settings-general "{$BASE,\"mode\":\"indefinitely\",\"activateOnLaunch\":true}" general
 quit

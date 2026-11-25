@@ -79,6 +79,6 @@ struct MenuBarIconTests {
     let settings = try JSONDecoder().decode(AppSettings.self, from: Data(json.utf8))
 
     #expect(settings.iconVariant == .pill)
-    #expect(settings.accent == .pink)
+    #expect(settings.accent == .preset(.pink))
   }
 }

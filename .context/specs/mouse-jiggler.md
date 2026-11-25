@@ -1,5 +1,7 @@
 # Mouse jiggler — Phase 9
 
+> **ADR 0026:** the Settings tab described here is now a section of Settings → Automation; see `lisdex-v1.md` "Settings window".
+
 _Approved by owner 2026-11-24 (Approach A)._
 
 ## Intent

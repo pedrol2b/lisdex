@@ -42,8 +42,8 @@ struct ShortcutSettingsTests {
     let old = try decode(#"{"accent":"mint"}"#)
     let garbage = try decode(#"{"shortcuts":"garbage","accent":"mint"}"#)
 
-    #expect(old.shortcuts == .default && old.accent == .mint)
-    #expect(garbage.shortcuts == .default && garbage.accent == .mint)
+    #expect(old.shortcuts == .default && old.accent == .preset(.mint))
+    #expect(garbage.shortcuts == .default && garbage.accent == .preset(.mint))
   }
 
   @Test("one bad entry is dropped, the others kept; a bad duration falls back")

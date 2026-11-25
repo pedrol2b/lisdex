@@ -47,7 +47,7 @@ struct MenuView: View {
       case .schedule:
         ScheduleCard(
           schedule: model.settings.schedule, update: model.setSchedule,
-          editHours: { openSettings(.schedule) })
+          editHours: { openSettings(.automation) })
       }
       Divider()
       ToggleRow(

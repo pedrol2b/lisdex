@@ -32,7 +32,7 @@ struct ToggleSoundTests {
       AppSettings.self,
       from: Data(#"{"playsToggleSound":false,"toggleSound":"kazoo"}"#.utf8))
 
-    #expect(old.playsToggleSound && old.toggleSound == .pop && old.accent == .mint)
+    #expect(old.playsToggleSound && old.toggleSound == .pop && old.accent == .preset(.mint))
     #expect(unknown.playsToggleSound == false && unknown.toggleSound == .pop)
   }
 }

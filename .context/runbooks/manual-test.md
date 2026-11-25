@@ -8,23 +8,30 @@ Record the results in `.context/evidence/<date>-release-<version>/`.
 ## Menu and clicks
 
 - [ ] Left-click opens the menu; right-click toggles (or the other way round, per Settings →
-      General → Quick-Start). Option-click opens the quick menu; 15 Minutes starts a session.
+      General → Menu bar icon). Option-click opens the quick menu; 15 Minutes starts a session.
 - [ ] The switch in the menu turns Keep Awake on and off; the icon fills and dims.
 - [ ] A global shortcut (Settings → Shortcuts) toggles Keep Awake from another app.
 
 ## Schedule (per day)
 
-- [ ] Settings → Schedule: give Friday shorter hours. The menu shows the summary and Edit Hours…
-- [ ] Same hours on every day that's on: the menu shows the plain From/To fields again.
+- [ ] Settings → Automation → Schedule: turn on "Different hours per day", give Friday shorter
+      hours. The menu shows the summary and Edit Hours…, which opens the Automation tab.
+- [ ] Turn "Different hours per day" off: every day takes Monday's hours; the menu shows the plain
+      From/To fields again.
+
+## Accent colour
+
+- [ ] Settings → Appearance: the last swatch opens the Colors panel beside the Settings window;
+      picking a colour re-tints the window and the menu, and survives a relaunch.
 
 ## Apps
 
-- [ ] Settings → Apps: add an app, open it → Keep Awake on; quit it → off.
+- [ ] Settings → Automation → Apps: add an app, open it → Keep Awake on; quit it → off.
 - [ ] Turn Keep Awake on yourself, open and quit the app → Keep Awake stays on.
 
 ## Mouse jiggler
 
-- [ ] Settings → Power → Chat apps: switch on. ⚠︎ row shows; Open Accessibility Settings lists
+- [ ] Settings → Automation → Chat apps: switch on. ⚠︎ row shows; Open Accessibility Settings lists
       Lisdex; allow it → the row turns ✅ within a few seconds.
 - [ ] Keep Awake on, leave the Mac alone for 6 minutes: Teams/Slack stay Available, the cursor
       doesn't move. `log stream --predicate 'subsystem == "io.github.pedrol2b.lisdex" AND
