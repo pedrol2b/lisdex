@@ -1,6 +1,6 @@
 # AGENTS.md — Lisdex
 
-Open-source macOS menu bar app (Swift 6, SwiftPM, AppKit + SwiftUI) that keeps the Mac awake — indefinitely, for a duration, or on a schedule. No Dock icon; a capsule-pill status icon, a coffee mug or a light bulb (outlined = inactive, filled = active).
+Open-source macOS menu bar app (Swift 6, SwiftPM, AppKit + SwiftUI) that keeps the Mac awake — indefinitely, for a duration, or on a schedule. No Dock icon; a capsule status icon, a molecule or a coffee cup (outlined = inactive, filled = active; ADR 0029).
 
 ## Read first
 

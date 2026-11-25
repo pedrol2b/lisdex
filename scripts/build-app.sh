@@ -61,6 +61,7 @@ cp "$ROOT/Support/Info.plist" "$APP/Contents/Info.plist"
 cp "$ROOT/assets/app-icon/Lisdex.icns" "$APP/Contents/Resources/Lisdex.icns"
 # Menu bar pill / mug / bulb: vector template PDFs (ADR 0003, 0015).
 cp "$ROOT"/assets/menubar/*.pdf "$APP/Contents/Resources/"
+cp "$ROOT"/assets/modes/*.pdf "$APP/Contents/Resources/"
 
 if [ -n "$INTENTS_PROCESSOR" ]; then
   # Constant values the compiler emitted for the app module in this configuration. The build

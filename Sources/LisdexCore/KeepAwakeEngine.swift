@@ -7,7 +7,7 @@ public enum KeepAwakeEngine: String, Codable, CaseIterable, Sendable {
 
   public var title: String {
     switch self {
-    case .iokit: "macOS power assertions (recommended)"
+    case .iokit: "Power assertions"
     case .caffeinate: "caffeinate"
     }
   }

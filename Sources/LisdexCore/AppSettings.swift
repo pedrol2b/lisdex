@@ -24,7 +24,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
   /// On battery, let the display sleep even though the system is kept awake.
   public let allowDisplaySleepOnBattery: Bool
   public let batteryStopThreshold: BatteryThreshold
-  public let accent: AccentChoice
+  public let accent: Accent
   /// Play a short sound when the user switches Keep Awake on or off (like Amphetamine).
   public let playsToggleSound: Bool
   public let toggleSound: ToggleSound
@@ -52,7 +52,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
     notifyOnSessionEnd: Bool = true,
     allowDisplaySleepOnBattery: Bool = false,
     batteryStopThreshold: BatteryThreshold = .off,
-    accent: AccentChoice = .default,
+    accent: Accent = .default,
     playsToggleSound: Bool = true,
     toggleSound: ToggleSound = .default,
     clickBehavior: StatusItemClickBehavior = .default,
@@ -111,7 +111,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
     batteryStopThreshold =
       (try? container.decodeIfPresent(BatteryThreshold.self, forKey: .batteryStopThreshold))
       ?? fallback.batteryStopThreshold
-    accent = (try? container.decodeIfPresent(AccentChoice.self, forKey: .accent)) ?? fallback.accent
+    accent = (try? container.decodeIfPresent(Accent.self, forKey: .accent)) ?? fallback.accent
     playsToggleSound =
       try container.decodeIfPresent(Bool.self, forKey: .playsToggleSound)
       ?? fallback.playsToggleSound
@@ -148,7 +148,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
     notifyOnSessionEnd: Bool? = nil,
     allowDisplaySleepOnBattery: Bool? = nil,
     batteryStopThreshold: BatteryThreshold? = nil,
-    accent: AccentChoice? = nil,
+    accent: Accent? = nil,
     playsToggleSound: Bool? = nil,
     toggleSound: ToggleSound? = nil,
     clickBehavior: StatusItemClickBehavior? = nil,

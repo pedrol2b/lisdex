@@ -1,5 +1,7 @@
 # App trigger — Phase 8.1
 
+> **ADR 0026:** the Settings tab described here is now a section of Settings → Automation; see `lisdex-v1.md` "Settings window".
+
 _Approved by owner 2026-11-23 (Approach A), with two changes: no turning on at Lisdex launch, and the app list starts empty._
 
 ## Intent

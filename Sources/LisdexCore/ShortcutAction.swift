@@ -8,9 +8,9 @@ public enum ShortcutAction: String, CaseIterable, Codable, CodingKey, Sendable {
 
   public var title: String {
     switch self {
-    case .toggle: "Toggle Keep Awake"
-    case .startIndefinitely: "Start Indefinitely"
-    case .startDuration: "Start for a Duration"
+    case .toggle: "Turn Keep Awake on or off"
+    case .startIndefinitely: "Start indefinitely"
+    case .startDuration: "Start for a duration"
     case .stop: "Stop"
     }
   }

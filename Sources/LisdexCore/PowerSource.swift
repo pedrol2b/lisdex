@@ -39,23 +39,3 @@ public enum BatteryCutoff {
     return level <= limit
   }
 }
-
-/// Accent colour presets (Settings → Appearance). Stored by name; `rgb` is 0xRRGGBB.
-public enum AccentChoice: String, Codable, CaseIterable, Sendable {
-  case gold, orange, pink, purple, blue, mint
-
-  public static let `default` = AccentChoice.gold
-
-  public var rgb: UInt32 {
-    switch self {
-    case .gold: 0xF4C85B
-    case .orange: 0xFF9F43
-    case .pink: 0xFF6B9D
-    case .purple: 0xA78BFA
-    case .blue: 0x5AA9FF
-    case .mint: 0x4FD1A5
-    }
-  }
-
-  public var title: String { rawValue.capitalized }
-}

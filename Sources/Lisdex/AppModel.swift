@@ -171,7 +171,7 @@ final class AppModel {
     reconcile()
   }
 
-  func setAccent(_ accent: AccentChoice) { update(settings.with(accent: accent)) }
+  func setAccent(_ accent: Accent) { update(settings.with(accent: accent)) }
 
   func setClickBehavior(_ behavior: StatusItemClickBehavior) {
     update(settings.with(clickBehavior: behavior))

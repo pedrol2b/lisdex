@@ -27,7 +27,7 @@ struct PreferencesStoreTests {
     let defaults = makeDefaults()
     let store = PreferencesStore(defaults: defaults)
     let saved = AppSettings.default.with(
-      mode: .duration, engine: .caffeinate, keepDisplayAwake: false, iconVariant: .mug)
+      mode: .duration, engine: .caffeinate, keepDisplayAwake: false, iconVariant: .coffee)
 
     try store.save(saved)
     let (loaded, error) = store.loadSettings()

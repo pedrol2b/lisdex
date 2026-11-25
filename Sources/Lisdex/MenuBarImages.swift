@@ -1,9 +1,9 @@
 import AppKit
 import LisdexCore
 
-/// Loads the pill / coffee-mug / light-bulb template images bundled by `scripts/build-app.sh`.
+/// Loads the capsule / molecule / coffee template images bundled by `scripts/build-app.sh`.
 enum MenuBarImages {
-  /// Glyphs are 18 pt tall (the menu bar maximum); the width follows each artwork's aspect ratio (ADR 0015).
+  /// Glyphs are 18 pt tall (the menu bar maximum); the width follows each artwork's aspect ratio (ADR 0029).
   static let height: CGFloat = 18
 
   static func image(for icon: MenuBarIcon) -> NSImage {
@@ -28,11 +28,23 @@ enum MenuBarImages {
   private static func fallback(for icon: MenuBarIcon) -> NSImage {
     let base =
       switch icon.variant {
-      case .pill: "capsule"
-      case .mug: "mug"
-      case .bulb: "lightbulb"
+      case .capsule: "capsule"
+      case .molecule: "hexagon"
+      case .coffee: "cup.and.saucer"
       }
     let symbol = icon.isActive ? "\(base).fill" : base
     return NSImage(systemSymbolName: symbol, accessibilityDescription: nil) ?? NSImage()
+  }
+}
+
+/// The 16 pt mode symbols (∞, clock, calendar) drawn to match the menu bar icons (ADR 0029).
+enum ModeSymbols {
+  static func image(for mode: KeepAwakeMode) -> NSImage {
+    let image =
+      Bundle.main.url(forResource: mode.symbolResourceName, withExtension: "pdf")
+      .flatMap(NSImage.init(contentsOf:))
+      ?? NSImage(systemSymbolName: mode.symbolName, accessibilityDescription: nil) ?? NSImage()
+    image.isTemplate = true
+    return image
   }
 }

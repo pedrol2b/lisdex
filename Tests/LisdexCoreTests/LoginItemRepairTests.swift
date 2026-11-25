@@ -36,6 +36,6 @@ struct StartOnLoginPathTests {
 
     #expect(set.startOnLoginPath == "/Applications/Lisdex.app")
     #expect(set.with(startOnLoginPath: .some(nil)).startOnLoginPath == nil)
-    #expect(set.with(accent: .blue).startOnLoginPath == "/Applications/Lisdex.app")
+    #expect(set.with(accent: .preset(.blue)).startOnLoginPath == "/Applications/Lisdex.app")
   }
 }

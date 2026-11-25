@@ -9,14 +9,20 @@ cd "$ROOT/assets"
 mkdir -p "$ROOT/.build"
 swiftc -O "$ROOT/scripts/render-svg.swift" -o "$RENDER"
 
-# Menu bar templates (ADR 0015): 18 pt tall pill (20 wide) and coffee mug and light bulb (18 × 18), black + alpha only,
-# plain and with a mode badge (ADR 0025). Vector PDF for the app + 1x/2x/3x PNG for docs.
+# Menu bar templates (ADR 0029): 18 pt tall capsule (18 wide), molecule (32) and coffee (20), black +
+# alpha only, plain and with a mode badge (ADR 0025). Vector PDF for the app + 1x/2x/3x PNG for docs.
 for svg in menubar/*.svg; do
   name="$(basename "$svg" .svg)"
   "$RENDER" "menubar/$name.svg" "menubar/$name.pdf" 18
   "$RENDER" "menubar/$name.svg" "menubar/$name.png" 18
   "$RENDER" "menubar/$name.svg" "menubar/$name@2x.png" 36
   "$RENDER" "menubar/$name.svg" "menubar/$name@3x.png" 54
+done
+
+# Mode symbols (ADR 0029): 16 pt templates for the menu's mode rows. PDF only.
+for svg in modes/*.svg; do
+  name="$(basename "$svg" .svg)"
+  "$RENDER" "modes/$name.svg" "modes/mode-$name.pdf" 16
 done
 
 # App icon masters: full-bleed (Icon Composer) and the macOS-grid tile (README, .icns).

@@ -13,7 +13,10 @@ public enum KeepAwakeMode: String, Codable, CaseIterable, Sendable {
     }
   }
 
-  /// SF Symbol shown in the mode picker.
+  /// Base name of the 16 pt template PDF for the menu's mode row (`assets/modes/`, ADR 0029).
+  public var symbolResourceName: String { "mode-\(rawValue)" }
+
+  /// SF Symbol used when the bundled symbol is missing (`swift run` outside the .app).
   public var symbolName: String {
     switch self {
     case .indefinitely: "infinity"

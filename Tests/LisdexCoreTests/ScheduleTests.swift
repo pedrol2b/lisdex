@@ -210,3 +210,35 @@ struct ScheduleTests {
     #expect(none.sharedHours == shorter)
   }
 }
+
+@Suite("Schedule unified hours")
+struct ScheduleUnifiedHoursTests {
+  private func t(_ hour: Int) -> TimeOfDay { TimeOfDay(hour: hour, minute: 0) }
+
+  @Test("every day takes the first selected day's hours, Monday first")
+  func firstSelectedDayWins() {
+    let tuesday = DayHours(start: t(8), end: t(16))
+    let friday = DayHours(start: t(22), end: t(2))
+    let schedule = Schedule(
+      days: [.tuesday, .friday], hours: [.tuesday: tuesday, .friday: friday])
+
+    let unified = schedule.unifyingHours()
+
+    #expect(unified.days == schedule.days)
+    for day in Weekday.allCases { #expect(unified.hours(for: day) == tuesday) }
+    #expect(unified.sharedHours == tuesday)
+  }
+
+  @Test("with no days on, Monday's hours are used")
+  func noDays() {
+    let monday = DayHours(start: t(7), end: t(15))
+    let schedule = Schedule(days: [], hours: [.monday: monday, .sunday: .workday])
+
+    #expect(schedule.unifyingHours().sharedHours == monday)
+  }
+
+  @Test("already shared hours are unchanged")
+  func alreadyShared() {
+    #expect(Schedule.default.unifyingHours() == Schedule.default)
+  }
+}

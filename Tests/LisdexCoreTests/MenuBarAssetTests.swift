@@ -72,4 +72,16 @@ struct MenuBarAssetTests {
       }
     }
   }
+
+  @Test("every mode has a 16 pt symbol: SVG source and PDF export")
+  func everyModeHasASymbol() throws {
+    let modes = Self.folder.deletingLastPathComponent().appendingPathComponent("modes")
+    for mode in KeepAwakeMode.allCases {
+      let svg = modes.appendingPathComponent("\(mode.rawValue).svg")
+      let pdf = modes.appendingPathComponent("\(mode.symbolResourceName).pdf")
+      #expect(FileManager.default.fileExists(atPath: pdf.path), "missing \(pdf.lastPathComponent)")
+      #expect(
+        Self.canvas(try String(contentsOf: svg, encoding: .utf8)) == #"width="16" height="16""#)
+    }
+  }
 }

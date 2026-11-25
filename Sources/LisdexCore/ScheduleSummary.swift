@@ -18,6 +18,27 @@ extension Schedule {
     .joined(separator: " · ")
   }
 
+  /// Just the days for the popover's mode row: "Mon–Fri", "Mon, Wed, Fri", "Every day", "No days".
+  /// Consecutive days that are on form a range, whatever their hours.
+  public func daysSummary(calendar: Calendar) -> String {
+    if days.isEmpty { return "No days" }
+    if days.count == Weekday.allCases.count { return "Every day" }
+    let name = { (day: Weekday) in calendar.shortWeekdaySymbols[day.rawValue - 1] }
+    var runs: [(first: Weekday, last: Weekday)] = []
+    var previous: Weekday?
+    for day in Weekday.displayOrder {
+      defer { previous = days.contains(day) ? day : nil }
+      guard days.contains(day) else { continue }
+      if previous != nil, let run = runs.last {
+        runs[runs.count - 1] = (run.first, day)
+      } else {
+        runs.append((day, day))
+      }
+    }
+    return runs.map { $0.first == $0.last ? name($0.first) : "\(name($0.first))–\(name($0.last))" }
+      .joined(separator: ", ")
+  }
+
   private func groupsOfSameHours() -> [(first: Weekday, last: Weekday)] {
     var groups: [(first: Weekday, last: Weekday)] = []
     var previous: Weekday?

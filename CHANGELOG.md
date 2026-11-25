@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Molecule menu bar icon (Settings → Appearance).
+- Settings → Appearance → Accent colour: a colour-wheel swatch picks any colour, and a hex field
+  shows the current colour and takes a typed or pasted one.
+
+### Changed
+
+- New menu bar icons: Capsule (default), Molecule and Coffee, each with the mode badges. The light
+  bulb is gone; a saved pill or light bulb becomes the Capsule and a saved coffee mug the Coffee.
+- The menu's mode rows use new ∞, clock and calendar symbols.
+- Settings reorganised into General, Appearance, Power, Automation and Shortcuts. Schedule, Apps
+  and the chat-apps jiggler are now under Automation; every group has a heading and explanations
+  sit under the setting they explain.
+- Settings → Automation → Schedule: pick the days and one set of hours; turn on "Different hours
+  per day" to set each day separately.
+
+- The menu is redesigned: a status card says whether the Mac is awake and until when, with one
+  Turn On / Turn Off button; the modes are a list showing each mode's setting; problems show as a
+  banner with a button that fixes them. Start on Login moved to Settings → General.
+- About Lisdex: a tagline, links to GitHub, issues and sponsoring, and short credits.
+
+### Fixed
+
+- Settings → Automation → Chat apps: granting Accessibility permission now shows up within a few
+  seconds instead of only after relaunching Lisdex.
+
 ## [1.3.0] - 2026-11-24
 
 ### Added

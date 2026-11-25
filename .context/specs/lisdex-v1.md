@@ -20,7 +20,7 @@ Managed Macs often block installing apps (the owner's company laptop blocks Amph
 | Right-click / Control-click   | Toggle Keep Awake on/off **without changing the selected mode** (off pauses, on resumes) (default), or open the popover when swapped (v1.1). |
 | Option + either click (v1.1)  | Native menu "Keep Awake for…": 15 Minutes, 30 Minutes, 1 Hour, 2 Hours, Until I Stop, and Stop while on. A duration is remembered like a popover chip. |
 | Global shortcuts (v1.1)       | Settings → Shortcuts: Toggle, Start Indefinitely, Start for a Duration (length on its row), Stop. None by default (ADR 0019). |
-| Listed app opens (v1.2)       | Settings → Apps: when a listed app opens and Keep Awake is off, it turns on ("While Xcode is open."); when the last listed app quits it turns off, unless the user started it. Empty list by default (ADR 0020). |
+| Listed app opens (v1.2)       | Settings → Automation → Apps: when a listed app opens and Keep Awake is off, it turns on ("While Xcode is open."); when the last listed app quits it turns off, unless the user started it. Empty list by default (ADR 0020). |
 | `lisdex://` link (v1.2)       | `on` (current mode), `on?minutes=N` (1–1440), `on?until=stopped`, `off`, `toggle`; anything else ignored. A user action, like a shortcut (ADR 0022). |
 | Shortcuts / Focus (v1.2)      | Certificate-signed builds only: actions Turn Keep Awake On (minutes optional), Turn Keep Awake Off, Is Keep Awake On?; Focus filter "Keep Mac awake" holds while that Focus is on ("While a Focus is on.") (ADR 0022). |
 | `⌘,` in popover               | Settings window. `⌘Q` quits (releases the assertion first).                                 |
@@ -29,107 +29,86 @@ The toggle click (right-click by default) in **For a Duration** mode restarts th
 
 ## Status icon
 
-- Inactive = outlined, active = filled with the detail knocked out (`assets/menubar/`, ADR 0015).
-- Rendered as `NSImage` template (`isTemplate = true`), 18 × 18 pt, identical canvas for both states, so macOS tints it for light/dark/tinted menu bars.
-- **Pill** (capsule, 16 × 10 pt glyph) is the default and matches the app icon. **Coffee mug** (16 × 14 pt) and **Light bulb** (v1.1) are selectable in Settings → Appearance → Menu bar icon. An optional mode badge (∞ / clock / calendar, how the current session ends; off by default) is in the same section (ADR 0025, spec `menu-bar-mode-badge.md`). The app icon is always the pill.
+- Inactive = outlined, active = filled with the detail knocked out (`assets/menubar/`, ADR 0029).
+- Rendered as `NSImage` template (`isTemplate = true`), 18 pt tall (capsule 18 × 18, coffee 20 × 18, molecule 32 × 18), identical canvas for both states, so macOS tints it for light/dark/tinted menu bars.
+- **Capsule** is the default and matches the app icon. **Molecule** and **Coffee** are selectable in Settings → Appearance → Menu bar icon. An optional mode badge (∞ / clock / calendar, how the current session ends; off by default) is in the same section (ADR 0025, spec `menu-bar-mode-badge.md`). The app icon is always the capsule pill. Saved `pill`/`bulb` become Capsule, `mug` becomes Coffee (ADR 0029).
 - Accessibility label: "Lisdex — Keep Awake on/off".
 - "Armed but idle" (schedule mode on, outside a window): inactive icon (v1). A dedicated third glyph is an open question.
 
-## Menu (popover) — draft
+## Menu (popover)
 
-~340 pt wide, dark material, 12 pt corner sections, SF Pro, accent = yellow by default. Rows use the Low Cortisol row component (icon tile · title · subtitle · trailing control).
-
-### State 1 — Inactive
+Redesigned by ADR 0027 (2026-11-25, design B). ~340 pt wide, dark material, accent = gold by
+default. Top to bottom: status card · warning banners · mode list · footer.
 
 ```
 ┌──────────────────────────────────────────┐
-│ Lisdex                      ○ Inactive  │  header: name + status pill (grey)
-│ Your Mac can sleep normally.             │
+│ ╭──────────────────────────────────────╮ │  status card, accent-tinted while on
+│ │ Awake until 3:15 PM                  │ │  caption
+│ │ 37 min left                          │ │  headline (large)
+│ │ ▬▬▬▬▬▬▬▬────────────────             │ │  progress, timed sessions only
+│ │ [            Turn Off              ] │ │  wide button = the Keep Awake switch
+│ ╰──────────────────────────────────────╯ │
+│ ╭ ⚠ Mouse jiggler is paused   [Allow…] ╮ │  banner per problem, accent-tinted
+│ ╰   Lisdex needs Accessibility permission╯│
 ├──────────────────────────────────────────┤
-│ [⬡] Keep Awake                     [ ○ ] │  master toggle
-│     Prevent your Mac from sleeping.      │
-├──────────────────────────────────────────┤
-│ MODE                                     │
-│ ┌────────────┬────────────┬────────────┐ │  segmented, 3 options
-│ │ ∞ Indefin. │ ◷ Duration │ ▦ Schedule │ │  (selection kept while off)
-│ └────────────┴────────────┴────────────┘ │
-├──────────────────────────────────────────┤
-│ [⌂] Start on Login                 [ ○ ] │
-│     Launch Lisdex when you log in.      │
+│ ○ ∞ Indefinitely          until you stop │  radio rows; setting on the right
+│ ● ◷ For a Duration                   1 h │
+│   [15 min][30 min][ 1 h ][2 h][Custom…]  │  only the selected mode's controls
+│ ○ ▦ On a Schedule                Mon–Fri │
 ├──────────────────────────────────────────┤
 │  ⚙  Settings…                        ⌘,  │
-│  ⓘ  About Lisdex                     ›  │
+│  ⓘ  About Lisdex                         │
 │  ⏻  Quit Lisdex                     ⌘Q  │
 └──────────────────────────────────────────┘
 ```
 
-### State 2 — Active, Indefinitely
+Card texts (`SessionStatus` caption / headline, Core, tested):
 
-```
-│ Lisdex                       ● Active   │  yellow pill
-│ Awake for 1 h 12 min.                    │  elapsed since session start
-├──────────────────────────────────────────┤
-│ [⬢] Keep Awake                     [ ● ] │
-│     Prevent your Mac from sleeping.      │
-├──────────────────────────────────────────┤
-│ MODE   [∞ Indefinitely]  Duration  Sched │
-├──────────────────────────────────────────┤
-│ … Start on Login / Settings / About / Quit
-```
+| Situation | Caption | Headline |
+| --------- | ------- | -------- |
+| Off | Keep Awake is off | Mac can sleep |
+| On until stopped | Awake · until you stop | On for 1 h 12 min (Just started under a minute) |
+| Timed (mode or a link/action with minutes) | Awake until 15:15 | 37 min left (45 s left in the last minute) + progress |
+| Schedule, inside a window | Next: Tue 09:00 | Until 18:00 |
+| Schedule, waiting | Schedule is on | Next: Tue 09:00 (Pick at least one day) |
+| App / Focus session | Awake | While Xcode is open / While 2 apps are open / While a Focus is on |
 
-### State 3 — Active, For a Duration
-
-```
-│ Lisdex                       ● Active   │
-│ 42 min left · until 12:30                │  countdown (updates every minute; seconds < 1 min)
-├──────────────────────────────────────────┤
-│ [⬢] Keep Awake                     [ ● ] │
-├──────────────────────────────────────────┤
-│ MODE   Indefinitely  [◷ Duration]  Sched │
-│ ┌─────┬─────┬─────┬─────┬──────────────┐ │  duration chips, shown only in this mode
-│ │15 m │30 m │[1 h]│ 2 h │ Custom…      │ │  picking a chip (re)starts the timer
-│ └─────┴─────┴─────┴─────┴──────────────┘ │
-│ ▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▁▁▁▁▁▁▁▁▁▁▁▁▁▁  │  thin progress bar (accent)
-├──────────────────────────────────────────┤
-│ … Start on Login / Settings / About / Quit
-```
-
-When the timer ends: release the assertion, switch Keep Awake off, keep mode = Duration, optional notification ("Lisdex session ended").
-
-### State 4 — Active, On a Schedule
-
-```
-│ Lisdex                ● Active · Sched. │  pill: "Active" inside a window,
-│ Until 18:00 · next: Mon 09:00            │        "Waiting" (grey-yellow) outside
-├──────────────────────────────────────────┤
-│ [⬢] Keep Awake                     [ ● ] │
-├──────────────────────────────────────────┤
-│ MODE   Indefinitely  Duration  [▦ Sched] │
-│ ┌──────────────────────────────────────┐ │  schedule card, shown only in this mode
-│ │ ▦ Schedule                     Edit  │ │
-│ │  M  T  W  T  F  S  S                 │ │  day pills (on = accent)
-│ │  ●  ●  ●  ●  ●  ○  ○                 │ │
-│ │  09:00 – 18:00                       │ │  same hours on every day that's on → edit inline
-│ │  (or) Mon–Thu 09:00–18:00 · Fri 09:00–14:00   │  hours differ (v1.2) → summary + "Edit Hours…"
-│ └──────────────────────────────────────┘ │
-├──────────────────────────────────────────┤
-│ … Start on Login / Settings / About / Quit
-```
-
-Changes vs. the first AI mock (`sources/design-menu-draft-2026-11-19.md`): removed the separate _Quick Duration_ section (merged into Duration mode), schedule card only visible in schedule mode, Accent Color moved to Settings.
+- The card is tinted with the accent while holding, lighter while a schedule waits, plain when off.
+- Banners: "Mouse jiggler is paused · Lisdex needs Accessibility permission · Allow…" (jiggler on,
+  Keep Awake holding, permission missing) and "Start on login is waiting · Approve Lisdex in Login
+  Items · Open…". Each disappears once fixed.
+- Mode rows: Indefinitely "until you stop"; For a Duration the last length ("1 h"); On a Schedule
+  the days that are on ("Mon–Fri", "Mon, Wed, Fri", "Every day", "No days"). Selecting a row
+  never turns Keep Awake on. Duration chips start the timer; the schedule box has day pills plus
+  one From–To, or the summary and Edit Hours… when days differ (opens Settings → Automation).
+- Start on Login is in Settings → General only.
 
 ## Settings window (tabs)
 
-- **General** — Start on Login · Activate Keep Awake when Lisdex launches · Notify when a timed session ends.
-- **Power** — Keep the display awake (default **on**) · Allow display sleep on battery (default off) · Stop below battery % (off / 10 / 20 %) · **Keep-awake engine**: macOS power assertions (IOKit, recommended) / `caffeinate`, with the warning text from ADR 0002 shown when `caffeinate` is selected. **Chat apps** (v1.3): mouse jiggler switch (off), Start after (30 s – 4 min, default 1 min), Repeat every (10–60 s, default 20 s), Accessibility permission row (ADR 0024, spec `mouse-jiggler.md`).
-- **Appearance** — Menu bar icon variant (B Minimal / A Faithful, live preview of both states) · Accent color (yellow, orange, pink, purple, blue, mint, custom).
-- **Shortcuts** (v1.1) — global shortcuts (ADR 0019).
-- **Apps** (v1.2) — apps that keep the Mac awake while open; Add App… / ✕ remove (ADR 0020).
-- **Schedule** (v1.2, after Power) — one row per day: on/off + From–To; a day that's off keeps its hours (ADR 0021, spec `per-day-schedule.md`).
+Reorganised by ADR 0026 (2026-11-25): five tabs, one row pattern. Every group has a heading; labels are
+sentence case; an explanation is one grey line under the row it explains, only where the effect
+isn't obvious; a footer is only for a note about the whole group; no inline symbols in text.
+
+- **General** — *Startup*: Start on login (+ approval row) · Turn on Keep Awake when Lisdex opens. *Menu bar icon*: Turn Keep Awake on or off with Right-click / Left-click (spec `click-behavior.md`). *Feedback*: Notify when a timed session ends · Play a sound when switched on or off · Sound.
+- **Appearance** — *Menu bar icon*: Capsule / Molecule / Coffee cards with both states · Show the session mode on the icon (ADR 0025). *Accent colour*: gold, orange, pink, purple, blue, mint, then a colour-wheel swatch that opens the system colour panel beside the window (custom colour, stored as `#RRGGBB`), then a hex field showing the current colour: a typed or pasted `#RRGGBB` applies at once, `#RGB` on Return; invalid text turns red and changes nothing; picking a colour elsewhere replaces the text and ends editing. A hex equal to a preset selects that preset.
+- **Power** — *Display*: Keep the display awake (default **on**) · Except on battery (default off). *Battery*: Turn off below (off / 10 / 20 %). *Advanced*: Keep-awake engine — power assertions (IOKit, recommended) / `caffeinate`, with the ADR 0002 warning when `caffeinate` is selected.
+- **Automation** — *Schedule*: day pills · Hours (one shared From–To) · Different hours per day (lists the days that are on, each with its own hours; ADR 0021). *Apps*: apps that keep the Mac awake while open; Add App… / ✕ (ADR 0020). *Chat apps*: mouse jiggler switch, Start after, Repeat every, Accessibility permission row (ADR 0024). The popover's "Edit Hours…" opens this tab.
+- **Shortcuts** — *Global shortcuts*: one recorder per action, plus Duration under "Start for a duration" (ADR 0019).
 
 ## About
 
-Version + build, GitHub link, license (MIT), "Inspired by Amphetamine", disclaimer that the name and pill are a visual reference, not medical content.
+Standard macOS About panel (ADR 0028): icon, name, version + build, then the credits, one short
+fact per line with no break inside a sentence:
+
+```
+Keeps your Mac awake.
+GitHub · Report an issue · Sponsor        (repo · issues/new/choose · github.com/sponsors/pedrol2b)
+Inspired by Amphetamine.
+Named after lisdexamfetamine.
+Not medical content.
+MIT License
+© 2026 Pedro Bueno                         (NSHumanReadableCopyright)
+```
 
 ## Out of scope (v1)
 

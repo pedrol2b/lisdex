@@ -23,20 +23,20 @@ struct SessionStatusTests {
 
     #expect(
       status
-        == SessionStatus(pill: .inactive, detail: "Your Mac can sleep normally.", progress: nil))
+        == SessionStatus(
+          pill: .inactive, caption: "Keep Awake is off", headline: "Mac can sleep", progress: nil))
   }
 
   @Test("indefinitely shows the elapsed time")
   func elapsed() {
     let session = Session(startedAt: noon.addingTimeInterval(-72 * 60), deadline: nil)
 
-    #expect(
-      describe(.holding(until: nil), .indefinitely, session, at: noon).detail
-        == "Awake for 1 h 12 min.")
+    let status = describe(.holding(until: nil), .indefinitely, session, at: noon)
+    #expect(status.caption == "Awake · until you stop")
+    #expect(status.headline == "On for 1 h 12 min")
     let fresh = Session(startedAt: noon.addingTimeInterval(-20), deadline: nil)
     #expect(
-      describe(.holding(until: nil), .indefinitely, fresh, at: noon).detail
-        == "Awake for less than a minute.")
+      describe(.holding(until: nil), .indefinitely, fresh, at: noon).headline == "Just started")
   }
 
   @Test("duration shows time left, end time and progress")
@@ -48,11 +48,12 @@ struct SessionStatusTests {
       .holding(until: end), .duration, session, at: TestClock.at("2026-11-16 11:48"))
 
     #expect(status.pill == .active)
-    #expect(status.detail == "42 min left · until 12:30")
+    #expect(status.caption == "Awake until 12:30")
+    #expect(status.headline == "42 min left")
     #expect(status.progress == 0.3)
     let lastSeconds = describe(
       .holding(until: end), .duration, session, at: end.addingTimeInterval(-45))
-    #expect(lastSeconds.detail == "45 s left · until 12:30")
+    #expect(lastSeconds.headline == "45 s left")
   }
 
   @Test("remaining minutes round up, so it never says 0 min")
@@ -62,7 +63,7 @@ struct SessionStatusTests {
 
     let status = describe(.holding(until: end), .duration, session, at: end.addingTimeInterval(-61))
 
-    #expect(status.detail == "2 min left · until 12:30")
+    #expect(status.headline == "2 min left")
   }
 
   @Test("schedule: inside shows the end and the next start; outside waits")
@@ -70,16 +71,18 @@ struct SessionStatusTests {
     let session = Session(startedAt: noon, deadline: nil)
     let end = TestClock.at("2026-11-16 18:00")
 
-    #expect(
-      describe(.holding(until: end), .schedule, session, at: noon).detail
-        == "Until 18:00 · next: Tue 09:00")
+    let inside = describe(.holding(until: end), .schedule, session, at: noon)
+    #expect(inside.caption == "Next: Tue 09:00")
+    #expect(inside.headline == "Until 18:00")
     let waiting = describe(
       .waiting(next: TestClock.at("2026-11-17 09:00")), .schedule, session, at: noon)
     #expect(
-      waiting == SessionStatus(pill: .waiting, detail: "Waiting · next: Tue 09:00", progress: nil))
+      waiting
+        == SessionStatus(
+          pill: .waiting, caption: "Schedule is on", headline: "Next: Tue 09:00", progress: nil))
     #expect(
-      describe(.waiting(next: nil), .schedule, session, at: noon).detail == "Pick at least one day."
-    )
+      describe(.waiting(next: nil), .schedule, session, at: noon).headline
+        == "Pick at least one day")
   }
 
   @Test("duration labels")
@@ -111,9 +114,10 @@ struct SessionStatusTests {
 
     #expect(
       detail(["Xcode"])
-        == SessionStatus(pill: .active, detail: "While Xcode is open.", progress: nil))
-    #expect(detail(["Xcode", "Visual Studio Code"]).detail == "While 2 apps are open.")
-    #expect(detail([]).detail == "While an app is open.")
+        == SessionStatus(
+          pill: .active, caption: "Awake", headline: "While Xcode is open", progress: nil))
+    #expect(detail(["Xcode", "Visual Studio Code"]).headline == "While 2 apps are open")
+    #expect(detail([]).headline == "While an app is open")
   }
 
   @Test("a focus session says a Focus keeps the Mac awake")
@@ -122,7 +126,10 @@ struct SessionStatusTests {
       plan: .holding(until: nil), mode: .schedule, session: .startedByFocus(now: noon),
       schedule: .default, now: noon, calendar: calendar)
 
-    #expect(status == SessionStatus(pill: .active, detail: "While a Focus is on.", progress: nil))
+    #expect(
+      status
+        == SessionStatus(
+          pill: .active, caption: "Awake", headline: "While a Focus is on", progress: nil))
   }
 
   @Test("a link's own length shows its countdown in any mode")
@@ -132,7 +139,7 @@ struct SessionStatusTests {
       plan: .holding(until: noon.addingTimeInterval(3600)), mode: .schedule, session: session,
       schedule: .default, now: noon, calendar: calendar)
 
-    #expect(status.detail.hasPrefix("1 h left"))
+    #expect(status.headline == "1 h left")
     #expect(status.progress == 0)
   }
 }

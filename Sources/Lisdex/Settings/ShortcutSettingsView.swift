@@ -11,17 +11,17 @@ struct ShortcutSettingsView: View {
         ForEach(ShortcutAction.allCases, id: \.self) { action in
           ShortcutRow(model: model, action: action)
           if action == .startDuration {
-            Picker("Length", selection: Bindable(model).shortcutDurationSetting) {
+            Picker("Duration", selection: Bindable(model).shortcutDurationSetting) {
               ForEach(DurationPreset.all, id: \.seconds) { Text($0.title).tag($0.seconds) }
             }
           }
         }
+      } header: {
+        Text("Global shortcuts")
       } footer: {
-        Text(
-          "Shortcuts work from any app. Click a field and press keys; Delete clears, Esc cancels."
+        SectionFooter(
+          "Shortcuts work from any app. Click a field and press keys. Delete clears it, Esc cancels."
         )
-        .font(.caption)
-        .foregroundStyle(.secondary)
       }
     }
     .formStyle(.grouped)

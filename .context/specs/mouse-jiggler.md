@@ -1,5 +1,7 @@
 # Mouse jiggler — Phase 9
 
+> **ADR 0026:** the Settings tab described here is now a section of Settings → Automation; see `lisdex-v1.md` "Settings window".
+
 _Approved by owner 2026-11-24 (Approach A)._
 
 ## Intent
@@ -44,7 +46,7 @@ Keep Teams and Slack showing the owner as available while Keep Awake holds the M
 - `Jiggler` (`@MainActor`): one timer scheduled from `JigglerClock` (no fixed polling); reads `CGEventSource.secondsSinceLastEventType(.combinedSessionState, …)`, held keys/buttons via `CGEventSource` state, posts `.mouseMoved` at the current location on `.cghidEventTap`. Started/stopped by `AppModel.reconcile` (holding + enabled + permitted).
 - Permission: `CGPreflightPostEventAccess()`; refreshed when Settings or the popover opens and when the app becomes active.
 - Settings → Power, section "Chat apps": switch "Keep me active in chat apps (mouse jiggler)"; the two sliders (disabled while off); permission row — ✅ "Lisdex can keep you active." or ⚠︎ "Lisdex needs Accessibility permission." with **Open Accessibility Settings** (calls `CGRequestPostEventAccess` once, then opens the pane), and the footnote "After updating Lisdex, macOS may keep showing it as allowed while it isn't: switch Lisdex off and on there."
-- Popover: when the jiggler is on and Keep Awake holds but the permission is missing, one warning line "Mouse jiggler needs permission" with a link to the pane.
+- Popover: when the jiggler is on and Keep Awake holds but the permission is missing, a warning banner "Mouse jiggler is paused · Lisdex needs Accessibility permission" with **Allow…** (ADR 0027; was one warning line before).
 
 **Records** — ADR 0024 (jiggler via posted 0 px mouse events; permission and its loss on ad-hoc rebuilds); spec `lisdex-v1.md` Settings; README feature row + note; CHANGELOG; evidence with the spike table.
 

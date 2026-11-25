@@ -1,6 +1,7 @@
 import Foundation
 
-/// The popover header: status pill, one line of detail, optional duration progress (0...1).
+/// The popover's status card (ADR 0027): a small caption, a large headline, the state that tints
+/// the card, and the duration progress (0...1) while a timed session runs.
 public struct SessionStatus: Equatable, Sendable {
   public enum Pill: String, Sendable {
     case inactive = "Inactive"
@@ -9,12 +10,14 @@ public struct SessionStatus: Equatable, Sendable {
   }
 
   public let pill: Pill
-  public let detail: String
+  public let caption: String
+  public let headline: String
   public let progress: Double?
 
-  public init(pill: Pill, detail: String, progress: Double?) {
+  public init(pill: Pill, caption: String, headline: String, progress: Double?) {
     self.pill = pill
-    self.detail = detail
+    self.caption = caption
+    self.headline = headline
     self.progress = progress
   }
 
@@ -25,13 +28,15 @@ public struct SessionStatus: Equatable, Sendable {
     let clock = ClockText(calendar: calendar)
     switch (plan, session) {
     case (.holding, let session?) where session.origin == .focus:
-      self.init(pill: .active, detail: "While a Focus is on.", progress: nil)
+      self.init(pill: .active, caption: "Awake", headline: "While a Focus is on", progress: nil)
     case (.holding, let session?) where session.origin == .app:
-      self.init(pill: .active, detail: Self.whileOpen(openApps), progress: nil)
+      self.init(
+        pill: .active, caption: "Awake", headline: Self.whileOpen(openApps), progress: nil)
     case (.holding(nil), let session?):
       let elapsed = now.timeIntervalSince(session.startedAt)
-      let text = elapsed < 60 ? "less than a minute" : DurationText.short(elapsed)
-      self.init(pill: .active, detail: "Awake for \(text).", progress: nil)
+      let headline = elapsed < 60 ? "Just started" : "On for \(DurationText.short(elapsed))"
+      self.init(
+        pill: .active, caption: "Awake · until you stop", headline: headline, progress: nil)
     case (.holding(let until?), let session?) where mode == .duration || session.hasFixedLength:
       let left = until.timeIntervalSince(now)
       let leftText =
@@ -41,18 +46,23 @@ public struct SessionStatus: Equatable, Sendable {
       let progress =
         total > 0 ? min(max(now.timeIntervalSince(session.startedAt) / total, 0), 1) : 1
       self.init(
-        pill: .active, detail: "\(leftText) left · until \(clock.time(until))", progress: progress)
+        pill: .active, caption: "Awake until \(clock.time(until))", headline: "\(leftText) left",
+        progress: progress)
     case (.holding(let until?), _):
-      let next = schedule.nextStart(after: until, calendar: calendar).map {
-        " · next: \(clock.dayAndTime($0))"
-      }
-      self.init(pill: .active, detail: "Until \(clock.time(until))\(next ?? "")", progress: nil)
+      let next = schedule.nextStart(after: until, calendar: calendar)
+      self.init(
+        pill: .active, caption: next.map { "Next: \(clock.dayAndTime($0))" } ?? "On a schedule",
+        headline: "Until \(clock.time(until))", progress: nil)
     case (.waiting(let next?), _):
-      self.init(pill: .waiting, detail: "Waiting · next: \(clock.dayAndTime(next))", progress: nil)
+      self.init(
+        pill: .waiting, caption: "Schedule is on", headline: "Next: \(clock.dayAndTime(next))",
+        progress: nil)
     case (.waiting(nil), _):
-      self.init(pill: .waiting, detail: "Pick at least one day.", progress: nil)
+      self.init(
+        pill: .waiting, caption: "Schedule is on", headline: "Pick at least one day", progress: nil)
     default:
-      self.init(pill: .inactive, detail: "Your Mac can sleep normally.", progress: nil)
+      self.init(
+        pill: .inactive, caption: "Keep Awake is off", headline: "Mac can sleep", progress: nil)
     }
   }
 }
@@ -61,9 +71,9 @@ extension SessionStatus {
   /// `openApps`: names of the running listed apps, in list order.
   fileprivate static func whileOpen(_ openApps: [String]) -> String {
     switch openApps.count {
-    case 0: "While an app is open."
-    case 1: "While \(openApps[0]) is open."
-    default: "While \(openApps.count) apps are open."
+    case 0: "While an app is open"
+    case 1: "While \(openApps[0]) is open"
+    default: "While \(openApps.count) apps are open"
     }
   }
 }

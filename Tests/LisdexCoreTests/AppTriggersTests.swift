@@ -43,8 +43,8 @@ struct AppTriggersTests {
     let old = try decode(#"{"accent":"mint"}"#)
     let garbage = try decode(#"{"appTriggers":"x","accent":"mint"}"#)
 
-    #expect(old.appTriggers == .empty && old.accent == .mint)
-    #expect(garbage.appTriggers == .empty && garbage.accent == .mint)
+    #expect(old.appTriggers == .empty && old.accent == .preset(.mint))
+    #expect(garbage.appTriggers == .empty && garbage.accent == .preset(.mint))
   }
 
   @Test("bad, blank and duplicate entries are dropped")
